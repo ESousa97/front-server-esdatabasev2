@@ -14,7 +14,7 @@ function App() {
 
   // Função para carregar os projetos
   const fetchProjects = () => {
-    axios.get('http://localhost:3000/api/projects')
+    axios.get('http://localhost:8000/api/projects')
       .then(response => {
         setProjects(response.data);
       })
@@ -27,7 +27,7 @@ function App() {
 
   // Adiciona um novo projeto
   const addProject = () => {
-    axios.post('http://localhost:3000/api/projects', newProject)
+    axios.post('http://localhost:8000/api/projects', newProject)
       .then(response => {
         setProjects([...projects, response.data]);
         setNewProject({ titulo: '', descricao: '', conteudo: '', categoria: '' });
@@ -37,7 +37,7 @@ function App() {
 
   // Deleta um projeto
   const deleteProject = (id) => {
-    axios.delete(`http://localhost:3000/api/projects/${id}`)
+    axios.delete(`http://localhost:8000/api/projects/${id}`)
       .then(() => {
         setProjects(projects.filter(project => project.id !== id));
       })
@@ -52,7 +52,7 @@ function App() {
 
   // Atualiza um projeto
   const updateProject = (id) => {
-    axios.put(`http://localhost:3000/api/projects/${id}`, updatedData)
+    axios.put(`http://localhost:8000/api/projects/${id}`, updatedData)
       .then(response => {
         setProjects(projects.map(project => project.id === id ? response.data : project));
         setEditingProject(null);
