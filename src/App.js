@@ -1,3 +1,4 @@
+// /src/App.js
 import React from 'react';
 import Projects from './Projects';
 import CardList from './CardList';
@@ -9,8 +10,12 @@ function MainContent() {
   const { isAuthenticated, login, logout } = useAuth();
 
   const handleLogout = async () => {
-    await api.post('/auth/logout');
-    logout();
+    try {
+      await api.post('/auth/logout');
+      logout();
+    } catch (error) {
+      console.error("Erro no logout:", error);
+    }
   };
 
   return (

@@ -7,14 +7,16 @@ function LoginForm({ onLogin }) {
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
+    console.log("Tentando login com:", email, password); // Log de depuração
     try {
       const res = await api.post('/auth/login', { email, password });
+      console.log("Resposta do login:", res.data);
       localStorage.setItem('accessToken', res.data.accessToken);
       localStorage.setItem('refreshToken', res.data.refreshToken);
       onLogin();
     } catch (err) {
       alert('Login inválido');
-      console.error(err);
+      console.error("Erro no login:", err);
     }
   };
 
