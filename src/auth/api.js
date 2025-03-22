@@ -1,3 +1,4 @@
+// /src/auth/api.js
 import axios from 'axios';
 
 const api = axios.create({
@@ -18,13 +19,15 @@ api.interceptors.response.use(
     if (err.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const res = await api.post('/auth/refresh');
+        const refreshToken = localStorage.getItem('refreshToken');
+        const res = await api.post('/auth/refresh', { refreshToken });
         localStorage.setItem('accessToken', res.data.accessToken);
         originalRequest.headers.Authorization = `Bearer ${res.data.accessToken}`;
         return api(originalRequest);
       } catch (_err) {
         console.error('Refresh token falhou');
         localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
         window.location.reload();
       }
     }
