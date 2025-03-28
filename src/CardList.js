@@ -1,14 +1,14 @@
 // src/CardList.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import CardEditor from './CardEditor';
 
 function CardList() {
   const [cards, setCards] = useState([]);
-  const [newCard, setNewCard] = useState({ titulo: '', descricao: '', imageurl: '' });
+  // Armazena o card que está em modo de edição
   const [editingCard, setEditingCard] = useState(null);
-  const [updatedData, setUpdatedData] = useState({});
 
-  // Carrega todos os cards
+  // Busca os cards do back-end
   const fetchCards = () => {
     axios.get('/api/cards')
       .then(response => {
@@ -21,18 +21,27 @@ function CardList() {
     fetchCards();
   }, []);
 
-  // Cria um novo card
-  const addCard = () => {
-    axios.post('/api/cards', newCard)
+  // Cria um novo card (quando não está em edição)
+  const handleAddCard = (cardData) => {
+    axios.post('/api/cards', cardData)
       .then(response => {
         setCards([...cards, response.data]);
-        setNewCard({ titulo: '', descricao: '', imageurl: '' });
       })
       .catch(error => console.error('Erro ao adicionar card:', error));
   };
 
-  // Deleta um card
-  const deleteCard = (id) => {
+  // Atualiza um card existente
+  const handleUpdateCard = (cardData) => {
+    axios.put(`/api/cards/${cardData.id}`, cardData)
+      .then(response => {
+        setCards(cards.map(card => card.id === cardData.id ? response.data : card));
+        setEditingCard(null);
+      })
+      .catch(error => console.error('Erro ao atualizar card:', error));
+  };
+
+  // Remove um card
+  const handleDeleteCard = (id) => {
     axios.delete(`/api/cards/${id}`)
       .then(() => {
         setCards(cards.filter(card => card.id !== id));
@@ -40,79 +49,36 @@ function CardList() {
       .catch(error => console.error('Erro ao deletar card:', error));
   };
 
-  // Inicia a edição de um card
-  const startEditing = (card) => {
-    setEditingCard(card);
-    setUpdatedData(card);
-  };
-
-  // Atualiza um card existente
-  const updateCard = (id) => {
-    axios.put(`/api/cards/${id}`, updatedData)
-      .then(response => {
-        setCards(cards.map(card => card.id === id ? response.data : card));
-        setEditingCard(null);
-        setUpdatedData({});
-      })
-      .catch(error => console.error('Erro ao atualizar card:', error));
-  };
-
   return (
     <div>
       <h2>Gerenciamento de Cards</h2>
-      <div>
-        <input
-          type="text"
-          placeholder="Título"
-          value={newCard.titulo}
-          onChange={(e) => setNewCard({ ...newCard, titulo: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Descrição"
-          value={newCard.descricao}
-          onChange={(e) => setNewCard({ ...newCard, descricao: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="URL da Imagem"
-          value={newCard.imageurl}
-          onChange={(e) => setNewCard({ ...newCard, imageurl: e.target.value })}
-        />
-        <button onClick={addCard}>Adicionar Card</button>
-      </div>
-      <ul>
+
+      {/* Se nenhum card estiver em edição, exibe o editor para criar um novo */}
+      {!editingCard && (
+        <CardEditor onSubmit={handleAddCard} />
+      )}
+
+      <ul style={{ listStyle: 'none', padding: 0 }}>
         {cards.map(card => (
-          <li key={card.id} style={{ marginBottom: '1rem' }}>
+          <li key={card.id} style={{ marginBottom: '1rem', borderBottom: '1px solid #ccc', paddingBottom: '0.5rem' }}>
             {editingCard && editingCard.id === card.id ? (
-              <div>
-                <input
-                  type="text"
-                  value={updatedData.titulo}
-                  onChange={(e) => setUpdatedData({ ...updatedData, titulo: e.target.value })}
-                />
-                <input
-                  type="text"
-                  value={updatedData.descricao}
-                  onChange={(e) => setUpdatedData({ ...updatedData, descricao: e.target.value })}
-                />
-                <input
-                  type="text"
-                  value={updatedData.imageurl}
-                  onChange={(e) => setUpdatedData({ ...updatedData, imageurl: e.target.value })}
-                />
-                <button onClick={() => updateCard(card.id)}>Salvar</button>
-                <button onClick={() => setEditingCard(null)}>Cancelar</button>
-              </div>
+              // Modo de edição: usa o mesmo CardEditor com os dados iniciais
+              <CardEditor
+                initialCard={editingCard}
+                onSubmit={handleUpdateCard}
+              />
             ) : (
               <div>
-                <strong>{card.titulo}</strong> - {card.descricao} <br />
+                <strong>{card.titulo}</strong> - {card.descricao}
                 {card.imageurl && (
-                  <img src={card.imageurl} alt={card.titulo} style={{ maxWidth: '200px' }} />
+                  <div>
+                    <img src={card.imageurl} alt={card.titulo} style={{ maxWidth: '200px', marginTop: '0.5rem' }} />
+                  </div>
                 )}
-                <br />
-                <button onClick={() => deleteCard(card.id)}>Deletar</button>
-                <button onClick={() => startEditing(card)}>Editar</button>
+                <div style={{ marginTop: '0.5rem' }}>
+                  <button onClick={() => setEditingCard(card)} style={{ marginRight: '0.5rem' }}>Editar</button>
+                  <button onClick={() => handleDeleteCard(card.id)}>Deletar</button>
+                </div>
               </div>
             )}
           </li>
