@@ -1,20 +1,8 @@
 // src/CardEditor.jsx
 import React, { useState } from 'react';
-import ContentEditor from './ContentEditor';
 
-/**
- * CardEditor
- * Permite inserir ou editar um card.
- * Campos:
- *  - titulo: Título do card.
- *  - imageurl: URL da imagem (por exemplo, /assets/cards/meucard.png).
- *  - descricao: Descrição rica com marcações.
- *
- * Props:
- *  - initialCard: Dados iniciais (para edição).
- *  - onSubmit: Função chamada ao salvar com os dados do card.
- */
 function CardEditor({ initialCard, onSubmit }) {
+  // Inicializa os dados do card; se for edição, usa os dados existentes
   const [cardData, setCardData] = useState(
     initialCard || { titulo: '', descricao: '', imageurl: '' }
   );
@@ -24,16 +12,22 @@ function CardEditor({ initialCard, onSubmit }) {
   };
 
   const handleSubmit = () => {
-    // Aqui você pode incluir validações se necessário
+    // Aqui podem ser adicionadas validações, se necessário
     onSubmit(cardData);
   };
 
+  // Função que define um preset para o campo imageurl com o caminho limpo
+  const presetImage = () => {
+    const preset = '/assets/projects0001/projects0001__2.png';
+    handleChange('imageurl', preset);
+  };
+
   return (
-    <div style={{ 
-      border: '1px solid #ddd', 
-      borderRadius: '8px', 
-      padding: '1rem', 
-      marginBottom: '1rem' 
+    <div style={{
+      border: '1px solid #ddd',
+      borderRadius: '8px',
+      padding: '1rem',
+      marginBottom: '1rem'
     }}>
       <h3>Editor de Card</h3>
       <div style={{ marginBottom: '0.5rem' }}>
@@ -52,18 +46,30 @@ function CardEditor({ initialCard, onSubmit }) {
           type="text" 
           value={cardData.imageurl} 
           onChange={e => handleChange('imageurl', e.target.value)} 
-          placeholder="Ex.: /assets/cards/meucard.png"
+          placeholder="Ex.: /assets/projectsXXXX/projectsXXXX__X.png"
           style={{ width: '100%', padding: '0.5rem' }}
         />
+        <button 
+          onClick={presetImage} 
+          style={{ marginTop: '0.5rem', padding: '0.4rem 0.8rem' }}
+        >
+          Preset Imagem
+        </button>
       </div>
       <div style={{ marginBottom: '0.5rem' }}>
         <label style={{ display: 'block', marginBottom: '0.3rem' }}>Descrição:</label>
-        <ContentEditor 
+        <input
+          type="text"
           value={cardData.descricao}
-          onChange={(val) => handleChange('descricao', val)}
+          onChange={e => handleChange('descricao', e.target.value)}
+          placeholder="Insira a descrição do card"
+          style={{ width: '100%', padding: '0.5rem' }}
         />
       </div>
-      <button onClick={handleSubmit} style={{ padding: '0.5rem 1rem' }}>
+      <button 
+        onClick={handleSubmit} 
+        style={{ padding: '0.5rem 1rem', backgroundColor: '#007bff', color: '#fff', border: 'none', borderRadius: '4px' }}
+      >
         Salvar Card
       </button>
     </div>

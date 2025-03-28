@@ -71,8 +71,10 @@ function CardList() {
               <div>
                 <strong>{card.titulo}</strong> - {card.descricao}
                 {card.imageurl && (
-                  <div>
-                    <img src={card.imageurl} alt={card.titulo} style={{ maxWidth: '200px', marginTop: '0.5rem' }} />
+                  <div style={{ marginTop: '0.5rem' }}>
+                    <p style={{ fontStyle: 'italic', color: '#555' }}>
+                      Caminho da Imagem: {card.imageurl}
+                    </p>
                   </div>
                 )}
                 <div style={{ marginTop: '0.5rem' }}>
