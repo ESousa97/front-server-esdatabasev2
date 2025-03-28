@@ -1,10 +1,16 @@
 // src/Projects.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import ContentEditor from './ContentEditor'; // Importe o editor que criamos
 
 function Projects() {
   const [projects, setProjects] = useState([]);
-  const [newProject, setNewProject] = useState({ titulo: '', descricao: '', conteudo: '', categoria: '' });
+  const [newProject, setNewProject] = useState({
+    titulo: '',
+    descricao: '',
+    conteudo: '',
+    categoria: ''
+  });
   const [editingProject, setEditingProject] = useState(null);
   const [updatedData, setUpdatedData] = useState({});
 
@@ -50,7 +56,7 @@ function Projects() {
   const updateProject = (id) => {
     axios.put(`/api/projects/${id}`, updatedData)
       .then(response => {
-        setProjects(projects.map(project => project.id === id ? response.data : project));
+        setProjects(projects.map(proj => proj.id === id ? response.data : proj));
         setEditingProject(null);
         setUpdatedData({});
       })
@@ -60,6 +66,8 @@ function Projects() {
   return (
     <div style={{ marginBottom: '2rem' }}>
       <h2>Gerenciamento de Projetos</h2>
+
+      {/* Formulário para adicionar novo projeto */}
       <div>
         <input
           type="text"
@@ -73,12 +81,13 @@ function Projects() {
           value={newProject.descricao}
           onChange={(e) => setNewProject({ ...newProject, descricao: e.target.value })}
         />
-        <input
-          type="text"
-          placeholder="Conteúdo"
+
+        {/* Aqui usamos o editor para o campo 'conteudo' */}
+        <ContentEditor
           value={newProject.conteudo}
-          onChange={(e) => setNewProject({ ...newProject, conteudo: e.target.value })}
+          onChange={(val) => setNewProject({ ...newProject, conteudo: val })}
         />
+
         <input
           type="text"
           placeholder="Categoria"
@@ -87,6 +96,8 @@ function Projects() {
         />
         <button onClick={addProject}>Adicionar Projeto</button>
       </div>
+
+      {/* Lista de projetos */}
       <ul>
         {projects.map(project => (
           <li key={project.id} style={{ marginBottom: '1rem' }}>
@@ -102,6 +113,13 @@ function Projects() {
                   value={updatedData.descricao}
                   onChange={(e) => setUpdatedData({ ...updatedData, descricao: e.target.value })}
                 />
+
+                {/* Editor também para edição do 'conteudo' */}
+                <ContentEditor
+                  value={updatedData.conteudo}
+                  onChange={(val) => setUpdatedData({ ...updatedData, conteudo: val })}
+                />
+
                 <button onClick={() => updateProject(project.id)}>Salvar</button>
                 <button onClick={() => setEditingProject(null)}>Cancelar</button>
               </div>
