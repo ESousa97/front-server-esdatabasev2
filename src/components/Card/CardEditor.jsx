@@ -1,8 +1,6 @@
-// src/CardEditor.jsx
 import React, { useState } from 'react';
 
 function CardEditor({ initialCard, onSubmit }) {
-  // Inicializa os dados do card; se for edição, usa os dados existentes
   const [cardData, setCardData] = useState(
     initialCard || { titulo: '', descricao: '', imageurl: '' }
   );
@@ -12,11 +10,9 @@ function CardEditor({ initialCard, onSubmit }) {
   };
 
   const handleSubmit = () => {
-    // Aqui podem ser adicionadas validações, se necessário
     onSubmit(cardData);
   };
 
-  // Função que define um preset para o campo imageurl com o caminho limpo
   const presetImage = () => {
     const preset = '/assets/projects0001/projects0001__2.png';
     handleChange('imageurl', preset);

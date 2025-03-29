@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// Use a variável de ambiente; se não estiver definida, usa "/api" (útil para desenvolvimento local)
 const baseURL = process.env.REACT_APP_API_URL || '/api';
 
 const api = axios.create({
@@ -8,7 +7,7 @@ const api = axios.create({
   withCredentials: true,
 });
 
-// Interceptador para adicionar o token se disponível
+// Interceptor para adicionar o token se disponível
 api.interceptors.request.use(config => {
   const token = localStorage.getItem('accessToken');
   if (token) config.headers.Authorization = `Bearer ${token}`;

@@ -1,13 +1,12 @@
-// /src/auth/LoginForm.js
 import React, { useState } from 'react';
-import api from './api';
+import api from '../../services/api';
 
 function LoginForm({ onLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-    console.log("Tentando login com:", email, password); // Log de depuração
+    console.log("Tentando login com:", email, password);
     try {
       const res = await api.post('/auth/login', { email, password });
       console.log("Resposta do login:", res.data);

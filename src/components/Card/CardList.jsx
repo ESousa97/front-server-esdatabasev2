@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import api from './auth/api'; // importe sua instância do Axios configurada
+import api from '../../services/api';
 import CardEditor from './CardEditor';
+import CardItem from './CardItem';
 
 function CardList() {
   const [cards, setCards] = useState([]);
@@ -8,9 +9,7 @@ function CardList() {
 
   const fetchCards = () => {
     api.get('/cards')
-      .then(response => {
-        setCards(response.data);
-      })
+      .then(response => setCards(response.data))
       .catch(error => console.error('Erro ao buscar cards:', error));
   };
 
@@ -20,9 +19,7 @@ function CardList() {
 
   const handleAddCard = (cardData) => {
     api.post('/cards', cardData)
-      .then(response => {
-        setCards([...cards, response.data]);
-      })
+      .then(response => setCards([...cards, response.data]))
       .catch(error => console.error('Erro ao adicionar card:', error));
   };
 
@@ -37,9 +34,7 @@ function CardList() {
 
   const handleDeleteCard = (id) => {
     api.delete(`/cards/${id}`)
-      .then(() => {
-        setCards(cards.filter(card => card.id !== id));
-      })
+      .then(() => setCards(cards.filter(card => card.id !== id)))
       .catch(error => console.error('Erro ao deletar card:', error));
   };
 
@@ -58,20 +53,11 @@ function CardList() {
                 onSubmit={handleUpdateCard}
               />
             ) : (
-              <div>
-                <strong>{card.titulo}</strong> - {card.descricao}
-                {card.imageurl && (
-                  <div style={{ marginTop: '0.5rem' }}>
-                    <p style={{ fontStyle: 'italic', color: '#555' }}>
-                      Caminho da Imagem: {card.imageurl}
-                    </p>
-                  </div>
-                )}
-                <div style={{ marginTop: '0.5rem' }}>
-                  <button onClick={() => setEditingCard(card)} style={{ marginRight: '0.5rem' }}>Editar</button>
-                  <button onClick={() => handleDeleteCard(card.id)}>Deletar</button>
-                </div>
-              </div>
+              <CardItem 
+                card={card} 
+                onEdit={setEditingCard} 
+                onDelete={handleDeleteCard} 
+              />
             )}
           </li>
         ))}
