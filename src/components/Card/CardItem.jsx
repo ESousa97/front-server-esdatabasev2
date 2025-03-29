@@ -1,8 +1,14 @@
+// src/components/Card/CardItem.jsx
 import React from 'react';
 
 function CardItem({ card, onEdit, onDelete }) {
+  const handleShowDetails = () => {
+    alert(JSON.stringify(card, null, 2));
+  };
+
   return (
     <div>
+      <p>ID: {card.id}</p> {/* Exibe o ID do card */}
       <strong>{card.titulo}</strong> - {card.descricao}
       {card.imageurl && (
         <div style={{ marginTop: '0.5rem' }}>
@@ -12,7 +18,12 @@ function CardItem({ card, onEdit, onDelete }) {
         </div>
       )}
       <div style={{ marginTop: '0.5rem' }}>
-        <button onClick={() => onEdit(card)} style={{ marginRight: '0.5rem' }}>Editar</button>
+        <button onClick={handleShowDetails} style={{ marginRight: '0.5rem' }}>
+          Detalhes
+        </button>
+        <button onClick={() => onEdit(card)} style={{ marginRight: '0.5rem' }}>
+          Editar
+        </button>
         <button onClick={() => onDelete(card.id)}>Deletar</button>
       </div>
     </div>

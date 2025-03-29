@@ -1,3 +1,4 @@
+// src/components/Card/CardList.jsx
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import CardEditor from './CardEditor';
@@ -19,7 +20,27 @@ function CardList() {
 
   const handleAddCard = (cardData) => {
     api.post('/cards', cardData)
-      .then(response => setCards([...cards, response.data]))
+      .then(response => {
+        const newCard = response.data;
+        setCards([...cards, newCard]);
+
+        // Cria automaticamente o projeto com base no novo card
+        const projectData = {
+          // Aqui tentamos usar o mesmo ID – o backend deve permitir essa inserção manual
+          id: newCard.id,
+          titulo: `ESSE É O PROJECT DO ${newCard.titulo.toUpperCase()}`,
+          descricao: newCard.descricao,
+          conteudo: '',  // Defina conforme a necessidade
+          categoria: ''
+        };
+
+        api.post('/projects', projectData)
+          .then(projectResponse => {
+            console.log('Projeto criado automaticamente:', projectResponse.data);
+            // Opcional: você pode atualizar uma lista de projetos na interface se necessário
+          })
+          .catch(err => console.error('Erro ao criar o projeto automaticamente:', err));
+      })
       .catch(error => console.error('Erro ao adicionar card:', error));
   };
 
