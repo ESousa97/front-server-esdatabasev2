@@ -7,7 +7,7 @@ import Footer from '../components/Layout/Footer';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
 
-function Dashboard() {
+function Home() {
   const { isAuthenticated, logout } = useAuth();
 
   const handleLogout = async () => {
@@ -20,7 +20,6 @@ function Dashboard() {
   };
 
   if (!isAuthenticated) {
-    // Redireciona para a tela de login
     return <Navigate to="/login" replace />;
   }
 
@@ -29,7 +28,7 @@ function Dashboard() {
       <Header onLogout={handleLogout} />
       <main style={{ display: 'flex', padding: '2rem' }}>
         <div style={{ flex: 1 }}>
-          <h2>Dashboard</h2>
+          <h2>Home</h2>
           <ProjectList />
           <CardList />
         </div>
@@ -39,4 +38,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Home;

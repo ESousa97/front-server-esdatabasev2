@@ -9,7 +9,7 @@ function Login() {
 
   const handleLoginSuccess = () => {
     login();
-    navigate('/');
+    navigate('/'); // Redireciona para a tela inicial
   };
 
   return (
