@@ -20,7 +20,7 @@ function MainContent() {
 
   return (
     <div style={{ padding: '2rem' }}>
-      <h1>Minha Aplicação CRUD</h1>
+      <h1>Projmanage</h1>
       {isAuthenticated ? (
         <>
           <button onClick={handleLogout}>Logout</button>
