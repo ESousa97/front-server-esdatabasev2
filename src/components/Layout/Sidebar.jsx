@@ -1,11 +1,21 @@
+// Exemplo de Sidebar aprimorada
 import React from 'react';
+import { FaTachometerAlt, FaDatabase } from 'react-icons/fa';
 
 function Sidebar() {
   return (
-    <aside style={{ width: '200px', background: '#f4f4f4', padding: '1rem' }}>
+    <aside className="sidebar">
       <ul style={{ listStyle: 'none', padding: 0 }}>
-        <li><a href="/">Dashboard</a></li>
-        {/* Adicione links conforme necessário */}
+        <li style={{ marginBottom: '1rem' }}>
+          <a href="/" style={{ color: '#fff', textDecoration: 'none' }}>
+            <FaTachometerAlt /> Dashboard
+          </a>
+        </li>
+        <li>
+          <a href="/db" style={{ color: '#fff', textDecoration: 'none' }}>
+            <FaDatabase /> Editor de DB
+          </a>
+        </li>
       </ul>
     </aside>
   );

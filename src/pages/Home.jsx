@@ -1,9 +1,11 @@
+// src/pages/Home.jsx (exemplo de alteração)
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import Header from '../components/Layout/Header';
 import ProjectList from '../components/Project/ProjectList';
 import CardList from '../components/Card/CardList';
 import Footer from '../components/Layout/Footer';
+import Sidebar from '../components/Layout/Sidebar';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
 
@@ -26,13 +28,14 @@ function Home() {
   return (
     <div>
       <Header onLogout={handleLogout} />
-      <main style={{ display: 'flex', padding: '2rem' }}>
-        <div style={{ flex: 1 }}>
-          <h2>Home</h2>
+      <div className="editor-container">
+        <Sidebar />
+        <main className="main-content">
+          <h2>Dashboard</h2>
           <ProjectList />
           <CardList />
-        </div>
-      </main>
+        </main>
+      </div>
       <Footer />
     </div>
   );
