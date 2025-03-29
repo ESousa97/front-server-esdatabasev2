@@ -1,11 +1,14 @@
 import axios from 'axios';
 
+// Use a variável de ambiente; se não estiver definida, usa "/api" (útil para desenvolvimento local)
+const baseURL = process.env.REACT_APP_API_URL || '/api';
+
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000/api',
-  withCredentials: true
+  baseURL,
+  withCredentials: true,
 });
 
-// Mantém os interceptadores (já existentes) sem alterações
+// Interceptador para adicionar o token se disponível
 api.interceptors.request.use(config => {
   const token = localStorage.getItem('accessToken');
   if (token) config.headers.Authorization = `Bearer ${token}`;
