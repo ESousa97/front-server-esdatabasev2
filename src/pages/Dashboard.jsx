@@ -1,4 +1,5 @@
 import React from 'react';
+import { Navigate } from 'react-router-dom';
 import Header from '../components/Layout/Header';
 import ProjectList from '../components/Project/ProjectList';
 import CardList from '../components/Card/CardList';
@@ -19,14 +20,14 @@ function Dashboard() {
   };
 
   if (!isAuthenticated) {
-    return <p>Você não está autenticado. Por favor, faça login.</p>;
+    // Redireciona para a tela de login
+    return <Navigate to="/login" replace />;
   }
 
   return (
     <div>
       <Header onLogout={handleLogout} />
       <main style={{ display: 'flex', padding: '2rem' }}>
-        {/* Se desejar uma Sidebar, você pode incluir: <Sidebar /> */}
         <div style={{ flex: 1 }}>
           <h2>Dashboard</h2>
           <ProjectList />
