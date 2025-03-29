@@ -18,31 +18,31 @@ function CardList() {
     fetchCards();
   }, []);
 
+  // No CardList.jsx - função handleAddCard
   const handleAddCard = (cardData) => {
     api.post('/cards', cardData)
       .then(response => {
         const newCard = response.data;
         setCards([...cards, newCard]);
 
-        // Cria automaticamente o projeto com base no novo card
+        // Cria automaticamente o projeto correspondente
         const projectData = {
-          // Aqui tentamos usar o mesmo ID – o backend deve permitir essa inserção manual
           id: newCard.id,
           titulo: `ESSE É O PROJECT DO ${newCard.titulo.toUpperCase()}`,
           descricao: newCard.descricao,
-          conteudo: '',  // Defina conforme a necessidade
+          conteudo: '',
           categoria: ''
         };
 
         api.post('/projects', projectData)
           .then(projectResponse => {
             console.log('Projeto criado automaticamente:', projectResponse.data);
-            // Opcional: você pode atualizar uma lista de projetos na interface se necessário
           })
           .catch(err => console.error('Erro ao criar o projeto automaticamente:', err));
       })
       .catch(error => console.error('Erro ao adicionar card:', error));
   };
+
 
   const handleUpdateCard = (cardData) => {
     api.put(`/cards/${cardData.id}`, cardData)
@@ -54,8 +54,17 @@ function CardList() {
   };
 
   const handleDeleteCard = (id) => {
+    // Deleta o card
     api.delete(`/cards/${id}`)
-      .then(() => setCards(cards.filter(card => card.id !== id)))
+      .then(() => {
+        setCards(cards.filter(card => card.id !== id));
+        // Após deletar o card, deleta também o project correspondente
+        api.delete(`/projects/${id}`)
+          .then(() => {
+            console.log(`Projeto com ID ${id} deletado`);
+          })
+          .catch(err => console.error(`Erro ao deletar projeto com ID ${id}:`, err));
+      })
       .catch(error => console.error('Erro ao deletar card:', error));
   };
 

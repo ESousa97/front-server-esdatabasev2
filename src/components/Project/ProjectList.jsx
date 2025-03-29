@@ -19,6 +19,7 @@ function ProjectList() {
 
   const handleAddOrUpdate = (projectData) => {
     if (editingProject) {
+      // Atualiza o projeto normalmente
       api.put(`/projects/${projectData.id}`, projectData)
         .then(response => {
           setProjects(projects.map(p => p.id === projectData.id ? response.data : p));
@@ -26,9 +27,24 @@ function ProjectList() {
         })
         .catch(error => console.error('Erro ao atualizar projeto:', error));
     } else {
+      // Cria o projeto e, automaticamente, cria o card correspondente
       api.post('/projects', projectData)
         .then(response => {
-          setProjects([...projects, response.data]);
+          const newProject = response.data;
+          setProjects([...projects, newProject]);
+  
+          const cardData = {
+            id: newProject.id, // assume que o backend permite inserção manual do ID
+            titulo: newProject.titulo.replace('PROJECT', '').trim(),
+            descricao: newProject.descricao,
+            imageurl: '' // ou defina um valor padrão se necessário
+          };
+  
+          api.post('/cards', cardData)
+            .then(cardResponse => {
+              console.log('Card criado automaticamente:', cardResponse.data);
+            })
+            .catch(err => console.error('Erro ao criar o card automaticamente:', err));
         })
         .catch(error => console.error('Erro ao adicionar projeto:', error));
     }
@@ -36,7 +52,15 @@ function ProjectList() {
 
   const handleDelete = (id) => {
     api.delete(`/projects/${id}`)
-      .then(() => setProjects(projects.filter(p => p.id !== id)))
+      .then(() => {
+        setProjects(projects.filter(project => project.id !== id));
+        // Deleta também o card correspondente
+        api.delete(`/cards/${id}`)
+          .then(() => {
+            console.log(`Card com ID ${id} deletado`);
+          })
+          .catch(err => console.error(`Erro ao deletar card com ID ${id}:`, err));
+      })
       .catch(error => console.error('Erro ao deletar projeto:', error));
   };
 
