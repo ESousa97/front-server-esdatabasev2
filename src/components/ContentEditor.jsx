@@ -37,11 +37,11 @@ function ContentEditor({ value, onChange }) {
         onChange={handleTextChange}
         placeholder="Digite aqui o conteúdo..."
       />
-      <div style={{ marginTop: '8px' }}>
-        <button onClick={insertCopyable}>+ Texto Copiável</button>
-        <button onClick={insertImageReference}>+ Imagem</button>
-        <button onClick={insertYouTubeLink}>+ Vídeo YouTube</button>
-      </div>
+    <div style={{ marginTop: '8px' }}>
+      <button type="button" onClick={insertCopyable}>+ Texto Copiável</button>
+      <button type="button" onClick={insertImageReference}>+ Imagem</button>
+      <button type="button" onClick={insertYouTubeLink}>+ Vídeo YouTube</button>
+    </div>
     </div>
   );
 }

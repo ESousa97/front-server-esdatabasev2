@@ -1,9 +1,9 @@
 // src/App.jsx
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
-import Home from './pages/Home';
+import DashboardPage from './pages/DashboardPage';
 import Login from './pages/Login';
 
 function App() {
@@ -13,7 +13,9 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path="/*" element={<Home />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+            {/* Redireciona todas as outras para o Dashboard */}
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
