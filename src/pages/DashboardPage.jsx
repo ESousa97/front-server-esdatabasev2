@@ -7,11 +7,15 @@ import Sidebar from '../components/Layout/Sidebar';
 import Header from '../components/Layout/Header';
 import Footer from '../components/Layout/Footer';
 import ModalEditor from '../components/ModalEditor';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 function DashboardPage() {
   const [projects, setProjects] = useState([]);
   const [cards, setCards] = useState([]);
-  const [editingItem, setEditingItem] = useState(null); // { type: 'project' | 'card', data: {} }
+  const [editingItem, setEditingItem] = useState(null);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProjects();
@@ -28,6 +32,16 @@ function DashboardPage() {
     api.get('/cards')
       .then(response => setCards(response.data))
       .catch(error => console.error('Erro ao buscar cards:', error));
+  };
+
+  const handleLogout = async () => {
+    try {
+      await api.post('/auth/logout');
+      logout(); // Atualiza o estado de autenticação
+      navigate('/login'); // Redireciona para a página de login
+    } catch (error) {
+      console.error("Erro no logout:", error);
+    }
   };
 
   // Abre o modal para edição/adicionar
@@ -145,12 +159,13 @@ const handleDeleteProject = (id) => {
 
   return (
     <div>
-      <Header onLogout={() => { /* Lógica de logout, se necessário */ }} />
+      <Header onLogout={handleLogout} /> {/* Passa a função de logout correta */}
       <div className="editor-container">
         <Sidebar />
         <main className="main-content">
           <h2>Dashboard - Tabelas do Banco de Dados</h2>
 
+          {/* Seções de projetos e cards */}
           <section>
             <h3>Projetos</h3>
             <button onClick={() => handleEdit('project', {})} style={{ marginBottom: '1rem' }}>
