@@ -1,4 +1,3 @@
-// src/pages/DashboardPage.jsx
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import ProjectForm from '../components/Project/ProjectForm';
@@ -34,13 +33,26 @@ function DashboardPage() {
       .catch(error => console.error('Erro ao buscar cards:', error));
   };
 
+  // Efetua o logout com proteção CSRF
   const handleLogout = async () => {
     try {
-      await api.post('/auth/logout');
-      logout(); // Atualiza o estado de autenticação
-      navigate('/login'); // Redireciona para a página de login
+      // (Opcional) Obter novamente um token CSRF fresco antes do logout,
+      // caso queira garantir um token recente.
+      // A chamada inicial em "api.js" já definiu X-CSRF-Token globalmente,
+      // mas se passou muito tempo, você pode querer refazer:
+      const tokenRes = await api.get('/csrf-token');
+      const csrfToken = tokenRes.data.csrfToken;
+      
+      // Envia a requisição de logout incluindo o token no header
+      await api.post('/auth/logout', {}, {
+        headers: { 'X-CSRF-Token': csrfToken }
+      });
+      
+      // Remove o estado de autenticação e redireciona para /login
+      logout();
+      navigate('/login');
     } catch (error) {
-      console.error("Erro no logout:", error);
+      console.error('Erro no logout:', error);
     }
   };
 
@@ -54,35 +66,36 @@ function DashboardPage() {
     setEditingItem(null);
   };
 
-  // Salva ou atualiza um projeto e cria automaticamente o card correspondente
+  // Salva ou atualiza um projeto
   const handleSaveProject = (projectData) => {
     if (projectData.id) {
       // Atualização
       api.put(`/projects/${projectData.id}`, projectData)
         .then(response => {
-          setProjects(projects.map(p => p.id === projectData.id ? response.data : p));
-          // Se desejar atualizar o card também, pode ser implementado aqui
+          setProjects(prev =>
+            prev.map(p => (p.id === projectData.id ? response.data : p))
+          );
           closeModal();
         })
         .catch(error => console.error('Erro ao atualizar projeto:', error));
     } else {
-      // Criação de novo projeto
+      // Criação
       api.post('/projects', projectData)
         .then(response => {
           const newProject = response.data;
-          setProjects([...projects, newProject]);
+          setProjects(prev => [...prev, newProject]);
 
           // Cria automaticamente o card correspondente
           const cardData = {
-            id: newProject.id, // assume que o backend permite definir o ID
+            id: newProject.id,
             titulo: newProject.titulo.replace('PROJECT', '').trim() || newProject.titulo,
             descricao: newProject.descricao,
-            imageurl: '' // defina um valor padrão se necessário
+            imageurl: ''
           };
 
           api.post('/cards', cardData)
             .then(cardResponse => {
-              setCards([...cards, cardResponse.data]);
+              setCards(prev => [...prev, cardResponse.data]);
             })
             .catch(err => console.error('Erro ao criar o card automaticamente:', err));
 
@@ -92,27 +105,28 @@ function DashboardPage() {
     }
   };
 
-  // Salva ou atualiza um card e cria automaticamente o projeto correspondente
+  // Salva ou atualiza um card
   const handleSaveCard = (cardData) => {
     if (cardData.id) {
       // Atualização
       api.put(`/cards/${cardData.id}`, cardData)
         .then(response => {
-          setCards(cards.map(c => c.id === cardData.id ? response.data : c));
-          // Se desejar atualizar o projeto correspondente, pode ser adicionado aqui
+          setCards(prev =>
+            prev.map(c => (c.id === cardData.id ? response.data : c))
+          );
           closeModal();
         })
         .catch(error => console.error('Erro ao atualizar card:', error));
     } else {
-      // Criação de novo card
+      // Criação
       api.post('/cards', cardData)
         .then(response => {
           const newCard = response.data;
-          setCards([...cards, newCard]);
+          setCards(prev => [...prev, newCard]);
 
           // Cria automaticamente o projeto correspondente
           const projectData = {
-            id: newCard.id, // assume que o backend permite definir o ID
+            id: newCard.id,
             titulo: `PROJECT - ${newCard.titulo}`.toUpperCase(),
             descricao: newCard.descricao,
             conteudo: '',
@@ -121,7 +135,7 @@ function DashboardPage() {
 
           api.post('/projects', projectData)
             .then(projResponse => {
-              setProjects([...projects, projResponse.data]);
+              setProjects(prev => [...prev, projResponse.data]);
             })
             .catch(err => console.error('Erro ao criar o projeto automaticamente:', err));
 
@@ -131,44 +145,47 @@ function DashboardPage() {
     }
   };
 
-// Deletar projeto e o card correspondente
-const handleDeleteProject = (id) => {
+  // Deleta projeto e o card correspondente
+  const handleDeleteProject = (id) => {
     Promise.all([
       api.delete(`/projects/${id}`),
       api.delete(`/cards/${id}`)
     ])
       .then(() => {
-        setProjects(projects.filter(p => p.id !== id));
-        setCards(cards.filter(c => c.id !== id));
+        setProjects(prev => prev.filter(p => p.id !== id));
+        setCards(prev => prev.filter(c => c.id !== id));
       })
       .catch(error => console.error('Erro ao deletar projeto e/ou card correspondente:', error));
   };
   
-  // Deletar card e o projeto correspondente
+  // Deleta card e o projeto correspondente
   const handleDeleteCard = (id) => {
     Promise.all([
       api.delete(`/cards/${id}`),
       api.delete(`/projects/${id}`)
     ])
       .then(() => {
-        setCards(cards.filter(c => c.id !== id));
-        setProjects(projects.filter(p => p.id !== id));
+        setCards(prev => prev.filter(c => c.id !== id));
+        setProjects(prev => prev.filter(p => p.id !== id));
       })
       .catch(error => console.error('Erro ao deletar card e/ou projeto correspondente:', error));
-  };  
+  };
 
   return (
     <div>
-      <Header onLogout={handleLogout} /> {/* Passa a função de logout correta */}
+      <Header onLogout={handleLogout} />
       <div className="editor-container">
         <Sidebar />
         <main className="main-content">
           <h2>Dashboard - Tabelas do Banco de Dados</h2>
 
-          {/* Seções de projetos e cards */}
+          {/* Seção de Projetos */}
           <section>
             <h3>Projetos</h3>
-            <button onClick={() => handleEdit('project', {})} style={{ marginBottom: '1rem' }}>
+            <button
+              onClick={() => handleEdit('project', {})}
+              style={{ marginBottom: '1rem' }}
+            >
               Adicionar Projeto
             </button>
             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '2rem' }}>
@@ -185,14 +202,28 @@ const handleDeleteProject = (id) => {
               <tbody>
                 {projects.map(project => (
                   <tr key={project.id}>
-                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>{project.id}</td>
-                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>{project.titulo}</td>
-                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>{project.descricao}</td>
-                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>{project.conteudo}</td>
-                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>{project.categoria}</td>
                     <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
-                      <button onClick={() => handleEdit('project', project)}>Editar</button>
-                      <button onClick={() => handleDeleteProject(project.id)}>Deletar</button>
+                      {project.id}
+                    </td>
+                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
+                      {project.titulo}
+                    </td>
+                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
+                      {project.descricao}
+                    </td>
+                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
+                      {project.conteudo}
+                    </td>
+                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
+                      {project.categoria}
+                    </td>
+                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
+                      <button onClick={() => handleEdit('project', project)}>
+                        Editar
+                      </button>
+                      <button onClick={() => handleDeleteProject(project.id)}>
+                        Deletar
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -200,9 +231,13 @@ const handleDeleteProject = (id) => {
             </table>
           </section>
 
+          {/* Seção de Cards */}
           <section>
             <h3>Cards</h3>
-            <button onClick={() => handleEdit('card', {})} style={{ marginBottom: '1rem' }}>
+            <button
+              onClick={() => handleEdit('card', {})}
+              style={{ marginBottom: '1rem' }}
+            >
               Adicionar Card
             </button>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -218,13 +253,25 @@ const handleDeleteProject = (id) => {
               <tbody>
                 {cards.map(card => (
                   <tr key={card.id}>
-                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>{card.id}</td>
-                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>{card.titulo}</td>
-                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>{card.descricao}</td>
-                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>{card.imageurl}</td>
                     <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
-                      <button onClick={() => handleEdit('card', card)}>Editar</button>
-                      <button onClick={() => handleDeleteCard(card.id)}>Deletar</button>
+                      {card.id}
+                    </td>
+                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
+                      {card.titulo}
+                    </td>
+                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
+                      {card.descricao}
+                    </td>
+                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
+                      {card.imageurl}
+                    </td>
+                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
+                      <button onClick={() => handleEdit('card', card)}>
+                        Editar
+                      </button>
+                      <button onClick={() => handleDeleteCard(card.id)}>
+                        Deletar
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -233,25 +280,27 @@ const handleDeleteProject = (id) => {
           </section>
         </main>
       </div>
+
       <Footer />
 
+      {/* Modal de Edição/Criação */}
       {editingItem && (
         <ModalEditor onClose={closeModal}>
           {editingItem.type === 'project' ? (
             <div>
               <h3>{editingItem.data.id ? "Editar Projeto" : "Adicionar Projeto"}</h3>
-              <ProjectForm 
-                project={editingItem.data.id ? editingItem.data : null} 
-                onSubmit={handleSaveProject} 
-                onCancel={closeModal} 
+              <ProjectForm
+                project={editingItem.data.id ? editingItem.data : null}
+                onSubmit={handleSaveProject}
+                onCancel={closeModal}
               />
             </div>
           ) : (
             <div>
               <h3>{editingItem.data.id ? "Editar Card" : "Adicionar Card"}</h3>
-              <CardEditor 
-                initialCard={editingItem.data.id ? editingItem.data : null} 
-                onSubmit={handleSaveCard} 
+              <CardEditor
+                initialCard={editingItem.data.id ? editingItem.data : null}
+                onSubmit={handleSaveCard}
               />
             </div>
           )}
