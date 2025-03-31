@@ -7,6 +7,7 @@ import CardList from '../components/Card/CardList';
 import Footer from '../components/Layout/Footer';
 import Sidebar from '../components/Layout/Sidebar';
 import { useAuth } from '../contexts/AuthContext';
+import './Home.css';
 
 function Home() {
   const { isAuthenticated, logout } = useAuth();
@@ -16,7 +17,7 @@ function Home() {
   }
 
   return (
-    <div>
+    <div className="home-page">
       <Header onLogout={logout} />
       <div className="editor-container">
         <Sidebar />

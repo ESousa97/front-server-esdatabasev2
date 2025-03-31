@@ -2,23 +2,23 @@
 
 /* Tema padrão (claro) */
 :root {
-  --color-bg: #f5f5f5;
-  --color-text: #333;
-  --color-primary: #007bff;
-  --color-secondary: #6c757d;
-  --color-border: #ddd;
-  --color-input-bg: #fff;
-  --color-shadow: rgba(0, 0, 0, 0.1);
+  --color-bg: #f8fafc;           /* Fundo bem claro com leve tom azulado */
+  --color-text: #374151;         /* Texto em cinza-escuro moderno */
+  --color-primary: #4f46e5;      /* Índigo moderno para elementos de destaque */
+  --color-secondary: #00c482;    /* Teal vibrante para elementos secundários */
+  --color-border: #e5e7eb;       /* Bordas suaves e discretas */
+  --color-input-bg: #ffffff;     /* Fundo branco para inputs e áreas de texto */
+  --color-shadow: rgba(0, 0, 0, 0.1); /* Sombra leve para profundidade */
 }
 
 [data-theme="dark"] {
-  --color-bg: #1e1e1e;
-  --color-text: #ccc;
-  --color-primary: #1a73e8;
-  --color-secondary: #343a40;
-  --color-border: #444;
-  --color-input-bg: #2e2e2e;
-  --color-shadow: rgba(0, 0, 0, 0.3);
+  --color-bg: #1f2937;           /* Fundo escuro com tom azulado */
+  --color-text: #f9fafb;         /* Texto quase branco para melhor leitura */
+  --color-primary: #6366f1;      /* Índigo suavizado para o modo escuro */
+  --color-secondary: #007a52;    /* Teal moderno, mantendo o contraste */
+  --color-border: #374151;       /* Bordas mais escuras no tema dark */
+  --color-input-bg: #374151;     /* Fundo dos inputs em tom condizente com o dark */
+  --color-shadow: rgba(0, 0, 0, 0.5); /* Sombra mais intensa para profundidade */
 }
 
 /* Aplicação global */
@@ -31,7 +31,7 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Exemplo de botão utilizando as variáveis */
+/* Estilização de botões utilizando as variáveis */
 button {
   padding: 0.5rem 1rem;
   border: none;
@@ -46,6 +46,7 @@ button:hover {
   opacity: 0.9;
 }
 
+/* Estilização de inputs e textareas */
 input, textarea {
   background-color: var(--color-input-bg);
   border: 1px solid var(--color-border);
@@ -56,7 +57,7 @@ input, textarea {
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-/* Novo layout para dar cara de editor de DB */
+/* Layout para editor de DB */
 .editor-container {
   display: flex;
   height: 100vh;

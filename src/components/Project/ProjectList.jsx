@@ -11,6 +11,7 @@ function ProjectList() {
   const fetchProjects = () => {
     api.get('/projects')
       .then(response => {
+        console.log('Projects:', response.data);
         setProjects(response.data);
       })
       .catch(error => console.error('Erro ao buscar projetos:', error));
@@ -20,8 +21,10 @@ function ProjectList() {
     fetchProjects();
   }, []);
 
+  // Adiciona ou atualiza
   const handleAddOrUpdate = (projectData) => {
     if (editingProject) {
+      // Atualiza
       api.put(`/projects/${projectData.id}`, projectData)
         .then(response => {
           setProjects(projects.map(p => p.id === projectData.id ? response.data : p));
@@ -29,12 +32,12 @@ function ProjectList() {
         })
         .catch(error => console.error('Erro ao atualizar projeto:', error));
     } else {
+      // Cria projeto e automaticamente o card
       api.post('/projects', projectData)
         .then(response => {
           const newProject = response.data;
           setProjects([...projects, newProject]);
 
-          // Cria automaticamente o card correspondente
           const cardData = {
             id: newProject.id,
             titulo: newProject.titulo.replace('PROJECT', '').trim(),
@@ -52,10 +55,16 @@ function ProjectList() {
     }
   };
 
+  // Deleta projeto e card
   const handleDelete = (id) => {
+    // Confirmação antes de deletar
+    const confirmDelete = window.confirm(`Tem certeza de que deseja deletar o projeto de ID ${id}?`);
+    if (!confirmDelete) return;
+
     api.delete(`/projects/${id}`)
       .then(() => {
         setProjects(projects.filter(project => project.id !== id));
+        // Deleta também o card correspondente
         api.delete(`/cards/${id}`)
           .then(() => {
             console.log(`Card com ID ${id} deletado`);
@@ -66,23 +75,24 @@ function ProjectList() {
   };
 
   return (
-    <div className="project-list">
+    <div>
       <h3>Gerenciamento de Projetos</h3>
-      <ProjectForm 
-        project={editingProject} 
-        onSubmit={handleAddOrUpdate} 
+      <ProjectForm
+        project={editingProject}
+        onSubmit={handleAddOrUpdate}
         onCancel={() => setEditingProject(null)}
       />
-      <div className="project-items">
+      <ul style={{ listStyle: 'none', padding: 0 }}>
         {projects.map(project => (
-          <ProjectItem 
-            key={project.id}
-            project={project} 
-            onEdit={setEditingProject} 
-            onDelete={handleDelete} 
-          />
+          <li key={project.id} style={{ marginBottom: '1rem' }}>
+            <ProjectItem
+              project={project}
+              onEdit={setEditingProject}
+              onDelete={handleDelete}
+            />
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }

@@ -1,62 +1,81 @@
-/* src/pages/DashboardPage.css */
-.dashboard-page .editor-container {
+/* DashboardPage.css */
+
+/* Container com Sidebar e Conteúdo Principal */
+.editor-container {
     display: flex;
-    height: 100vh;
   }
   
-  .dashboard-page .main-content {
+  /* Conteúdo principal */
+  .main-content {
     flex: 1;
     padding: 2rem;
+    background-color: var(--color-bg);
     overflow-y: auto;
   }
   
-  .table-section {
+  /* Título principal */
+  .main-content h2 {
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    color: var(--color-text);
+  }
+  
+  /* Seção de Projetos e Cards */
+  .main-content section {
     margin-bottom: 2rem;
   }
   
-  .styled-table {
+  /* Botões de adicionar (Projetos e Cards) */
+  .add-btn {
+    margin-bottom: 2rem;
+  }
+  
+  /* Estilização das tabelas */
+  .dashboard-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 1rem;
+    margin-bottom: 2rem;
   }
   
-  .styled-table th,
-  .styled-table td {
-    border: 1px solid var(--color-border);
-    padding: 8px;
-    text-align: left;
+  .dashboard-table th,
+  .dashboard-table td {
+    border: 2px solid var(--color-border);
+    padding: 5px;
   }
   
-  .styled-table th {
-    background-color: #777777;
+  /* Centraliza as ações na última coluna */
+  .dashboard-table td:last-child {
+    text-align: center;
   }
   
-  .btn-primary {
+  /* Botões internos das tabelas */
+  .table-btn {
+    margin-right: 0.5rem;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
     background-color: var(--color-primary);
     color: #fff;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 4px;
     cursor: pointer;
-    margin-bottom: 1rem;
+    transition: opacity 0.3s ease;
   }
   
-  .btn-secondary {
-    background-color: #6c757d;
-    color: #fff;
-    padding: 0.4rem 0.8rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-right: 0.5rem;
+  .table-btn:hover {
+    opacity: 0.9;
   }
   
-  .btn-danger {
+  /* Botão de Deletar com cor vermelha */
+  .delete-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
     background-color: #dc3545;
     color: #fff;
-    padding: 0.4rem 0.8rem;
-    border: none;
-    border-radius: 4px;
     cursor: pointer;
+    transition: opacity 0.3s ease;
+  }
+  
+  .delete-btn:hover {
+    opacity: 0.9;
   }
   

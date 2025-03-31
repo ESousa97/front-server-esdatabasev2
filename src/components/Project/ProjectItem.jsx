@@ -3,18 +3,29 @@ import React from 'react';
 
 function ProjectItem({ project, onEdit, onDelete }) {
   const handleShowDetails = () => {
-    console.log("Detalhes do projeto:", project);
+    alert(JSON.stringify(project, null, 2));
   };
 
   return (
-    <div className="project-item">
-      <div className="project-info">
-        <strong>{project.titulo}</strong> - {project.descricao}
-      </div>
-      <div className="project-actions">
-        <button onClick={handleShowDetails}>Detalhes</button>
-        <button onClick={() => onEdit(project)}>Editar</button>
-        <button onClick={() => onDelete(project.id)}>Excluir</button>
+    <div>
+      <p>ID: {project.id}</p>
+      <strong>{project.titulo}</strong> - {project.descricao}
+      <div style={{ marginTop: '0.5rem' }}>
+        <button
+          style={{ marginRight: '0.5rem' }}
+          onClick={handleShowDetails}
+        >
+          Detalhes
+        </button>
+        <button
+          style={{ marginRight: '0.5rem' }}
+          onClick={() => onEdit(project)}
+        >
+          Editar
+        </button>
+        <button onClick={() => onDelete(project.id)}>
+          Deletar
+        </button>
       </div>
     </div>
   );

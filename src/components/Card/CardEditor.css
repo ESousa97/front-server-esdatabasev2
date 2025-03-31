@@ -1,0 +1,75 @@
+.card-editor {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: var(--color-input-bg);
+    box-shadow: 0 2px 4px var(--color-shadow);
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .card-editor:hover {
+    box-shadow: 0 4px 8px var(--color-shadow);
+  }
+  
+  .card-editor__title {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    color: var(--color-text);
+  }
+  
+  .card-editor__group {
+    margin-bottom: 1rem;
+  }
+  
+  .card-editor__label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: bold;
+    color: var(--color-text);
+  }
+  
+  .card-editor__input {
+    width: 98%;
+    padding: 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    color: var(--color-text);
+    background-color: var(--color-input-bg);
+    transition: border-color 0.3s ease;
+  }
+  
+  .card-editor__input:focus {
+    border-color: var(--color-primary);
+    outline: none;
+  }
+  
+  .card-editor__preset {
+    margin-top: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    border: none;
+    background-color: var(--color-secondary);
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .card-editor__preset:hover {
+    background-color: var(--color-primary);
+  }
+  
+  .card-editor__submit {
+    padding: 0.5rem 1rem;
+    background-color: var(--color-primary);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .card-editor__submit:hover {
+    opacity: 0.9;
+  }
+  

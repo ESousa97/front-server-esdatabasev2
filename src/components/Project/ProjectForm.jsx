@@ -28,33 +28,64 @@ function ProjectForm({ project, onSubmit, onCancel }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="project-form">
-      <input 
-        type="text" 
-        placeholder="Título" 
-        value={formData.titulo} 
-        onChange={e => handleChange('titulo', e.target.value)} 
-      />
-      <input 
-        type="text" 
-        placeholder="Descrição" 
-        value={formData.descricao} 
-        onChange={e => handleChange('descricao', e.target.value)} 
-      />
-      <ContentEditor 
-        value={formData.conteudo} 
-        onChange={(val) => handleChange('conteudo', val)} 
-      />
-      <input 
-        type="text" 
-        placeholder="Categoria" 
-        value={formData.categoria} 
-        onChange={e => handleChange('categoria', e.target.value)} 
-      />
-      <div className="form-actions">
-        <button type="submit" className="btn-primary">Salvar</button>
-        {onCancel && <button type="button" className="btn-secondary" onClick={onCancel}>Cancelar</button>}
+    <form onSubmit={handleSubmit} style={{ marginBottom: '1rem' }}>
+      {/* Campo Título */}
+      <div style={{ marginBottom: '1rem' }}>
+        <label style={{ display: 'block', marginBottom: '0.3rem', fontWeight: 'bold' }}>
+          Título
+        </label>
+        <input
+          type="text"
+          placeholder="Título"
+          value={formData.titulo}
+          onChange={e => handleChange('titulo', e.target.value)}
+        />
       </div>
+
+      {/* Campo Descrição */}
+      <div style={{ marginBottom: '1rem' }}>
+        <label style={{ display: 'block', marginBottom: '0.3rem', fontWeight: 'bold' }}>
+          Descrição
+        </label>
+        <input
+          type="text"
+          placeholder="Descrição"
+          value={formData.descricao}
+          onChange={e => handleChange('descricao', e.target.value)}
+        />
+      </div>
+
+      {/* Editor de Conteúdo */}
+      <div style={{ marginBottom: '1rem' }}>
+        <label style={{ display: 'block', marginBottom: '0.3rem', fontWeight: 'bold' }}>
+          Conteúdo
+        </label>
+        <ContentEditor
+          value={formData.conteudo}
+          onChange={(val) => handleChange('conteudo', val)}
+        />
+      </div>
+
+      {/* Campo Categoria */}
+      <div style={{ marginBottom: '1rem' }}>
+        <label style={{ display: 'block', marginBottom: '0.3rem', fontWeight: 'bold' }}>
+          Categoria
+        </label>
+        <input
+          type="text"
+          placeholder="Categoria"
+          value={formData.categoria}
+          onChange={e => handleChange('categoria', e.target.value)}
+        />
+      </div>
+
+      {/* Botões */}
+      <button type="submit" style={{ marginRight: '0.5rem' }}>Salvar</button>
+      {onCancel && (
+        <button type="button" onClick={onCancel}>
+          Cancelar
+        </button>
+      )}
     </form>
   );
 }

@@ -1,0 +1,26 @@
+.content-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background-color: var(--color-bg, #fff);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  
+  .editor-title {
+    font-size: 1.2rem;
+    margin: 0;
+    color: var(--color-text, #333);
+  }
+  
+  .editor-textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+  }
+  

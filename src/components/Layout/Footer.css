@@ -1,0 +1,18 @@
+/* Footer.css */
+.footer {
+    background: linear-gradient(135deg, var(--color-bg), var(--color-bg));
+    color: linear-gradient(135deg, var(--color-text), var(--color-text));
+    padding: 1.5rem 1rem;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 500;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease;
+  }
+  
+  .footer p {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+  }
+  

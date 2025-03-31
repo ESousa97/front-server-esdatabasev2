@@ -1,0 +1,20 @@
+.editor-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .editor-button {
+    padding: 0.5rem 1rem;
+    background-color: var(--color-primary, #007BFF);
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+  }
+  
+  .editor-button:hover {
+    background-color: var(--color-primary-dark, #0056b3);
+  }
+  

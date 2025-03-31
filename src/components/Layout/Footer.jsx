@@ -1,14 +1,10 @@
 // src/components/Layout/Footer.jsx
 import React from 'react';
+import './Footer.css';
 
 function Footer() {
   return (
-    <footer style={{
-      background: '#282c34',
-      color: '#fff',
-      padding: '1rem',
-      textAlign: 'center'
-    }}>
+    <footer className="footer">
       <p>&copy; {new Date().getFullYear()} Projmanage</p>
     </footer>
   );

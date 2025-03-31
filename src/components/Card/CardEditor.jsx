@@ -1,5 +1,6 @@
-// src/components/Card/CardEditor.jsx
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import './CardEditor.css';
 
 function CardEditor({ initialCard, onSubmit }) {
   const [cardData, setCardData] = useState(
@@ -21,38 +22,64 @@ function CardEditor({ initialCard, onSubmit }) {
 
   return (
     <div className="card-editor">
-      <h3>Editor de Card</h3>
-      <div className="form-group">
-        <label>Título:</label>
-        <input 
-          type="text" 
-          value={cardData.titulo} 
-          onChange={e => handleChange('titulo', e.target.value)} 
-          placeholder="Insira o título do card" 
+      <h3 className="card-editor__title">Editor de Card</h3>
+
+      <div className="card-editor__group">
+        <label className="card-editor__label">Título:</label>
+        <input
+          className="card-editor__input"
+          type="text"
+          value={cardData.titulo}
+          onChange={e => handleChange('titulo', e.target.value)}
+          placeholder="Insira o título do card"
         />
       </div>
-      <div className="form-group">
-        <label>Imagem (URL):</label>
-        <input 
-          type="text" 
-          value={cardData.imageurl} 
-          onChange={e => handleChange('imageurl', e.target.value)} 
+
+      <div className="card-editor__group">
+        <label className="card-editor__label">Imagem (URL):</label>
+        <input
+          className="card-editor__input"
+          type="text"
+          value={cardData.imageurl}
+          onChange={e => handleChange('imageurl', e.target.value)}
           placeholder="Ex.: /assets/projectsXXXX/projectsXXXX__X.png"
         />
-        <button onClick={presetImage} className="btn-secondary">Preset Imagem</button>
+        <button
+          className="card-editor__preset"
+          onClick={presetImage}
+        >
+          Preset Imagem
+        </button>
       </div>
-      <div className="form-group">
-        <label>Descrição:</label>
+
+      <div className="card-editor__group">
+        <label className="card-editor__label">Descrição:</label>
         <input
+          className="card-editor__input"
           type="text"
           value={cardData.descricao}
           onChange={e => handleChange('descricao', e.target.value)}
           placeholder="Insira a descrição do card"
         />
       </div>
-      <button onClick={handleSubmit} className="btn-primary">Salvar Card</button>
+
+      <button
+        className="card-editor__submit"
+        onClick={handleSubmit}
+      >
+        Salvar Card
+      </button>
     </div>
   );
 }
+
+CardEditor.propTypes = {
+  initialCard: PropTypes.shape({
+    titulo: PropTypes.string,
+    descricao: PropTypes.string,
+    imageurl: PropTypes.string,
+  }),
+  onSubmit: PropTypes.func.isRequired,
+};
 
 export default CardEditor;

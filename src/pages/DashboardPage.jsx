@@ -1,5 +1,6 @@
 // src/pages/DashboardPage.jsx
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import ProjectForm from '../components/Project/ProjectForm';
 import CardEditor from '../components/Card/CardEditor';
@@ -8,8 +9,13 @@ import Header from '../components/Layout/Header';
 import Footer from '../components/Layout/Footer';
 import ModalEditor from '../components/ModalEditor';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
 import './DashboardPage.css';
+
+// Função utilitária para truncar texto (ex: mostrar apenas 60 caracteres)
+function truncateContent(content = '', maxLength = 60) {
+  if (content.length <= maxLength) return content;
+  return content.substring(0, maxLength) + '...';
+}
 
 function DashboardPage() {
   const [projects, setProjects] = useState([]);
@@ -26,6 +32,7 @@ function DashboardPage() {
   const fetchProjects = () => {
     api.get('/projects')
       .then(response => {
+        console.log('Projects:', response.data);
         setProjects(response.data);
       })
       .catch(error => console.error('Erro ao buscar projetos:', error));
@@ -37,6 +44,7 @@ function DashboardPage() {
       .catch(error => console.error('Erro ao buscar cards:', error));
   };
 
+  // Efetua o logout com proteção CSRF
   const handleLogout = async () => {
     try {
       const tokenRes = await api.get('/csrf-token');
@@ -51,14 +59,17 @@ function DashboardPage() {
     }
   };
 
+  // Abre o modal para edição/adicionar
   const handleEdit = (type, item) => {
     setEditingItem({ type, data: item });
   };
 
+  // Fecha o modal
   const closeModal = () => {
     setEditingItem(null);
   };
 
+  // Salva ou atualiza um projeto
   const handleSaveProject = (projectData) => {
     if (projectData.id) {
       api.put(`/projects/${projectData.id}`, projectData)
@@ -75,6 +86,7 @@ function DashboardPage() {
           const newProject = response.data;
           setProjects(prev => [...prev, newProject]);
 
+          // Cria automaticamente o card correspondente
           const cardData = {
             id: newProject.id,
             titulo: newProject.titulo.replace('PROJECT', '').trim() || newProject.titulo,
@@ -95,6 +107,7 @@ function DashboardPage() {
     }
   };
 
+  // Salva ou atualiza um card
   const handleSaveCard = (cardData) => {
     if (cardData.id) {
       api.put(`/cards/${cardData.id}`, cardData)
@@ -111,6 +124,7 @@ function DashboardPage() {
           const newCard = response.data;
           setCards(prev => [...prev, newCard]);
 
+          // Cria automaticamente o projeto correspondente
           const projectData = {
             id: newCard.id,
             titulo: `PROJECT - ${newCard.titulo}`.toUpperCase(),
@@ -131,7 +145,11 @@ function DashboardPage() {
     }
   };
 
+  // Deleta projeto e o card correspondente
   const handleDeleteProject = (id) => {
+    const confirmDelete = window.confirm(`Tem certeza de que deseja deletar o projeto de ID ${id}?`);
+    if (!confirmDelete) return;
+
     Promise.all([
       api.delete(`/projects/${id}`),
       api.delete(`/cards/${id}`)
@@ -143,7 +161,11 @@ function DashboardPage() {
       .catch(error => console.error('Erro ao deletar projeto e/ou card correspondente:', error));
   };
 
+  // Deleta card e o projeto correspondente
   const handleDeleteCard = (id) => {
+    const confirmDelete = window.confirm(`Tem certeza de que deseja deletar o card de ID ${id}?`);
+    if (!confirmDelete) return;
+
     Promise.all([
       api.delete(`/cards/${id}`),
       api.delete(`/projects/${id}`)
@@ -156,16 +178,20 @@ function DashboardPage() {
   };
 
   return (
-    <div className="dashboard-page">
+    <div>
       <Header onLogout={handleLogout} />
       <div className="editor-container">
         <Sidebar />
         <main className="main-content">
           <h2>Dashboard - Tabelas do Banco de Dados</h2>
-          <section className="table-section">
+
+          {/* Seção de Projetos */}
+          <section>
             <h3>Projetos</h3>
-            <button onClick={() => handleEdit('project', {})} className="btn-primary">Adicionar Projeto</button>
-            <table className="styled-table">
+            <button className="add-btn" onClick={() => handleEdit('project', {})}>
+              Adicionar Projeto
+            </button>
+            <table className="dashboard-table">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -182,11 +208,15 @@ function DashboardPage() {
                     <td>{project.id}</td>
                     <td>{project.titulo}</td>
                     <td>{project.descricao}</td>
-                    <td>{project.conteudo}</td>
+                    <td>{truncateContent(project.conteudo, 60)}</td>
                     <td>{project.categoria}</td>
                     <td>
-                      <button onClick={() => handleEdit('project', project)} className="btn-secondary">Editar</button>
-                      <button onClick={() => handleDeleteProject(project.id)} className="btn-danger">Deletar</button>
+                      <button className="table-btn" onClick={() => handleEdit('project', project)}>
+                        Editar
+                      </button>
+                      <button className="delete-btn" onClick={() => handleDeleteProject(project.id)}>
+                        Deletar
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -194,10 +224,13 @@ function DashboardPage() {
             </table>
           </section>
 
-          <section className="table-section">
+          {/* Seção de Cards */}
+          <section>
             <h3>Cards</h3>
-            <button onClick={() => handleEdit('card', {})} className="btn-primary">Adicionar Card</button>
-            <table className="styled-table">
+            <button className="add-btn" onClick={() => handleEdit('card', {})}>
+              Adicionar Card
+            </button>
+            <table className="dashboard-table">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -215,8 +248,12 @@ function DashboardPage() {
                     <td>{card.descricao}</td>
                     <td>{card.imageurl}</td>
                     <td>
-                      <button onClick={() => handleEdit('card', card)} className="btn-secondary">Editar</button>
-                      <button onClick={() => handleDeleteCard(card.id)} className="btn-danger">Deletar</button>
+                      <button className="table-btn" onClick={() => handleEdit('card', card)}>
+                        Editar
+                      </button>
+                      <button className="delete-btn" onClick={() => handleDeleteCard(card.id)}>
+                        Deletar
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -225,7 +262,10 @@ function DashboardPage() {
           </section>
         </main>
       </div>
+
       <Footer />
+
+      {/* Modal de Edição/Criação */}
       {editingItem && (
         <ModalEditor onClose={closeModal}>
           {editingItem.type === 'project' ? (
