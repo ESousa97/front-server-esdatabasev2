@@ -18,17 +18,15 @@ function CardList() {
     fetchCards();
   }, []);
 
-  // No CardList.jsx - função handleAddCard
   const handleAddCard = (cardData) => {
     api.post('/cards', cardData)
       .then(response => {
         const newCard = response.data;
         setCards([...cards, newCard]);
 
-        // Cria automaticamente o projeto correspondente
         const projectData = {
           id: newCard.id,
-          titulo: `ESSE É O PROJECT DO ${newCard.titulo.toUpperCase()}`,
+          titulo: `PROJECT - ${newCard.titulo}`.toUpperCase(),
           descricao: newCard.descricao,
           conteudo: '',
           categoria: ''
@@ -43,7 +41,6 @@ function CardList() {
       .catch(error => console.error('Erro ao adicionar card:', error));
   };
 
-
   const handleUpdateCard = (cardData) => {
     api.put(`/cards/${cardData.id}`, cardData)
       .then(response => {
@@ -54,11 +51,9 @@ function CardList() {
   };
 
   const handleDeleteCard = (id) => {
-    // Deleta o card
     api.delete(`/cards/${id}`)
       .then(() => {
         setCards(cards.filter(card => card.id !== id));
-        // Após deletar o card, deleta também o project correspondente
         api.delete(`/projects/${id}`)
           .then(() => {
             console.log(`Projeto com ID ${id} deletado`);
@@ -69,29 +64,20 @@ function CardList() {
   };
 
   return (
-    <div>
+    <div className="card-list">
       <h2>Gerenciamento de Cards</h2>
-      {!editingCard && (
-        <CardEditor onSubmit={handleAddCard} />
-      )}
-      <ul style={{ listStyle: 'none', padding: 0 }}>
+      {!editingCard && <CardEditor onSubmit={handleAddCard} />}
+      <div className="card-items">
         {cards.map(card => (
-          <li key={card.id} style={{ marginBottom: '1rem', borderBottom: '1px solid #ccc', paddingBottom: '0.5rem' }}>
+          <div key={card.id} className="card-wrapper">
             {editingCard && editingCard.id === card.id ? (
-              <CardEditor
-                initialCard={editingCard}
-                onSubmit={handleUpdateCard}
-              />
+              <CardEditor initialCard={editingCard} onSubmit={handleUpdateCard} />
             ) : (
-              <CardItem 
-                card={card} 
-                onEdit={setEditingCard} 
-                onDelete={handleDeleteCard} 
-              />
+              <CardItem card={card} onEdit={setEditingCard} onDelete={handleDeleteCard} />
             )}
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

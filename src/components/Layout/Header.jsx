@@ -1,6 +1,7 @@
 // src/components/Layout/Header.jsx
 import React, { useContext } from 'react';
 import { ThemeContext } from '../../contexts/ThemeContext';
+import { FaMoon, FaSun } from 'react-icons/fa';
 
 function Header({ onLogout }) {
   const { toggleTheme, theme } = useContext(ThemeContext);
@@ -18,7 +19,7 @@ function Header({ onLogout }) {
       <h1>Projmanage</h1>
       <nav>
         <button onClick={toggleTheme} style={{ marginRight: '1rem' }}>
-          {theme === 'light' ? 'Tema Escuro' : 'Tema Claro'}
+          {theme === 'light' ? <FaMoon /> : <FaSun />}
         </button>
         <button onClick={onLogout}>Logout</button>
       </nav>

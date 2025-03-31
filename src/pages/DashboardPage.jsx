@@ -1,3 +1,4 @@
+// src/pages/DashboardPage.jsx
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import ProjectForm from '../components/Project/ProjectForm';
@@ -8,6 +9,7 @@ import Footer from '../components/Layout/Footer';
 import ModalEditor from '../components/ModalEditor';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import './DashboardPage.css';
 
 function DashboardPage() {
   const [projects, setProjects] = useState([]);
@@ -24,7 +26,6 @@ function DashboardPage() {
   const fetchProjects = () => {
     api.get('/projects')
       .then(response => {
-        console.log('Projects:', response.data);
         setProjects(response.data);
       })
       .catch(error => console.error('Erro ao buscar projetos:', error));
@@ -36,7 +37,6 @@ function DashboardPage() {
       .catch(error => console.error('Erro ao buscar cards:', error));
   };
 
-  // Efetua o logout com proteção CSRF
   const handleLogout = async () => {
     try {
       const tokenRes = await api.get('/csrf-token');
@@ -51,17 +51,14 @@ function DashboardPage() {
     }
   };
 
-  // Abre o modal para edição/adicionar
   const handleEdit = (type, item) => {
     setEditingItem({ type, data: item });
   };
 
-  // Fecha o modal
   const closeModal = () => {
     setEditingItem(null);
   };
 
-  // Salva ou atualiza um projeto
   const handleSaveProject = (projectData) => {
     if (projectData.id) {
       api.put(`/projects/${projectData.id}`, projectData)
@@ -78,7 +75,6 @@ function DashboardPage() {
           const newProject = response.data;
           setProjects(prev => [...prev, newProject]);
 
-          // Cria automaticamente o card correspondente
           const cardData = {
             id: newProject.id,
             titulo: newProject.titulo.replace('PROJECT', '').trim() || newProject.titulo,
@@ -99,7 +95,6 @@ function DashboardPage() {
     }
   };
 
-  // Salva ou atualiza um card
   const handleSaveCard = (cardData) => {
     if (cardData.id) {
       api.put(`/cards/${cardData.id}`, cardData)
@@ -116,7 +111,6 @@ function DashboardPage() {
           const newCard = response.data;
           setCards(prev => [...prev, newCard]);
 
-          // Cria automaticamente o projeto correspondente
           const projectData = {
             id: newCard.id,
             titulo: `PROJECT - ${newCard.titulo}`.toUpperCase(),
@@ -137,7 +131,6 @@ function DashboardPage() {
     }
   };
 
-  // Deleta projeto e o card correspondente
   const handleDeleteProject = (id) => {
     Promise.all([
       api.delete(`/projects/${id}`),
@@ -149,8 +142,7 @@ function DashboardPage() {
       })
       .catch(error => console.error('Erro ao deletar projeto e/ou card correspondente:', error));
   };
-  
-  // Deleta card e o projeto correspondente
+
   const handleDeleteCard = (id) => {
     Promise.all([
       api.delete(`/cards/${id}`),
@@ -164,58 +156,37 @@ function DashboardPage() {
   };
 
   return (
-    <div>
+    <div className="dashboard-page">
       <Header onLogout={handleLogout} />
       <div className="editor-container">
         <Sidebar />
         <main className="main-content">
           <h2>Dashboard - Tabelas do Banco de Dados</h2>
-
-          {/* Seção de Projetos */}
-          <section>
+          <section className="table-section">
             <h3>Projetos</h3>
-            <button
-              onClick={() => handleEdit('project', {})}
-              style={{ marginBottom: '1rem' }}
-            >
-              Adicionar Projeto
-            </button>
-            <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '2rem' }}>
+            <button onClick={() => handleEdit('project', {})} className="btn-primary">Adicionar Projeto</button>
+            <table className="styled-table">
               <thead>
                 <tr>
-                  <th style={{ border: '1px solid var(--color-border)', padding: '8px' }}>ID</th>
-                  <th style={{ border: '1px solid var(--color-border)', padding: '8px' }}>Título</th>
-                  <th style={{ border: '1px solid var(--color-border)', padding: '8px' }}>Descrição</th>
-                  <th style={{ border: '1px solid var(--color-border)', padding: '8px' }}>Conteúdo</th>
-                  <th style={{ border: '1px solid var(--color-border)', padding: '8px' }}>Categoria</th>
-                  <th style={{ border: '1px solid var(--color-border)', padding: '8px' }}>Ações</th>
+                  <th>ID</th>
+                  <th>Título</th>
+                  <th>Descrição</th>
+                  <th>Conteúdo</th>
+                  <th>Categoria</th>
+                  <th>Ações</th>
                 </tr>
               </thead>
               <tbody>
                 {projects.map(project => (
                   <tr key={project.id}>
-                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
-                      {project.id}
-                    </td>
-                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
-                      {project.titulo}
-                    </td>
-                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
-                      {project.descricao}
-                    </td>
-                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
-                      {project.conteudo}
-                    </td>
-                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
-                      {project.categoria}
-                    </td>
-                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
-                      <button onClick={() => handleEdit('project', project)}>
-                        Editar
-                      </button>
-                      <button onClick={() => handleDeleteProject(project.id)}>
-                        Deletar
-                      </button>
+                    <td>{project.id}</td>
+                    <td>{project.titulo}</td>
+                    <td>{project.descricao}</td>
+                    <td>{project.conteudo}</td>
+                    <td>{project.categoria}</td>
+                    <td>
+                      <button onClick={() => handleEdit('project', project)} className="btn-secondary">Editar</button>
+                      <button onClick={() => handleDeleteProject(project.id)} className="btn-danger">Deletar</button>
                     </td>
                   </tr>
                 ))}
@@ -223,47 +194,29 @@ function DashboardPage() {
             </table>
           </section>
 
-          {/* Seção de Cards */}
-          <section>
+          <section className="table-section">
             <h3>Cards</h3>
-            <button
-              onClick={() => handleEdit('card', {})}
-              style={{ marginBottom: '1rem' }}
-            >
-              Adicionar Card
-            </button>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <button onClick={() => handleEdit('card', {})} className="btn-primary">Adicionar Card</button>
+            <table className="styled-table">
               <thead>
                 <tr>
-                  <th style={{ border: '1px solid var(--color-border)', padding: '8px' }}>ID</th>
-                  <th style={{ border: '1px solid var(--color-border)', padding: '8px' }}>Título</th>
-                  <th style={{ border: '1px solid var(--color-border)', padding: '8px' }}>Descrição</th>
-                  <th style={{ border: '1px solid var(--color-border)', padding: '8px' }}>Imagem URL</th>
-                  <th style={{ border: '1px solid var(--color-border)', padding: '8px' }}>Ações</th>
+                  <th>ID</th>
+                  <th>Título</th>
+                  <th>Descrição</th>
+                  <th>Imagem URL</th>
+                  <th>Ações</th>
                 </tr>
               </thead>
               <tbody>
                 {cards.map(card => (
                   <tr key={card.id}>
-                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
-                      {card.id}
-                    </td>
-                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
-                      {card.titulo}
-                    </td>
-                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
-                      {card.descricao}
-                    </td>
-                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
-                      {card.imageurl}
-                    </td>
-                    <td style={{ border: '1px solid var(--color-border)', padding: '8px' }}>
-                      <button onClick={() => handleEdit('card', card)}>
-                        Editar
-                      </button>
-                      <button onClick={() => handleDeleteCard(card.id)}>
-                        Deletar
-                      </button>
+                    <td>{card.id}</td>
+                    <td>{card.titulo}</td>
+                    <td>{card.descricao}</td>
+                    <td>{card.imageurl}</td>
+                    <td>
+                      <button onClick={() => handleEdit('card', card)} className="btn-secondary">Editar</button>
+                      <button onClick={() => handleDeleteCard(card.id)} className="btn-danger">Deletar</button>
                     </td>
                   </tr>
                 ))}
@@ -272,10 +225,7 @@ function DashboardPage() {
           </section>
         </main>
       </div>
-
       <Footer />
-
-      {/* Modal de Edição/Criação */}
       {editingItem && (
         <ModalEditor onClose={closeModal}>
           {editingItem.type === 'project' ? (

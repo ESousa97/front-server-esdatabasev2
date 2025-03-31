@@ -1,9 +1,9 @@
+// src/components/ContentEditor.jsx
 import React, { useState, useEffect } from 'react';
 
 function ContentEditor({ value, onChange }) {
   const [text, setText] = useState(value || '');
 
-  // Atualiza o estado interno quando a prop "value" mudar
   useEffect(() => {
     setText(value || '');
   }, [value]);
@@ -33,16 +33,15 @@ function ContentEditor({ value, onChange }) {
   };
 
   return (
-    <div style={{ marginBottom: '1rem' }}>
+    <div className="content-editor">
       <h4>Editor de Conteúdo</h4>
       <textarea
         rows={10}
-        cols={60}
         value={text}
         onChange={handleTextChange}
         placeholder="Digite aqui o conteúdo..."
       />
-      <div style={{ marginTop: '8px' }}>
+      <div className="editor-actions">
         <button type="button" onClick={insertCopyable}>+ Texto Copiável</button>
         <button type="button" onClick={insertImageReference}>+ Imagem</button>
         <button type="button" onClick={insertYouTubeLink}>+ Vídeo YouTube</button>

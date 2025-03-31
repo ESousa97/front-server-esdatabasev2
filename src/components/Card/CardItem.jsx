@@ -3,28 +3,19 @@ import React from 'react';
 
 function CardItem({ card, onEdit, onDelete }) {
   const handleShowDetails = () => {
-    alert(JSON.stringify(card, null, 2));
+    console.log("Detalhes do card:", card);
   };
 
   return (
-    <div>
-      <p>ID: {card.id}</p> {/* Exibe o ID do card */}
-      <strong>{card.titulo}</strong> - {card.descricao}
-      {card.imageurl && (
-        <div style={{ marginTop: '0.5rem' }}>
-          <p style={{ fontStyle: 'italic', color: '#555' }}>
-            Caminho da Imagem: {card.imageurl}
-          </p>
-        </div>
-      )}
-      <div style={{ marginTop: '0.5rem' }}>
-        <button onClick={handleShowDetails} style={{ marginRight: '0.5rem' }}>
-          Detalhes
-        </button>
-        <button onClick={() => onEdit(card)} style={{ marginRight: '0.5rem' }}>
-          Editar
-        </button>
-        <button onClick={() => onDelete(card.id)}>Deletar</button>
+    <div className="card-item">
+      <div className="card-info">
+        <strong>{card.titulo}</strong> - {card.descricao}
+        {card.imageurl && <p className="card-image">Imagem: {card.imageurl}</p>}
+      </div>
+      <div className="card-actions">
+        <button onClick={handleShowDetails}>Detalhes</button>
+        <button onClick={() => onEdit(card)}>Editar</button>
+        <button onClick={() => onDelete(card.id)}>Excluir</button>
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+// src/components/Project/ProjectForm.jsx
 import React, { useState, useEffect } from 'react';
 import ContentEditor from '../ContentEditor';
 
@@ -27,20 +28,18 @@ function ProjectForm({ project, onSubmit, onCancel }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginBottom: '1rem' }}>
+    <form onSubmit={handleSubmit} className="project-form">
       <input 
         type="text" 
         placeholder="Título" 
         value={formData.titulo} 
         onChange={e => handleChange('titulo', e.target.value)} 
-        style={{ width: '100%', padding: '0.5rem', marginBottom: '0.5rem' }}
       />
       <input 
         type="text" 
         placeholder="Descrição" 
         value={formData.descricao} 
         onChange={e => handleChange('descricao', e.target.value)} 
-        style={{ width: '100%', padding: '0.5rem', marginBottom: '0.5rem' }}
       />
       <ContentEditor 
         value={formData.conteudo} 
@@ -51,10 +50,11 @@ function ProjectForm({ project, onSubmit, onCancel }) {
         placeholder="Categoria" 
         value={formData.categoria} 
         onChange={e => handleChange('categoria', e.target.value)} 
-        style={{ width: '100%', padding: '0.5rem', marginBottom: '0.5rem' }}
       />
-      <button type="submit" style={{ marginRight: '0.5rem' }}>Salvar</button>
-      {onCancel && <button type="button" onClick={onCancel}>Cancelar</button>}
+      <div className="form-actions">
+        <button type="submit" className="btn-primary">Salvar</button>
+        {onCancel && <button type="button" className="btn-secondary" onClick={onCancel}>Cancelar</button>}
+      </div>
     </form>
   );
 }
