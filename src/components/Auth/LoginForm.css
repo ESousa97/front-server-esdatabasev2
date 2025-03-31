@@ -1,0 +1,44 @@
+/* src/components/Auth/LoginForm.css */
+
+.login-form {
+    width: 100%;
+  }
+  
+  /* Erros */
+  .form-error {
+    background-color: rgba(255, 0, 0, 0.1);
+    color: #e53e3e;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    border: 1px solid #fca5a5;
+  }
+  
+  /* Senha com ícone */
+  .password-group {
+    position: relative;
+  }
+  
+  .password-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  
+  .toggle-password {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .toggle-password svg {
+    pointer-events: none;
+  }
+  

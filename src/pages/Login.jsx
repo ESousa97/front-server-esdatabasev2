@@ -1,3 +1,4 @@
+// src/pages/Login.jsx
 import React from 'react';
 import LoginForm from '../components/Auth/LoginForm';
 import { useAuth } from '../contexts/AuthContext';
@@ -10,7 +11,7 @@ function Login() {
 
   const handleLoginSuccess = () => {
     login();
-    navigate('/dashboard'); // redireciona para o dashboard
+    navigate('/dashboard');
   };
 
   return (
