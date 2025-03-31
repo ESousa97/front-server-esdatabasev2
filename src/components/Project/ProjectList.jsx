@@ -9,9 +9,12 @@ function ProjectList() {
 
   const fetchProjects = () => {
     api.get('/projects')
-      .then(response => setProjects(response.data))
+      .then(response => {
+        console.log('Projects:', response.data);
+        setProjects(response.data);
+      })
       .catch(error => console.error('Erro ao buscar projetos:', error));
-  };
+  };  
 
   useEffect(() => {
     fetchProjects();

@@ -23,7 +23,10 @@ function DashboardPage() {
 
   const fetchProjects = () => {
     api.get('/projects')
-      .then(response => setProjects(response.data))
+      .then(response => {
+        console.log('Projects:', response.data);
+        setProjects(response.data);
+      })
       .catch(error => console.error('Erro ao buscar projetos:', error));
   };
 
@@ -36,19 +39,11 @@ function DashboardPage() {
   // Efetua o logout com proteção CSRF
   const handleLogout = async () => {
     try {
-      // (Opcional) Obter novamente um token CSRF fresco antes do logout,
-      // caso queira garantir um token recente.
-      // A chamada inicial em "api.js" já definiu X-CSRF-Token globalmente,
-      // mas se passou muito tempo, você pode querer refazer:
       const tokenRes = await api.get('/csrf-token');
       const csrfToken = tokenRes.data.csrfToken;
-      
-      // Envia a requisição de logout incluindo o token no header
       await api.post('/auth/logout', {}, {
         headers: { 'X-CSRF-Token': csrfToken }
       });
-      
-      // Remove o estado de autenticação e redireciona para /login
       logout();
       navigate('/login');
     } catch (error) {
@@ -69,7 +64,6 @@ function DashboardPage() {
   // Salva ou atualiza um projeto
   const handleSaveProject = (projectData) => {
     if (projectData.id) {
-      // Atualização
       api.put(`/projects/${projectData.id}`, projectData)
         .then(response => {
           setProjects(prev =>
@@ -79,7 +73,6 @@ function DashboardPage() {
         })
         .catch(error => console.error('Erro ao atualizar projeto:', error));
     } else {
-      // Criação
       api.post('/projects', projectData)
         .then(response => {
           const newProject = response.data;
@@ -90,7 +83,8 @@ function DashboardPage() {
             id: newProject.id,
             titulo: newProject.titulo.replace('PROJECT', '').trim() || newProject.titulo,
             descricao: newProject.descricao,
-            imageurl: ''
+            conteudo: '',
+            categoria: ''
           };
 
           api.post('/cards', cardData)
@@ -108,7 +102,6 @@ function DashboardPage() {
   // Salva ou atualiza um card
   const handleSaveCard = (cardData) => {
     if (cardData.id) {
-      // Atualização
       api.put(`/cards/${cardData.id}`, cardData)
         .then(response => {
           setCards(prev =>
@@ -118,7 +111,6 @@ function DashboardPage() {
         })
         .catch(error => console.error('Erro ao atualizar card:', error));
     } else {
-      // Criação
       api.post('/cards', cardData)
         .then(response => {
           const newCard = response.data;

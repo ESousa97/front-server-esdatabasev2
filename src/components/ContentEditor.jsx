@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function ContentEditor({ value, onChange }) {
   const [text, setText] = useState(value || '');
+
+  // Atualiza o estado interno quando a prop "value" mudar
+  useEffect(() => {
+    setText(value || '');
+  }, [value]);
 
   const handleTextChange = (e) => {
     setText(e.target.value);
@@ -37,11 +42,11 @@ function ContentEditor({ value, onChange }) {
         onChange={handleTextChange}
         placeholder="Digite aqui o conteúdo..."
       />
-    <div style={{ marginTop: '8px' }}>
-      <button type="button" onClick={insertCopyable}>+ Texto Copiável</button>
-      <button type="button" onClick={insertImageReference}>+ Imagem</button>
-      <button type="button" onClick={insertYouTubeLink}>+ Vídeo YouTube</button>
-    </div>
+      <div style={{ marginTop: '8px' }}>
+        <button type="button" onClick={insertCopyable}>+ Texto Copiável</button>
+        <button type="button" onClick={insertImageReference}>+ Imagem</button>
+        <button type="button" onClick={insertYouTubeLink}>+ Vídeo YouTube</button>
+      </div>
     </div>
   );
 }
