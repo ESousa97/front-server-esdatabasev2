@@ -1,0 +1,71 @@
+/* src/components/ImageUploader.css */
+.image-uploader {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 2rem; /* para dar espaço em relação à tabela acima */
+    background-color: var(--color-input-bg);
+    box-shadow: 0 2px 4px var(--color-shadow);
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .image-uploader:hover {
+    box-shadow: 0 4px 8px var(--color-shadow);
+  }
+  
+  .image-uploader__title {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    color: var(--color-text);
+  }
+  
+  .image-uploader__group {
+    margin-bottom: 1rem;
+  }
+  
+  .image-uploader__label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: bold;
+    color: var(--color-text);
+  }
+  
+  .image-uploader__input {
+    width: 98%;
+    padding: 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    color: var(--color-text);
+    background-color: var(--color-input-bg);
+    transition: border-color 0.3s ease;
+  }
+  
+  .image-uploader__input:focus {
+    border-color: var(--color-primary);
+    outline: none;
+  }
+  
+  .image-uploader__button {
+    margin-top: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    border: none;
+    background-color: var(--color-primary);
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .image-uploader__button:hover {
+    background-color: var(--color-secondary);
+  }
+  
+  .upload-response {
+    margin-top: 1rem;
+    padding: 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background-color: #e0ffe0; /* Exemplo de feedback visual (verde claro) */
+    color: #1a3d1a; /* texto escuro para contraste */
+  }
+  

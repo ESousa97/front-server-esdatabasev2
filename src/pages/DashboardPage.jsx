@@ -8,6 +8,7 @@ import Sidebar from '../components/Layout/Sidebar';
 import Header from '../components/Layout/Header';
 import Footer from '../components/Layout/Footer';
 import ModalEditor from '../components/ModalEditor';
+import ImageUploader from '../components/ImageUploader'; // Importa o novo componente
 import { useAuth } from '../contexts/AuthContext';
 import './DashboardPage.css';
 
@@ -259,6 +260,12 @@ function DashboardPage() {
                 ))}
               </tbody>
             </table>
+          </section>
+
+          {/* Seção de Upload de Imagem */}
+          <section>
+            <h3>Upload de Imagem</h3>
+            <ImageUploader />
           </section>
         </main>
       </div>
