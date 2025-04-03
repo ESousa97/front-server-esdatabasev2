@@ -1,7 +1,6 @@
 // src/components/ImageUploader/DirectoryContent.jsx
 import React from 'react';
 import {
-  ArrowRightIcon,
   FolderIcon,
   FileImageIcon,
   EyeIcon,
@@ -23,7 +22,8 @@ function DirectoryContent({
   setRenameInputValue,
   confirmRename,
   cancelRename,
-  navigateToBreadcrumb
+  navigateToBreadcrumb,
+  exitDirectoryNavigation // nova prop
 }) {
   // Aplica filtro ao conteúdo do diretório
   const filteredContent = filter
@@ -38,22 +38,14 @@ function DirectoryContent({
 
   return (
     <div className="directory-content">
-      <h4>Navegação:</h4>
-      {/* Breadcrumb para navegação entre subdiretórios */}
-      <div className="breadcrumb">
-        {breadcrumb.map((crumb, idx) => (
-          <span key={idx} style={{ display: 'inline-flex', alignItems: 'center' }}>
-            <button onClick={() => navigateToBreadcrumb(idx)}>
-              {crumb}
-            </button>
-            {idx < breadcrumb.length - 1 && (
-              <ArrowRightIcon size={16} style={{ margin: '0 4px' }} />
-            )}
-          </span>
-        ))}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h4>Conteúdo de: {selectedDirectory}</h4>
+        {/* Botão para sair da navegação */}
+        <button onClick={exitDirectoryNavigation} className="image-uploader__button">
+          Sair
+        </button>
       </div>
 
-      <h4>Conteúdo de: {selectedDirectory}</h4>
       <input
         className="image-uploader__input"
         type="text"

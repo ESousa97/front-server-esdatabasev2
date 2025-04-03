@@ -87,7 +87,7 @@ function ImageUploader() {
     }
     const targetPath = selectedDirectory
       ? `${selectedDirectory}/${newDirectoryName}`
-      : newDirectoryName;
+      : `assets/${newDirectoryName}`; // Garante que o diretório seja criado dentro de "assets"
 
     if (existingDirectories.includes(targetPath)) {
       return showMessage(`O diretório "${targetPath}" já existe.`, 'error');
@@ -104,6 +104,13 @@ function ImageUploader() {
     } catch (err) {
       handleApiError(err, 'Erro ao criar diretório.');
     }
+  };
+
+  // Função para sair da navegação de diretório
+  const exitDirectoryNavigation = () => {
+    setSelectedDirectory(null);
+    setDirectoryContent([]);
+    setBreadcrumb([]);
   };
 
   // Handler para input de arquivos
@@ -292,6 +299,7 @@ function ImageUploader() {
         confirmRename={confirmRename}
         cancelRename={cancelRename}
         navigateToBreadcrumb={navigateToBreadcrumb}
+        exitDirectoryNavigation={exitDirectoryNavigation} // nova prop
       />
 
       {/* Área de upload de arquivos (dropzone, preview, etc.) */}
