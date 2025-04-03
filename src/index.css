@@ -7,6 +7,7 @@
   --color-primary: #4f46e5;      /* Índigo moderno para elementos de destaque */
   --color-secondary: #00c482;    /* Teal vibrante para elementos secundários */
   --color-border: #e5e7eb;       /* Bordas suaves e discretas */
+  --color-border-2: #d7d9dd;     /* Bordas secundárias */
   --color-input-bg: #ffffff;     /* Fundo branco para inputs e áreas de texto */
   --color-shadow: rgba(0, 0, 0, 0.1); /* Sombra leve para profundidade */
 }
@@ -17,6 +18,7 @@
   --color-primary: #6366f1;      /* Índigo suavizado para o modo escuro */
   --color-secondary: #007a52;    /* Teal moderno, mantendo o contraste */
   --color-border: #374151;       /* Bordas mais escuras no tema dark */
+  --color-border-2: #2d3744;     /* Bordas secundárias mais escuras no tema dark*/
   --color-input-bg: #374151;     /* Fundo dos inputs em tom condizente com o dark */
   --color-shadow: rgba(0, 0, 0, 0.5); /* Sombra mais intensa para profundidade */
 }
