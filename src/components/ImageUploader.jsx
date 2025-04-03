@@ -2,12 +2,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
 
-// Import dos componentes que vamos criar
+// Import dos componentes
 import DirectoryManager from './ImageUploader/DirectoryManager';
 import FileUploader from './ImageUploader/FileUploader';
-import DirectoryContent from './ImageUploader/DirectoryContent';
 import UploadHistory from './ImageUploader/UploadHistory';
 import Feedback from './ImageUploader/Feedback';
+import ImageModal from './ImageUploader/ImageModal';
 
 import './ImageUploader.css';
 
@@ -20,13 +20,13 @@ function ImageUploader() {
   const [existingDirectories, setExistingDirectories] = useState([]);
   const [selectedDirectory, setSelectedDirectory] = useState(null);
   const [directoryContent, setDirectoryContent] = useState([]);
-  const [breadcrumb, setBreadcrumb] = useState([]);
-  const [progressMap, setProgressMap] = useState({});
   const [filter, setFilter] = useState('');
   const [history, setHistory] = useState(() => JSON.parse(localStorage.getItem('uploadHistory')) || []);
   const [renamingItem, setRenamingItem] = useState(null);
   const [renameInputValue, setRenameInputValue] = useState('');
-  const [message, setMessage] = useState(null); // { text, type }
+  const [message, setMessage] = useState(null);
+  const [dropError, setDropError] = useState('');
+  const [selectedImage, setSelectedImage] = useState(null);
 
   // Exibe mensagem de sucesso/erro
   const showMessage = (text, type = 'success') => {
@@ -34,7 +34,7 @@ function ImageUploader() {
     setTimeout(() => setMessage(null), 4000);
   };
 
-  // Lida com erros de API, exibindo mensagem amigável
+  // Lida com erros de API
   const handleApiError = useCallback((err, fallbackMessage = 'Erro inesperado.') => {
     console.error(fallbackMessage, err);
     if (err.response) {
@@ -60,20 +60,18 @@ function ImageUploader() {
     }
   }, [handleApiError]);
 
-  // Busca o conteúdo de um diretório específico
+  // Busca o conteúdo de um diretório selecionado (raiz da árvore)
   const fetchDirectoryContent = async (dir) => {
     try {
       const res = await api.get(`/directory-content/${dir}`);
       setSelectedDirectory(dir);
       setDirectoryContent(res.data.content || []);
-      setBreadcrumb(dir.split('/'));
       setDirectory(dir);
     } catch (err) {
       handleApiError(err, 'Erro ao buscar conteúdo do diretório.');
     }
   };
 
-  // Efeito para buscar diretórios ao montar o componente e periodicamente
   useEffect(() => {
     fetchDirectories();
     const interval = setInterval(fetchDirectories, 30000);
@@ -87,7 +85,7 @@ function ImageUploader() {
     }
     const targetPath = selectedDirectory
       ? `${selectedDirectory}/${newDirectoryName}`
-      : `assets/${newDirectoryName}`; // Garante que o diretório seja criado dentro de "assets"
+      : `assets/${newDirectoryName}`;
 
     if (existingDirectories.includes(targetPath)) {
       return showMessage(`O diretório "${targetPath}" já existe.`, 'error');
@@ -110,20 +108,27 @@ function ImageUploader() {
   const exitDirectoryNavigation = () => {
     setSelectedDirectory(null);
     setDirectoryContent([]);
-    setBreadcrumb([]);
   };
 
   // Handler para input de arquivos
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    setImageFiles(files.map(file => ({ file, newName: file.name })));
+    const pngFiles = files.filter(file => file.type === 'image/png');
+    setImageFiles(pngFiles.map(file => ({ file, newName: file.name })));
   };
 
   // Handler para soltar arquivos na área de drop
   const handleDrop = (e) => {
     e.preventDefault();
     const files = Array.from(e.dataTransfer.files);
-    setImageFiles(files.map(file => ({ file, newName: file.name })));
+    const pngFiles = files.filter(file => file.type === 'image/png');
+    if (pngFiles.length !== files.length) {
+      setDropError('Somente arquivos .png são permitidos.');
+      setTimeout(() => setDropError(''), 4000);
+    } else {
+      setDropError('');
+    }
+    setImageFiles(pngFiles.map(file => ({ file, newName: file.name })));
   };
 
   // Realiza o upload dos arquivos
@@ -153,8 +158,8 @@ function ImageUploader() {
       try {
         const res = await api.post('/imageupload', formData, {
           onUploadProgress: (progressEvent) => {
-            const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            setProgressMap(prev => ({ ...prev, [newName]: percent }));
+            // Se necessário, você pode atualizar um estado com o progresso.
+            // Exemplo: const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           },
         });
         setUploadResponses(prev => [...prev, res.data]);
@@ -164,10 +169,9 @@ function ImageUploader() {
           timestamp: new Date().toISOString(),
         });
       } catch (err) {
-        // Caso o arquivo já exista no servidor (409), pergunta se deve sobrescrever
         if (err.response?.status === 409) {
-          const confirm = window.confirm(`"${newName}" já existe. Deseja sobrescrever?`);
-          if (confirm) {
+          const confirmOverwrite = window.confirm(`"${newName}" já existe. Deseja sobrescrever?`);
+          if (confirmOverwrite) {
             formData.set('overwrite', true);
             try {
               const res = await api.post('/imageupload', formData);
@@ -187,11 +191,9 @@ function ImageUploader() {
       }
     }
 
-    // Salva o histórico no localStorage (limitado a 20 entradas)
     localStorage.setItem('uploadHistory', JSON.stringify(newHistory.slice(0, 20)));
     setHistory(newHistory.slice(0, 20));
 
-    // Atualiza diretórios e conteúdo
     fetchDirectories();
     if (selectedDirectory === uploadDir) {
       fetchDirectoryContent(uploadDir);
@@ -199,10 +201,9 @@ function ImageUploader() {
 
     setUploading(false);
     setImageFiles([]);
-    setProgressMap({});
   };
 
-  // Inicia processo de renomear
+  // Inicia o processo de renomear
   const handleRename = (oldPath) => {
     const parts = oldPath.split('/');
     const fullName = parts.pop();
@@ -260,20 +261,18 @@ function ImageUploader() {
     }
   };
 
-  // Navega via breadcrumb
-  const navigateToBreadcrumb = (index) => {
-    const path = breadcrumb.slice(0, index + 1).join('/');
-    fetchDirectoryContent(path);
+  // Handler para quando uma imagem é clicada na árvore
+  const handleImageClick = (item) => {
+    setSelectedImage(item);
   };
 
   return (
     <div className="image-uploader">
       <h3 className="image-uploader__title">Upload de Imagens</h3>
 
-      {/* Componente para exibir mensagens de sucesso/erro */}
       {message && <Feedback message={message} />}
 
-      {/* Gerenciamento de diretórios (criação + listagem) */}
+      {/* O DirectoryManager agora renderiza a lista de diretórios existentes e, abaixo dela, o conteúdo do diretório selecionado */}
       <DirectoryManager
         selectedDirectory={selectedDirectory}
         newDirectoryName={newDirectoryName}
@@ -281,14 +280,8 @@ function ImageUploader() {
         createDirectory={createDirectory}
         existingDirectories={existingDirectories}
         fetchDirectoryContent={fetchDirectoryContent}
-      />
-
-      {/* Conteúdo do diretório selecionado (breadcrumb, filter, rename, delete, etc.) */}
-      <DirectoryContent
-        selectedDirectory={selectedDirectory}
+        //
         directoryContent={directoryContent}
-        fetchDirectoryContent={fetchDirectoryContent}
-        breadcrumb={breadcrumb}
         filter={filter}
         setFilter={setFilter}
         handleRename={handleRename}
@@ -298,29 +291,31 @@ function ImageUploader() {
         setRenameInputValue={setRenameInputValue}
         confirmRename={confirmRename}
         cancelRename={cancelRename}
-        navigateToBreadcrumb={navigateToBreadcrumb}
-        exitDirectoryNavigation={exitDirectoryNavigation} // nova prop
+        exitDirectoryNavigation={exitDirectoryNavigation}
+        onImageClick={handleImageClick}
       />
 
-      {/* Área de upload de arquivos (dropzone, preview, etc.) */}
       <FileUploader
         imageFiles={imageFiles}
         setImageFiles={setImageFiles}
         handleDrop={handleDrop}
         handleFileChange={handleFileChange}
-        progressMap={progressMap}
         handleUpload={handleUpload}
         uploading={uploading}
         directory={directory}
         setDirectory={setDirectory}
         selectedDirectory={selectedDirectory}
+        dropError={dropError}
       />
 
-      {/* Histórico de uploads e lista de respostas de upload */}
       <UploadHistory
         history={history}
         uploadResponses={uploadResponses}
       />
+
+      {selectedImage && (
+        <ImageModal image={selectedImage} onClose={() => setSelectedImage(null)} />
+      )}
     </div>
   );
 }

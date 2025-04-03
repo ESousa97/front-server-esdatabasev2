@@ -1,4 +1,3 @@
-// src/components/ImageUploader/icons.js
 import {
   ChevronRight as ArrowRightIcon,
   Folder as FolderIcon,
@@ -6,6 +5,7 @@ import {
   Eye as EyeIcon,
   Pencil as EditIcon,
   Trash as TrashIcon,
+  Link as LinkIcon,              // Ícone de link
 } from 'lucide-react';
 
 export {
@@ -15,4 +15,5 @@ export {
   EyeIcon,
   EditIcon,
   TrashIcon,
+  LinkIcon,                     // Exporta para uso global
 };

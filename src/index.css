@@ -2,25 +2,60 @@
 
 /* Tema padrão (claro) */
 :root {
-  --color-bg: #f8fafc;           /* Fundo bem claro com leve tom azulado */
-  --color-text: #374151;         /* Texto em cinza-escuro moderno */
-  --color-primary: #4f46e5;      /* Índigo moderno para elementos de destaque */
-  --color-secondary: #00c482;    /* Teal vibrante para elementos secundários */
-  --color-border: #e5e7eb;       /* Bordas suaves e discretas */
-  --color-border-2: #d7d9dd;     /* Bordas secundárias */
-  --color-input-bg: #ffffff;     /* Fundo branco para inputs e áreas de texto */
-  --color-shadow: rgba(0, 0, 0, 0.1); /* Sombra leve para profundidade */
+  /* === Cores principais já existentes === */
+  --color-bg: #f8fafc;              /* Fundo geral da aplicação, bem claro */
+  --color-text: #374151;            /* Texto principal em cinza escuro moderno */
+  --color-primary: #4f46e5;         /* Cor primária (botões, links, destaques) */
+  --color-secondary: #00c482;       /* Cor secundária complementar (ações especiais) */
+  --color-border: #e5e7eb;          /* Cor padrão para bordas discretas */
+  --color-border-2: #d7d9dd;        /* Cor de borda secundária (menos destaque) */
+  --color-input-bg: #ffffff;        /* Fundo de inputs e áreas editáveis */
+  --color-shadow: rgba(0, 0, 0, 0.1);/* Sombra leve usada em caixas/modais */
+  --color-alert: #fbbf24;           /* Amarelo vibrante para alertas informativos */
+  --color-success: #34d399;         /* Verde para feedback de sucesso (ex: uploads) */
+  --color-warning: #f97316;         /* Laranja para alertas de atenção */
+  --color-error: #ef4444;           /* Vermelho forte para erros e falhas */
+
+  /* === Novas variáveis para maior controle visual === */
+  --color-bg-muted: #f1f5f9;        /* Fundo levemente destacado (hover, cartões suaves) */
+  --color-bg-accent: #eef2ff;      /* Fundo com leve tom azulado (blocos de destaque) */
+  --color-surface: #ffffff;         /* Superfície padrão para elementos em camadas (cards, modais) */
+  --color-heading: #111827;         /* Cor para títulos principais com alto contraste */
+  --color-link: #2563eb;            /* Azul tradicional para links clicáveis */
+  --color-progress-bg: #e5e7eb;     /* Fundo da barra de progresso (neutro) */
+  --color-overlay: rgba(0, 0, 0, 0.3); /* Sombra escura para sobreposição/modais */
+
+  --color-info: #3b82f6;            /* Azul vibrante para mensagens informativas */
+  --color-neutral: #6b7280;         /* Texto auxiliar, descrições, legendas */
+  --color-disabled: #9ca3af;        /* Cor para inputs/botões desabilitados */
 }
 
 [data-theme="dark"] {
-  --color-bg: #1f2937;           /* Fundo escuro com tom azulado */
-  --color-text: #f9fafb;         /* Texto quase branco para melhor leitura */
-  --color-primary: #6366f1;      /* Índigo suavizado para o modo escuro */
-  --color-secondary: #007a52;    /* Teal moderno, mantendo o contraste */
-  --color-border: #374151;       /* Bordas mais escuras no tema dark */
-  --color-border-2: #2d3744;     /* Bordas secundárias mais escuras no tema dark*/
-  --color-input-bg: #374151;     /* Fundo dos inputs em tom condizente com o dark */
-  --color-shadow: rgba(0, 0, 0, 0.5); /* Sombra mais intensa para profundidade */
+  /* === Versão escura das cores principais === */
+  --color-bg: #1f2937;              /* Fundo principal escuro */
+  --color-text: #f9fafb;            /* Texto quase branco para legibilidade */
+  --color-primary: #6366f1;         /* Índigo suavizado para destaque em dark */
+  --color-secondary: #007a52;       /* Teal escuro com bom contraste */
+  --color-border: #374151;          /* Borda visível mas discreta */
+  --color-border-2: #2d3744;        /* Borda secundária (menos visível) */
+  --color-input-bg: #374151;        /* Fundo de campos/input no dark */
+  --color-shadow: rgba(0, 0, 0, 0.5);/* Sombra mais intensa para destaque em dark */
+  --color-success: #10b981;         /* Verde mais escuro para sucesso */
+  --color-warning: #f97316;         /* Laranja mantém vibração no escuro */
+  --color-error: #f87171;           /* Vermelho levemente suavizado para não agredir */
+
+  /* === Versão escura das variáveis complementares === */
+  --color-bg-muted: #2b3441;        /* Fundo com leve contraste, ideal para hover em dark */
+  --color-bg-accent: #2a2e3a;       /* Fundo de destaque em dark (cards, blocos) */
+  --color-surface: #27303f;         /* Superfície para cartões/modais em dark */
+  --color-heading: #ffffff;         /* Títulos bem visíveis no escuro */
+  --color-link: #60a5fa;            /* Azul claro para links clicáveis */
+  --color-progress-bg: #475569;     /* Fundo neutro para barra de progresso */
+  --color-overlay: rgba(0, 0, 0, 0.6); /* Sombra intensa para modais em dark */
+
+  --color-info: #3b82f6;            /* Azul claro para informações */
+  --color-neutral: #9ca3af;         /* Texto auxiliar ainda legível */
+  --color-disabled: #6b7280;        /* Texto desabilitado em dark */
 }
 
 /* Aplicação global */

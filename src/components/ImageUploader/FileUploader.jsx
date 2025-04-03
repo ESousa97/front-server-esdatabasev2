@@ -11,41 +11,60 @@ function FileUploader({
   uploading,
   directory,
   setDirectory,
-  selectedDirectory
+  selectedDirectory,
+  dropError
 }) {
+  const removeFile = (index) => {
+    const newFiles = [...imageFiles];
+    newFiles.splice(index, 1);
+    setImageFiles(newFiles);
+  };
+
   return (
     <div>
-      {/* Área de drop e input de arquivo */}
       <div
         className="image-uploader__drop-area"
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
       >
-        <p>Arraste e solte imagens aqui ou clique abaixo para selecionar.</p>
+        <p>Arraste e solte imagens aqui ou clique para selecionar.</p>
+        {dropError && (
+          <div className="drop-error-message">
+            {dropError}
+          </div>
+        )}
         <input
           className="image-uploader__input"
           type="file"
-          accept="image/*"
+          accept=".png"
           multiple
-          webkitdirectory="true"
           onChange={handleFileChange}
         />
       </div>
 
-      {/* Pré-visualização das imagens selecionadas */}
       {imageFiles.length > 0 && (
         <div className="image-preview-list">
-          <h5>Pré-visualização:</h5>
+          <h5 style={{ marginBottom: '1rem' }}>Pré-visualização:</h5>
           <ul>
             {imageFiles.map((img, idx) => {
               const progress = progressMap[img.newName] ?? 0;
               return (
-                <li key={idx}>
-                  <img
-                    src={URL.createObjectURL(img.file)}
-                    alt={img.file.name}
-                    width="100"
-                  />
+                <li key={idx} className="preview-item">
+                  <div className="image-preview-wrapper">
+                    <img
+                      src={URL.createObjectURL(img.file)}
+                      alt={img.file.name}
+                    />
+                    <button
+                      type="button"
+                      className="remove-preview"
+                      onClick={() => removeFile(idx)}
+                      aria-label={`Remover ${img.newName}`}
+                    >
+                      &times;
+                    </button>
+                  </div>
+
                   <input
                     type="text"
                     className="image-uploader__input"
@@ -56,6 +75,7 @@ function FileUploader({
                       setImageFiles(newFiles);
                     }}
                   />
+
                   {progress > 0 && (
                     <div className="image-preview-progress">
                       <span
@@ -71,7 +91,6 @@ function FileUploader({
         </div>
       )}
 
-      {/* Campo para especificar o diretório de destino */}
       <div className="image-uploader__group">
         <label className="image-uploader__label">Diretório de destino:</label>
         <input
@@ -83,7 +102,6 @@ function FileUploader({
         />
       </div>
 
-      {/* Botão de upload */}
       <button
         className="image-uploader__button"
         onClick={handleUpload}
