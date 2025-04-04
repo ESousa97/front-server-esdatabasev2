@@ -230,7 +230,7 @@ function DashboardPage() {
 
           <section className="dashboard-section">
             <header className="section-header">
-              <h2>Upload de Imagem</h2>
+              <h2>Upload de Imagens</h2>
             </header>
             <ImageUploader />
           </section>

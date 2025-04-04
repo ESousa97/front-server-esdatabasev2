@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { FeedbackContext } from './FeedbackContext';
 import { CheckCircle, XCircle, AlertTriangle, Info, Edit3 } from 'lucide-react';
+import '../styles/feedback-toast.css';
 
-// Mapeamento de ícones para os diferentes tipos de feedback
 const icons = {
   success: <CheckCircle size={20} />,
   error: <XCircle size={20} />,
@@ -15,13 +15,16 @@ const icons = {
 };
 
 function Feedback() {
-  const { feedback } = useContext(FeedbackContext);
-  if (!feedback) return null;
-  const { text, type = 'info' } = feedback;
+  const { toasts } = useContext(FeedbackContext);
+
   return (
-    <div className={`feedback-box ${type}`}>
-      <span className="feedback-icon">{icons[type] || icons.info}</span>
-      <span>{text}</span>
+    <div className="toast-container">
+      {toasts.map(({ id, text, type }) => (
+        <div key={id} className={`toast-feedback ${type}`}>
+          <span className="toast-icon">{icons[type] || icons.info}</span>
+          <span className="toast-message">{text}</span>
+        </div>
+      ))}
     </div>
   );
 }

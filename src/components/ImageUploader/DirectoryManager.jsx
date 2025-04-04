@@ -1,18 +1,21 @@
-// src/components/ImageUploader/DirectoryManager.jsx
 import React from 'react';
-import { FolderIcon, EyeIcon } from './icons';
+import {
+  FolderIcon,
+  FolderOpenIcon,
+  EyeIcon,
+  EyeOffIcon
+} from './icons';
 import DirectoryContent from './DirectoryContent';
 
 function DirectoryManager({
-  // Props de criação/listagem de diretórios
   selectedDirectory,
+  setSelectedDirectory,
   newDirectoryName,
   setNewDirectoryName,
   createDirectory,
   existingDirectories,
   fetchDirectoryContent,
 
-  // Props para exibir conteúdo do diretório selecionado
   directoryContent,
   filter,
   setFilter,
@@ -24,8 +27,17 @@ function DirectoryManager({
   confirmRename,
   cancelRename,
   exitDirectoryNavigation,
-  onImageClick, // caso queira visualizar imagem em modal
+  onImageClick,
 }) {
+  const handleDirectoryToggle = (dir) => {
+    if (selectedDirectory === dir) {
+      setSelectedDirectory(null); // Fecha se for a mesma pasta
+    } else {
+      fetchDirectoryContent(dir); // Abre nova pasta
+      setSelectedDirectory(dir);
+    }
+  };
+
   return (
     <div className="directory-manager">
       <div className="directory-group">
@@ -47,19 +59,39 @@ function DirectoryManager({
       <div className="existing-directories">
         <h4>Diretórios existentes:</h4>
         <ul>
-          {existingDirectories.map((dir, idx) => (
-            <li key={idx} className="existing-directory-item">
-              <FolderIcon size={16} />
-              <strong>{dir}</strong>
-              <button onClick={() => fetchDirectoryContent(dir)} title="Ver conteúdo">
-                <EyeIcon size={16} />
-              </button>
-            </li>
-          ))}
+          {existingDirectories.map((dir, idx) => {
+            const isOpen = selectedDirectory === dir;
+
+            return (
+              <li
+                key={idx}
+                className={`existing-directory-item ${isOpen ? 'active' : ''}`}
+                onClick={() => handleDirectoryToggle(dir)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') handleDirectoryToggle(dir);
+                }}
+              >
+                {isOpen ? <FolderOpenIcon size={18} /> : <FolderIcon size={18} />}
+                <strong>{dir}</strong>
+                <button
+                  className="eye-button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDirectoryToggle(dir);
+                  }}
+                  title={isOpen ? 'Fechar diretório' : 'Ver conteúdo'}
+                >
+                  {/* ✅ INVERTIDO AQUI */}
+                  {isOpen ? <EyeIcon size={16} /> : <EyeOffIcon size={16} />}
+                </button>
+              </li>
+            );
+          })}
         </ul>
       </div>
 
-      {/* Se houver um diretório selecionado, mostra o conteúdo dele AQUI */}
       {selectedDirectory && (
         <DirectoryContent
           selectedDirectory={selectedDirectory}
@@ -75,6 +107,7 @@ function DirectoryManager({
           cancelRename={cancelRename}
           exitDirectoryNavigation={exitDirectoryNavigation}
           onImageClick={onImageClick}
+          fetchDirectoryContent={fetchDirectoryContent}
         />
       )}
     </div>

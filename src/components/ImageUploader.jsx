@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useFeedback } from './ImageUploader/useFeedback';
-import { useRetryRequest } from './hooks/useRetryRequest';
+import { useRetryRequest } from '../hooks/useRetryRequest';
 import api from '../services/api';
 
 import DirectoryManager from './ImageUploader/DirectoryManager';
@@ -241,7 +241,6 @@ function ImageUploader() {
 
   return (
     <div className="image-uploader">
-      <h3 className="image-uploader__title">Upload de Imagens</h3>
 
       {directoryFetchError && (
         <div className="directory-error-message">
@@ -256,11 +255,11 @@ function ImageUploader() {
 
       <DirectoryManager
         selectedDirectory={selectedDirectory}
+        setSelectedDirectory={setSelectedDirectory}
         newDirectoryName={newDirectoryName}
         setNewDirectoryName={setNewDirectoryName}
         createDirectory={createDirectory}
         existingDirectories={existingDirectories}
-        fetchDirectoryContent={fetchDirectoryContent}
         directoryContent={directoryContent}
         filter={filter}
         setFilter={setFilter}
@@ -273,6 +272,7 @@ function ImageUploader() {
         cancelRename={cancelRename}
         exitDirectoryNavigation={exitDirectoryNavigation}
         onImageClick={handleImageClick}
+        fetchDirectoryContent={fetchDirectoryContent}
       />
 
       <FileUploader

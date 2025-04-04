@@ -1,15 +1,26 @@
 /* =====directory-manager.css===== */
 
 .directory-manager {
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    background-color: var(--color-bg-accent);
-    border-radius: 12px;
-    box-shadow: 0 2px 6px var(--color-shadow);
-    animation: fadeIn 0.3s ease;
-  }
-  
-  .directory-group {
-    margin-bottom: 2rem;
-  }
-  
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: var(--color-bg-accent);
+  border-radius: 12px;
+  box-shadow: 0 2px 6px var(--color-shadow);
+  animation: fadeIn 0.3s ease;
+}
+
+.directory-group {
+  margin-bottom: 2rem;
+}
+
+.existing-directory-item.active .eye-button svg {
+  color: var(--color-error);
+}
+
+.existing-directory-item .eye-button svg {
+  transition: color 0.3s ease;
+}
+
+.existing-directory-item .eye-button:hover svg {
+  color: var(--color-primary);
+}

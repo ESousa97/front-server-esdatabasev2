@@ -6,10 +6,13 @@ export const useFeedback = () => {
   if (!context) {
     throw new Error('useFeedback must be used within a FeedbackProvider');
   }
-  const { setFeedback } = context;
+
+  const { addToast } = context;
+
+  // Função para usar no lugar do antigo showFeedback
   const showFeedback = (text, type = 'info', duration = 4000) => {
-    setFeedback({ text, type });
-    setTimeout(() => setFeedback(null), duration);
+    addToast(text, type, duration);
   };
+
   return showFeedback;
 };

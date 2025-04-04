@@ -54,3 +54,9 @@
     color: var(--color-primary);
   }
   
+  .existing-directory-item.active {
+    background-color: var(--color-bg-accent);
+    box-shadow: 0 0 0 2px var(--color-primary);
+  }
+  
+  

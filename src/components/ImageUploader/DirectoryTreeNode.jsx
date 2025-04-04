@@ -1,6 +1,11 @@
-// src/components/ImageUploader/DirectoryTreeNode.jsx
 import React, { useState } from 'react';
-import { FolderIcon, FileImageIcon, EditIcon, TrashIcon } from './icons';
+import {
+  FolderIcon,
+  FolderOpenIcon,
+  FileImageIcon,
+  EditIcon,
+  TrashIcon,
+} from './icons';
 import api from '../../services/api';
 
 function DirectoryTreeNode({ item, parentPath, onRename, onDelete, onImageClick }) {
@@ -8,7 +13,6 @@ function DirectoryTreeNode({ item, parentPath, onRename, onDelete, onImageClick 
   const [children, setChildren] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Constrói o caminho relativo atual (ex: "projects0004/subpasta")
   const currentPath = parentPath ? `${parentPath}/${item.name}` : item.name;
 
   const toggleExpand = async () => {
@@ -16,7 +20,6 @@ function DirectoryTreeNode({ item, parentPath, onRename, onDelete, onImageClick 
     if (!expanded) {
       setLoading(true);
       try {
-        // Removemos o prefixo "public/assets" pois o backend já o adiciona
         const res = await api.get(`/directory-content/${currentPath}`);
         setChildren(res.data.content || []);
         setExpanded(true);
@@ -30,18 +33,23 @@ function DirectoryTreeNode({ item, parentPath, onRename, onDelete, onImageClick 
     }
   };
 
+  const Icon = expanded ? FolderOpenIcon : FolderIcon;
+
   return (
-    <li>
-      <div className="tree-node">
+    <li className="tree-node-wrapper">
+      <div className={`tree-node ${item.type}`}>
         {item.type === 'dir' ? (
           <span onClick={toggleExpand} className="tree-node-folder">
-            <FolderIcon size={16} /> {item.name}
+            <Icon size={16} />
+            <span className="tree-node-name">{item.name}</span>
           </span>
         ) : (
           <span onClick={() => onImageClick(item)} className="tree-node-file">
-            <FileImageIcon size={16} /> {item.name}
+            <FileImageIcon size={16} />
+            <span className="tree-node-name">{item.name}</span>
           </span>
         )}
+
         <div className="tree-node-actions">
           <button onClick={() => onRename(currentPath)} title="Renomear">
             <EditIcon size={16} />
@@ -50,8 +58,10 @@ function DirectoryTreeNode({ item, parentPath, onRename, onDelete, onImageClick 
             <TrashIcon size={16} />
           </button>
         </div>
+
         {loading && <span className="loading-text">Carregando...</span>}
       </div>
+
       {expanded && children.length > 0 && (
         <ul className="tree-node-children">
           {children.map((child, idx) => (

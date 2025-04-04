@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaTachometerAlt, FaDatabase, FaBars } from 'react-icons/fa';
+import { FaTachometerAlt, FaBars } from 'react-icons/fa';
 import './Sidebar.css';
 
 function Sidebar() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => setIsOpen(prev => !prev);
 
@@ -28,15 +28,6 @@ function Sidebar() {
             >
               <FaTachometerAlt className="sidebar-icon" />
               {isOpen && <span className="sidebar-text">Dashboard</span>}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink 
-              to="/db" 
-              className={({ isActive }) => "sidebar-link" + (isActive ? " active" : "")}
-            >
-              <FaDatabase className="sidebar-icon" />
-              {isOpen && <span className="sidebar-text">Editor de DB</span>}
             </NavLink>
           </li>
         </ul>

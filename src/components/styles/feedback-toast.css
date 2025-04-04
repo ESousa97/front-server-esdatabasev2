@@ -1,0 +1,48 @@
+.toast-container {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  z-index: 9999;
+}
+
+.toast-feedback {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #fff;
+
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+  animation: slideInRight 0.3s ease, fadeOut 0.3s ease 3.7s;
+}
+
+.toast-icon {
+  display: flex;
+  align-items: center;
+}
+
+.toast-message {
+  flex: 1;
+}
+
+/* Tipos */
+.toast-feedback.success { background-color: var(--color-success); }
+.toast-feedback.error   { background-color: var(--color-error); }
+.toast-feedback.warning { background-color: var(--color-warning); }
+.toast-feedback.info    { background-color: var(--color-info); }
+
+/* Animações */
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; }
+}

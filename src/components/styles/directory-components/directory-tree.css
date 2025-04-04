@@ -1,54 +1,62 @@
-/* === Tree Node === */
+.tree-node-wrapper {
+  list-style: none;
+  margin-left: 1rem;
+}
+
 .tree-node {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
-    background-color: var(--color-surface);
-    box-shadow: 0 1px 3px var(--color-shadow);
-    transition: background-color 0.2s ease;
-  }
-  
-  .tree-node:hover {
-    background-color: var(--color-bg-muted);
-  }
-  
-  .tree-node-folder,
-  .tree-node-file {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    color: var(--color-text);
-    font-weight: 500;
-    font-size: 0.95rem;
-  }
-  
-  .tree-node-actions button {
-    background: none;
-    border: none;
-    padding: 0.3rem;
-    border-radius: 6px;
-    color: var(--color-link);
-    cursor: pointer;
-    transition: color 0.2s ease;
-  }
-  
-  .tree-node-actions button:hover {
-    color: var(--color-primary);
-  }
-  
-  .tree-node-children {
-    list-style: none;
-    padding-left: 1.25rem;
-    margin-top: 0.5rem;
-  }
-  
-  .loading-text {
-    font-size: 0.85rem;
-    color: var(--color-neutral);
-    margin-left: 0.75rem;
-  }
-  
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.tree-node.dir:hover,
+.tree-node.file:hover {
+  background-color: var(--color-bg-muted);
+}
+
+.tree-node-folder,
+.tree-node-file {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.tree-node-name {
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.tree-node-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.tree-node-actions button {
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  border-radius: 4px;
+  color: var(--color-neutral);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.tree-node-actions button:hover {
+  color: var(--color-primary);
+}
+
+.tree-node-children {
+  margin-left: 1.5rem;
+  padding-left: 0.5rem;
+  border-left: 2px dashed var(--color-border-2);
+}
+
+.loading-text {
+  font-size: 0.8rem;
+  color: var(--color-neutral);
+  margin-left: 0.5rem;
+}

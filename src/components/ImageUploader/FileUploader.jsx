@@ -1,5 +1,5 @@
-// src/components/ImageUploader/FileUploader.jsx
-import React from 'react';
+import React, { useRef } from 'react';
+import { UploadIcon } from './icons';
 
 function FileUploader({
   imageFiles,
@@ -14,6 +14,8 @@ function FileUploader({
   selectedDirectory,
   dropError
 }) {
+  const inputRef = useRef();
+
   const removeFile = (index) => {
     const newFiles = [...imageFiles];
     newFiles.splice(index, 1);
@@ -22,25 +24,36 @@ function FileUploader({
 
   return (
     <div>
+      {/* Área de seleção/drag-and-drop */}
       <div
         className="image-uploader__drop-area"
+        onClick={() => inputRef.current?.click()}
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
+        tabIndex={0}
       >
-        {dropError && (
-          <div className="drop-error-message">
-            {dropError}
-          </div>
-        )}
         <input
-          className="image-uploader__input"
+          ref={inputRef}
           type="file"
           accept=".png"
           multiple
           onChange={handleFileChange}
+          style={{ display: 'none' }}
         />
+        <div className="image-uploader__drop-content">
+          <UploadIcon size={20} className="upload-icon" />
+          <span className="image-uploader__drop-text">
+            Arraste e solte arquivos aqui ou clique para selecionar
+          </span>
+        </div>
       </div>
 
+      {/* Mensagem de erro se houver */}
+      {dropError && (
+        <div className="drop-error-message">{dropError}</div>
+      )}
+
+      {/* Lista de pré-visualizações */}
       {imageFiles.length > 0 && (
         <div className="image-preview-list">
           <h5 style={{ marginBottom: '1rem' }}>Pré-visualização:</h5>
@@ -90,6 +103,7 @@ function FileUploader({
         </div>
       )}
 
+      {/* Input de diretório de destino */}
       <div className="image-uploader__group">
         <label className="image-uploader__label">Diretório de destino:</label>
         <input
@@ -101,6 +115,7 @@ function FileUploader({
         />
       </div>
 
+      {/* Botão de envio */}
       <button
         className="image-uploader__button"
         onClick={handleUpload}
