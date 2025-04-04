@@ -1,81 +1,151 @@
 /* DashboardPage.css */
 
-/* Container com Sidebar e Conteúdo Principal */
-.editor-container {
-    display: flex;
+/* Página do Dashboard */
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: var(--font-family, 'Helvetica Neue', Helvetica, Arial, sans-serif);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+}
+
+/* Container do Dashboard (Sidebar + Conteúdo Principal) */
+.dashboard-container {
+  display: flex;
+  flex: 1;
+  background-color: var(--color-bg);
+}
+
+/* Conteúdo Principal */
+.dashboard-main {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+/* Seções do Dashboard */
+.dashboard-section {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 2px 6px var(--color-shadow);
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+}
+
+/* Cabeçalho da Seção */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 1rem; /* ou utilize uma variável de espa\u00e7amento se tiver definida */ 
+  padding-bottom: 0.5rem;
+}
+
+.section-header h2 {
+  font-size: 1.75rem;
+  margin: 0;
+  color: var(--color-heading);
+}
+
+/* Bot\u00f5es Gerais */
+.btn {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  background-color: var(--color-primary);
+  color: var(--color-input-bg);
+}
+
+.add-btn {
+  background-color: var(--color-primary);
+  color: var(--color-input-bg);
+}
+
+.add-btn:hover {
+  opacity: 0.9;
+}
+
+/* Container da Tabela */
+.table-container {
+  overflow-x: auto;
+}
+
+/* Tabela do Dashboard */
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
+}
+
+.dashboard-table th,
+.dashboard-table td {
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  text-align: left;
+}
+
+.dashboard-table th {
+  background-color: var(--color-bg-muted);
+  font-weight: bold;
+  color: var(--color-heading);
+}
+
+/* C\u00e9lulas de A\u00e7\u00e3o */
+.actions-cell {
+  text-align: center;
+}
+
+/* Bot\u00f5es Internos da Tabela */
+.table-btn {
+  background-color: var(--color-primary);
+  color: var(--color-input-bg);
+  margin-right: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+}
+
+.table-btn:hover {
+  opacity: 0.9;
+}
+
+.delete-btn {
+  background-color: var(--color-error);
+  color: var(--color-input-bg);
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+}
+
+.delete-btn:hover {
+  opacity: 0.9;
+}
+
+/* Modal */
+.modal-content {
+  padding: 1rem;
+  background-color: var(--color-surface);
+  border-radius: 8px;
+  box-shadow: 0 2px 6px var(--color-shadow);
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  color: var(--color-heading);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .dashboard-main {
+    padding: 1rem;
   }
-  
-  /* Conteúdo principal */
-  .main-content {
-    flex: 1;
-    padding: 2rem;
-    background-color: var(--color-bg);
-    overflow-y: auto;
+  .section-header h2 {
+    font-size: 1.5rem;
   }
-  
-  /* Título principal */
-  .main-content h2 {
-    margin-bottom: 1.5rem;
-    font-size: 2rem;
-    color: var(--color-text);
-  }
-  
-  /* Seção de Projetos e Cards */
-  .main-content section {
-    margin-bottom: 2rem;
-  }
-  
-  /* Botões de adicionar (Projetos e Cards) */
-  .add-btn {
-    margin-bottom: 2rem;
-  }
-  
-  /* Estilização das tabelas */
-  .dashboard-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 2rem;
-  }
-  
-  .dashboard-table th,
-  .dashboard-table td {
-    border: 2px solid var(--color-border);
-    padding: 5px;
-  }
-  
-  /* Centraliza as ações na última coluna */
-  .dashboard-table td:last-child {
-    text-align: center;
-  }
-  
-  /* Botões internos das tabelas */
-  .table-btn {
-    margin-right: 0.5rem;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    background-color: var(--color-primary);
-    color: #fff;
-    cursor: pointer;
-    transition: opacity 0.3s ease;
-  }
-  
-  .table-btn:hover {
-    opacity: 0.9;
-  }
-  
-  /* Botão de Deletar com cor vermelha */
-  .delete-btn {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    background-color: #dc3545;
-    color: #fff;
-    cursor: pointer;
-    transition: opacity 0.3s ease;
-  }
-  
-  .delete-btn:hover {
-    opacity: 0.9;
-  }
-  
+}

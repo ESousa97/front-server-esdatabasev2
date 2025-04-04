@@ -27,6 +27,7 @@ function ImageUploader() {
   const [message, setMessage] = useState(null);
   const [dropError, setDropError] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
+  const [progressMap, setProgressMap] = useState({});
 
   // Exibe mensagem de sucesso/erro
   const showMessage = (text, type = 'success') => {
@@ -63,6 +64,7 @@ function ImageUploader() {
   // Busca o conteúdo de um diretório selecionado (raiz da árvore)
   const fetchDirectoryContent = async (dir) => {
     try {
+      // Removemos o prefixo "public/assets" pois o backend já o adiciona
       const res = await api.get(`/directory-content/${dir}`);
       setSelectedDirectory(dir);
       setDirectoryContent(res.data.content || []);
@@ -158,9 +160,12 @@ function ImageUploader() {
       try {
         const res = await api.post('/imageupload', formData, {
           onUploadProgress: (progressEvent) => {
-            // Se necessário, você pode atualizar um estado com o progresso.
-            // Exemplo: const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          },
+            const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            setProgressMap(prev => ({
+              ...prev,
+              [newName]: percent
+            }));
+          }
         });
         setUploadResponses(prev => [...prev, res.data]);
         newHistory.unshift({
@@ -201,6 +206,7 @@ function ImageUploader() {
 
     setUploading(false);
     setImageFiles([]);
+    setProgressMap({});
   };
 
   // Inicia o processo de renomear
@@ -249,6 +255,9 @@ function ImageUploader() {
   // Deleta arquivo ou diretório
   const handleDelete = async (path, type) => {
     if (!window.confirm(`Deseja deletar "${path}"?`)) return;
+
+    console.log('Deletando item:', { path, type });
+
     try {
       await api.delete('/delete-content', { data: { path, type } });
       showMessage(`"${path}" deletado.`, 'success');
@@ -306,6 +315,8 @@ function ImageUploader() {
         setDirectory={setDirectory}
         selectedDirectory={selectedDirectory}
         dropError={dropError}
+        progressMap={progressMap}
+        setProgressMap={setProgressMap}
       />
 
       <UploadHistory

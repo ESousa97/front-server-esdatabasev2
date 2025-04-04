@@ -8,6 +8,7 @@ function DirectoryTreeNode({ item, parentPath, onRename, onDelete, onImageClick 
   const [children, setChildren] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Constrói o caminho relativo atual (ex: "projects0004/subpasta")
   const currentPath = parentPath ? `${parentPath}/${item.name}` : item.name;
 
   const toggleExpand = async () => {
@@ -15,6 +16,7 @@ function DirectoryTreeNode({ item, parentPath, onRename, onDelete, onImageClick 
     if (!expanded) {
       setLoading(true);
       try {
+        // Removemos o prefixo "public/assets" pois o backend já o adiciona
         const res = await api.get(`/directory-content/${currentPath}`);
         setChildren(res.data.content || []);
         setExpanded(true);

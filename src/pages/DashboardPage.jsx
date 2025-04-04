@@ -8,14 +8,13 @@ import Sidebar from '../components/Layout/Sidebar';
 import Header from '../components/Layout/Header';
 import Footer from '../components/Layout/Footer';
 import ModalEditor from '../components/ModalEditor';
-import ImageUploader from '../components/ImageUploader'; // Importa o novo componente
+import ImageUploader from '../components/ImageUploader';
 import { useAuth } from '../contexts/AuthContext';
 import './DashboardPage.css';
 
-// Função utilitária para truncar texto (ex: mostrar apenas 60 caracteres)
+// Função utilitária para truncar texto
 function truncateContent(content = '', maxLength = 60) {
-  if (content.length <= maxLength) return content;
-  return content.substring(0, maxLength) + '...';
+  return content.length <= maxLength ? content : content.substring(0, maxLength) + '...';
 }
 
 function DashboardPage() {
@@ -32,10 +31,7 @@ function DashboardPage() {
 
   const fetchProjects = () => {
     api.get('/projects')
-      .then(response => {
-        console.log('Projects:', response.data);
-        setProjects(response.data);
-      })
+      .then(response => setProjects(response.data))
       .catch(error => console.error('Erro ao buscar projetos:', error));
   };
 
@@ -45,14 +41,11 @@ function DashboardPage() {
       .catch(error => console.error('Erro ao buscar cards:', error));
   };
 
-  // Efetua o logout com proteção CSRF
   const handleLogout = async () => {
     try {
       const tokenRes = await api.get('/csrf-token');
       const csrfToken = tokenRes.data.csrfToken;
-      await api.post('/auth/logout', {}, {
-        headers: { 'X-CSRF-Token': csrfToken }
-      });
+      await api.post('/auth/logout', {}, { headers: { 'X-CSRF-Token': csrfToken } });
       logout();
       navigate('/login');
     } catch (error) {
@@ -60,24 +53,14 @@ function DashboardPage() {
     }
   };
 
-  // Abre o modal para edição/adicionar
-  const handleEdit = (type, item) => {
-    setEditingItem({ type, data: item });
-  };
+  const handleEdit = (type, item) => setEditingItem({ type, data: item });
+  const closeModal = () => setEditingItem(null);
 
-  // Fecha o modal
-  const closeModal = () => {
-    setEditingItem(null);
-  };
-
-  // Salva ou atualiza um projeto
   const handleSaveProject = (projectData) => {
     if (projectData.id) {
       api.put(`/projects/${projectData.id}`, projectData)
         .then(response => {
-          setProjects(prev =>
-            prev.map(p => (p.id === projectData.id ? response.data : p))
-          );
+          setProjects(prev => prev.map(p => (p.id === projectData.id ? response.data : p)));
           closeModal();
         })
         .catch(error => console.error('Erro ao atualizar projeto:', error));
@@ -86,8 +69,6 @@ function DashboardPage() {
         .then(response => {
           const newProject = response.data;
           setProjects(prev => [...prev, newProject]);
-
-          // Cria automaticamente o card correspondente
           const cardData = {
             id: newProject.id,
             titulo: newProject.titulo.replace('PROJECT', '').trim() || newProject.titulo,
@@ -95,27 +76,20 @@ function DashboardPage() {
             conteudo: '',
             categoria: ''
           };
-
           api.post('/cards', cardData)
-            .then(cardResponse => {
-              setCards(prev => [...prev, cardResponse.data]);
-            })
+            .then(cardResponse => setCards(prev => [...prev, cardResponse.data]))
             .catch(err => console.error('Erro ao criar o card automaticamente:', err));
-
           closeModal();
         })
         .catch(error => console.error('Erro ao adicionar projeto:', error));
     }
   };
 
-  // Salva ou atualiza um card
   const handleSaveCard = (cardData) => {
     if (cardData.id) {
       api.put(`/cards/${cardData.id}`, cardData)
         .then(response => {
-          setCards(prev =>
-            prev.map(c => (c.id === cardData.id ? response.data : c))
-          );
+          setCards(prev => prev.map(c => (c.id === cardData.id ? response.data : c)));
           closeModal();
         })
         .catch(error => console.error('Erro ao atualizar card:', error));
@@ -124,8 +98,6 @@ function DashboardPage() {
         .then(response => {
           const newCard = response.data;
           setCards(prev => [...prev, newCard]);
-
-          // Cria automaticamente o projeto correspondente
           const projectData = {
             id: newCard.id,
             titulo: `PROJECT - ${newCard.titulo}`.toUpperCase(),
@@ -133,24 +105,17 @@ function DashboardPage() {
             conteudo: '',
             categoria: ''
           };
-
           api.post('/projects', projectData)
-            .then(projResponse => {
-              setProjects(prev => [...prev, projResponse.data]);
-            })
+            .then(projResponse => setProjects(prev => [...prev, projResponse.data]))
             .catch(err => console.error('Erro ao criar o projeto automaticamente:', err));
-
           closeModal();
         })
         .catch(error => console.error('Erro ao adicionar card:', error));
     }
   };
 
-  // Deleta projeto e o card correspondente
   const handleDeleteProject = (id) => {
-    const confirmDelete = window.confirm(`Tem certeza de que deseja deletar o projeto de ID ${id}?`);
-    if (!confirmDelete) return;
-
+    if (!window.confirm(`Tem certeza de que deseja deletar o projeto de ID ${id}?`)) return;
     Promise.all([
       api.delete(`/projects/${id}`),
       api.delete(`/cards/${id}`)
@@ -162,11 +127,8 @@ function DashboardPage() {
       .catch(error => console.error('Erro ao deletar projeto e/ou card correspondente:', error));
   };
 
-  // Deleta card e o projeto correspondente
   const handleDeleteCard = (id) => {
-    const confirmDelete = window.confirm(`Tem certeza de que deseja deletar o card de ID ${id}?`);
-    if (!confirmDelete) return;
-
+    if (!window.confirm(`Tem certeza de que deseja deletar o card de ID ${id}?`)) return;
     Promise.all([
       api.delete(`/cards/${id}`),
       api.delete(`/projects/${id}`)
@@ -179,120 +141,120 @@ function DashboardPage() {
   };
 
   return (
-    <div>
+    <div className="dashboard-page">
       <Header onLogout={handleLogout} />
-      <div className="editor-container">
+      <div className="dashboard-container">
         <Sidebar />
-        <main className="main-content">
-          <h2>Dashboard - Tabelas do Banco de Dados</h2>
-
-          {/* Seção de Projetos */}
-          <section>
-            <h3>Projetos</h3>
-            <button className="add-btn" onClick={() => handleEdit('project', {})}>
-              Adicionar Projeto
-            </button>
-            <table className="dashboard-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Título</th>
-                  <th>Descrição</th>
-                  <th>Conteúdo</th>
-                  <th>Categoria</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {projects.map(project => (
-                  <tr key={project.id}>
-                    <td>{project.id}</td>
-                    <td>{project.titulo}</td>
-                    <td>{project.descricao}</td>
-                    <td>{truncateContent(project.conteudo, 60)}</td>
-                    <td>{project.categoria}</td>
-                    <td>
-                      <button className="table-btn" onClick={() => handleEdit('project', project)}>
-                        Editar
-                      </button>
-                      <button className="delete-btn" onClick={() => handleDeleteProject(project.id)}>
-                        Deletar
-                      </button>
-                    </td>
+        <main className="dashboard-main">
+          <section className="dashboard-section">
+            <header className="section-header">
+              <h2>Projetos</h2>
+              <button className="btn add-btn" onClick={() => handleEdit('project', {})}>
+                Adicionar Projeto
+              </button>
+            </header>
+            <div className="table-container">
+              <table className="dashboard-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Descrição</th>
+                    <th>Conteúdo</th>
+                    <th>Categoria</th>
+                    <th>Ações</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {projects.map(project => (
+                    <tr key={project.id}>
+                      <td>{project.id}</td>
+                      <td>{project.titulo}</td>
+                      <td>{project.descricao}</td>
+                      <td>{truncateContent(project.conteudo, 60)}</td>
+                      <td>{project.categoria}</td>
+                      <td className="actions-cell">
+                        <button className="btn table-btn" onClick={() => handleEdit('project', project)}>
+                          Editar
+                        </button>
+                        <button className="btn delete-btn" onClick={() => handleDeleteProject(project.id)}>
+                          Deletar
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </section>
 
-          {/* Seção de Cards */}
-          <section>
-            <h3>Cards</h3>
-            <button className="add-btn" onClick={() => handleEdit('card', {})}>
-              Adicionar Card
-            </button>
-            <table className="dashboard-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Título</th>
-                  <th>Descrição</th>
-                  <th>Imagem URL</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {cards.map(card => (
-                  <tr key={card.id}>
-                    <td>{card.id}</td>
-                    <td>{card.titulo}</td>
-                    <td>{card.descricao}</td>
-                    <td>{card.imageurl}</td>
-                    <td>
-                      <button className="table-btn" onClick={() => handleEdit('card', card)}>
-                        Editar
-                      </button>
-                      <button className="delete-btn" onClick={() => handleDeleteCard(card.id)}>
-                        Deletar
-                      </button>
-                    </td>
+          <section className="dashboard-section">
+            <header className="section-header">
+              <h2>Cards</h2>
+              <button className="btn add-btn" onClick={() => handleEdit('card', {})}>
+                Adicionar Card
+              </button>
+            </header>
+            <div className="table-container">
+              <table className="dashboard-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Descrição</th>
+                    <th>Imagem URL</th>
+                    <th>Ações</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {cards.map(card => (
+                    <tr key={card.id}>
+                      <td>{card.id}</td>
+                      <td>{card.titulo}</td>
+                      <td>{card.descricao}</td>
+                      <td>{card.imageurl}</td>
+                      <td className="actions-cell">
+                        <button className="btn table-btn" onClick={() => handleEdit('card', card)}>
+                          Editar
+                        </button>
+                        <button className="btn delete-btn" onClick={() => handleDeleteCard(card.id)}>
+                          Deletar
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </section>
 
-          {/* Seção de Upload de Imagem */}
-          <section>
-            <h3>Upload de Imagem</h3>
+          <section className="dashboard-section">
+            <header className="section-header">
+              <h2>Upload de Imagem</h2>
+            </header>
             <ImageUploader />
           </section>
         </main>
       </div>
-
       <Footer />
 
-      {/* Modal de Edição/Criação */}
       {editingItem && (
         <ModalEditor onClose={closeModal}>
-          {editingItem.type === 'project' ? (
-            <div>
-              <h3>{editingItem.data.id ? "Editar Projeto" : "Adicionar Projeto"}</h3>
+          <div className="modal-content">
+            <h3>{editingItem.data.id ? (editingItem.type === 'project' ? "Editar Projeto" : "Editar Card") : (editingItem.type === 'project' ? "Adicionar Projeto" : "Adicionar Card")}</h3>
+            {editingItem.type === 'project' ? (
               <ProjectForm
                 project={editingItem.data.id ? editingItem.data : null}
                 onSubmit={handleSaveProject}
                 onCancel={closeModal}
               />
-            </div>
-          ) : (
-            <div>
-              <h3>{editingItem.data.id ? "Editar Card" : "Adicionar Card"}</h3>
+            ) : (
               <CardEditor
                 initialCard={editingItem.data.id ? editingItem.data : null}
                 onSubmit={handleSaveCard}
               />
-            </div>
-          )}
+            )}
+          </div>
         </ModalEditor>
       )}
     </div>
