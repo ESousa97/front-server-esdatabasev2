@@ -1,4 +1,3 @@
-// src/components/ImageUploader/FeedbackContext.js
 import React, { createContext, useState } from 'react';
 
 export const FeedbackContext = createContext();

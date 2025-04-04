@@ -1,0 +1,38 @@
+.image-preview-progress {
+    position: relative;
+    height: 10px;
+    width: 100%;
+    background-color: var(--color-progress-bg);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 4px;
+  }
+  
+  .image-preview-progress span {
+    height: 100%;
+    display: block;
+    background-color: var(--color-primary);
+    transition: width 0.3s ease;
+    position: relative;
+  }
+  
+  .image-preview-progress span::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-primary);
+    color: white;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 5px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  
+  .image-preview-progress span:hover::after {
+    opacity: 1;
+  }
+  

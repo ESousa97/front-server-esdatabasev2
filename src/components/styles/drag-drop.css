@@ -1,0 +1,56 @@
+/* === Área de Upload por Drag-and-Drop === */
+.image-uploader__drop-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  
+    border: 2px dashed var(--color-border-2);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 1.75rem;
+  
+    background-color: var(--color-bg-muted);
+    transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+    text-align: center;
+    cursor: pointer;
+  
+    outline: none;
+  }
+  
+  .image-uploader__drop-area:hover,
+  .image-uploader__drop-area:focus {
+    background-color: var(--color-input-bg);
+    border-color: var(--color-primary);
+    transform: translateY(-2px);
+  }
+  
+  .image-uploader__drop-area:active {
+    transform: scale(0.98);
+  }
+  
+  /* Texto sugestivo interno, se necessário */
+  .image-uploader__drop-area::after {
+    content: 'Arraste e solte arquivos aqui ou clique para selecionar';
+    font-size: 0.9rem;
+    color: var(--color-neutral);
+    margin-top: 1rem;
+    opacity: 0.75;
+  }
+  
+  /* === Mensagem de Erro de Drop === */
+  .drop-error-message {
+    margin-top: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    background-color: var(--color-error);
+    color: white;
+  
+    border: 1px solid var(--color-error);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    text-align: center;
+  
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease;
+  }
+  

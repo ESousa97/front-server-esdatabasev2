@@ -1,0 +1,35 @@
+.directory-error-message {
+    background-color: var(--color-error-bg, #ffe6e6);
+    color: var(--color-error-text, #a94442);
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    border: 1px solid var(--color-error-border, #f5c6cb);
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  .directory-error-message p {
+    margin: 0;
+    flex: 1;
+  }
+  
+  .image-uploader__button.retry-button {
+    background-color: var(--color-error, #e53935);
+    color: var(--color-light-text, #fff);
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .image-uploader__button.retry-button:hover {
+    background-color: var(--color-error-hover, #c62828);
+  }
+  

@@ -1,15 +1,15 @@
-// src/components/ImageUploader/ImageUploader.jsx
 import React, { useState, useEffect, useCallback } from 'react';
+import { useFeedback } from './ImageUploader/useFeedback';
+import { useRetryRequest } from './hooks/useRetryRequest';
 import api from '../services/api';
 
-// Import dos componentes
 import DirectoryManager from './ImageUploader/DirectoryManager';
 import FileUploader from './ImageUploader/FileUploader';
 import UploadHistory from './ImageUploader/UploadHistory';
 import Feedback from './ImageUploader/Feedback';
-import ImageModal from './ImageUploader/ImageModal';
+import ImageModal from './Shared/ImageModal';
 
-import './ImageUploader.css';
+import './style.css';
 
 function ImageUploader() {
   const [imageFiles, setImageFiles] = useState([]);
@@ -24,47 +24,46 @@ function ImageUploader() {
   const [history, setHistory] = useState(() => JSON.parse(localStorage.getItem('uploadHistory')) || []);
   const [renamingItem, setRenamingItem] = useState(null);
   const [renameInputValue, setRenameInputValue] = useState('');
-  const [message, setMessage] = useState(null);
   const [dropError, setDropError] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
   const [progressMap, setProgressMap] = useState({});
 
-  // Exibe mensagem de sucesso/erro
-  const showMessage = (text, type = 'success') => {
-    setMessage({ text, type });
-    setTimeout(() => setMessage(null), 4000);
-  };
+  const showFeedback = useFeedback();
 
-  // Lida com erros de API
   const handleApiError = useCallback((err, fallbackMessage = 'Erro inesperado.') => {
     console.error(fallbackMessage, err);
     if (err.response) {
       const status = err.response.status;
-      if (status === 404) showMessage('Recurso não encontrado.', 'error');
-      else if (status === 409) showMessage('Conflito detectado.', 'error');
-      else if (status >= 500) showMessage('Erro no servidor.', 'error');
-      else showMessage(err.response.data?.message || fallbackMessage, 'error');
+      if (status === 403) {
+        showFeedback('Sem permissão para acessar os diretórios.', 'error');
+      } else if (status === 404) showFeedback('Recurso não encontrado.', 'error');
+      else if (status === 409) showFeedback('Conflito detectado.', 'error');
+      else if (status >= 500) showFeedback('Erro no servidor.', 'error');
+      else showFeedback(err.response.data?.message || fallbackMessage, 'error');
     } else if (err.request) {
-      showMessage('Falha de rede.', 'error');
+      showFeedback('Falha de rede.', 'error');
     } else {
-      showMessage(fallbackMessage, 'error');
+      showFeedback(fallbackMessage, 'error');
     }
-  }, []);
+  }, [showFeedback]);
 
-  // Busca a lista de diretórios existentes
-  const fetchDirectories = useCallback(async () => {
-    try {
+  const {
+    execute: fetchDirectories,
+    error: directoryFetchError,
+    retry: retryFetchDirectories,
+    hasAttempted
+  } = useRetryRequest(
+    async () => {
       const res = await api.get('/directories');
       setExistingDirectories(res.data.directories || []);
-    } catch (err) {
-      handleApiError(err, 'Erro ao obter diretórios.');
-    }
-  }, [handleApiError]);
+    },
+    null,
+    (err) => handleApiError(err, 'Erro ao obter diretórios.')
+  );
 
-  // Busca o conteúdo de um diretório selecionado (raiz da árvore)
-  const fetchDirectoryContent = async (dir) => {
+  const fetchDirectoryContent = useCallback(async (dir) => {
+    if (!dir || dir === selectedDirectory) return;
     try {
-      // Removemos o prefixo "public/assets" pois o backend já o adiciona
       const res = await api.get(`/directory-content/${dir}`);
       setSelectedDirectory(dir);
       setDirectoryContent(res.data.content || []);
@@ -72,71 +71,64 @@ function ImageUploader() {
     } catch (err) {
       handleApiError(err, 'Erro ao buscar conteúdo do diretório.');
     }
-  };
+  }, [selectedDirectory, handleApiError]);
 
   useEffect(() => {
-    fetchDirectories();
-    const interval = setInterval(fetchDirectories, 30000);
-    return () => clearInterval(interval);
-  }, [fetchDirectories]);
-
-  // Cria um novo diretório
-  const createDirectory = async () => {
-    if (!newDirectoryName.trim()) {
-      return showMessage('Digite um nome.', 'error');
+    if (!directoryFetchError && !hasAttempted) {
+      fetchDirectories();
     }
+  }, [fetchDirectories, directoryFetchError, hasAttempted]);
+
+  const createDirectory = async () => {
+    const trimmedName = newDirectoryName.trim();
+    if (!trimmedName) return showFeedback('Digite um nome válido.', 'error');
+
     const targetPath = selectedDirectory
-      ? `${selectedDirectory}/${newDirectoryName}`
-      : `assets/${newDirectoryName}`;
+      ? `${selectedDirectory}/${trimmedName}`
+      : `assets/${trimmedName}`;
 
     if (existingDirectories.includes(targetPath)) {
-      return showMessage(`O diretório "${targetPath}" já existe.`, 'error');
+      return showFeedback(`O diretório "${targetPath}" já existe.`, 'error');
     }
 
     try {
       await api.post('/create-directory', { name: targetPath });
-      showMessage(`Diretório "${targetPath}" criado.`, 'success');
+      showFeedback(`Diretório "${targetPath}" criado com sucesso.`, 'success');
       setNewDirectoryName('');
-      fetchDirectories();
-      if (selectedDirectory) {
-        fetchDirectoryContent(selectedDirectory);
-      }
+      setExistingDirectories((prev) => [...prev, targetPath]);
+      if (selectedDirectory) fetchDirectoryContent(selectedDirectory);
     } catch (err) {
       handleApiError(err, 'Erro ao criar diretório.');
     }
   };
 
-  // Função para sair da navegação de diretório
   const exitDirectoryNavigation = () => {
     setSelectedDirectory(null);
     setDirectoryContent([]);
   };
 
-  // Handler para input de arquivos
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    const pngFiles = files.filter(file => file.type === 'image/png');
-    setImageFiles(pngFiles.map(file => ({ file, newName: file.name })));
+    const pngFiles = files.filter((file) => file.type === 'image/png');
+    setImageFiles(pngFiles.map((file) => ({ file, newName: file.name })));
   };
 
-  // Handler para soltar arquivos na área de drop
   const handleDrop = (e) => {
     e.preventDefault();
     const files = Array.from(e.dataTransfer.files);
-    const pngFiles = files.filter(file => file.type === 'image/png');
+    const pngFiles = files.filter((file) => file.type === 'image/png');
     if (pngFiles.length !== files.length) {
       setDropError('Somente arquivos .png são permitidos.');
       setTimeout(() => setDropError(''), 4000);
     } else {
       setDropError('');
     }
-    setImageFiles(pngFiles.map(file => ({ file, newName: file.name })));
+    setImageFiles(pngFiles.map((file) => ({ file, newName: file.name })));
   };
 
-  // Realiza o upload dos arquivos
   const handleUpload = async () => {
     if (imageFiles.length === 0) {
-      return showMessage('Selecione ao menos uma imagem.', 'error');
+      return showFeedback('Selecione ao menos uma imagem.', 'error');
     }
 
     const uploadDir = directory || selectedDirectory || 'default_directory';
@@ -161,18 +153,11 @@ function ImageUploader() {
         const res = await api.post('/imageupload', formData, {
           onUploadProgress: (progressEvent) => {
             const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            setProgressMap(prev => ({
-              ...prev,
-              [newName]: percent
-            }));
-          }
+            setProgressMap((prev) => ({ ...prev, [newName]: percent }));
+          },
         });
-        setUploadResponses(prev => [...prev, res.data]);
-        newHistory.unshift({
-          name: newName,
-          url: res.data.imageUrl,
-          timestamp: new Date().toISOString(),
-        });
+        setUploadResponses((prev) => [...prev, res.data]);
+        newHistory.unshift({ name: newName, url: res.data.imageUrl, timestamp: new Date().toISOString() });
       } catch (err) {
         if (err.response?.status === 409) {
           const confirmOverwrite = window.confirm(`"${newName}" já existe. Deseja sobrescrever?`);
@@ -180,12 +165,8 @@ function ImageUploader() {
             formData.set('overwrite', true);
             try {
               const res = await api.post('/imageupload', formData);
-              setUploadResponses(prev => [...prev, res.data]);
-              newHistory.unshift({
-                name: newName,
-                url: res.data.imageUrl,
-                timestamp: new Date().toISOString(),
-              });
+              setUploadResponses((prev) => [...prev, res.data]);
+              newHistory.unshift({ name: newName, url: res.data.imageUrl, timestamp: new Date().toISOString() });
             } catch (errOverwrite) {
               handleApiError(errOverwrite, `Erro ao sobrescrever "${newName}".`);
             }
@@ -209,68 +190,51 @@ function ImageUploader() {
     setProgressMap({});
   };
 
-  // Inicia o processo de renomear
   const handleRename = (oldPath) => {
     const parts = oldPath.split('/');
     const fullName = parts.pop();
     const currentDir = parts.join('/');
     const extension = fullName.includes('.') ? '.' + fullName.split('.').pop() : '';
     const baseName = fullName.replace(extension, '');
-
     setRenameInputValue(baseName);
     setRenamingItem({ oldPath, extension, currentDir });
   };
 
-  // Confirma renomeação
   const confirmRename = async () => {
     if (!renamingItem) return;
     const { oldPath, extension, currentDir } = renamingItem;
     const newName = renameInputValue.trim();
     if (!newName) return;
-
-    const newPath = currentDir
-      ? `${currentDir}/${newName}${extension}`
-      : `${newName}${extension}`;
-
+    const newPath = currentDir ? `${currentDir}/${newName}${extension}` : `${newName}${extension}`;
     try {
       await api.put('/rename-content', { oldPath, newPath });
-      showMessage(`"${oldPath}" renomeado para "${newName}${extension}".`, 'success');
+      showFeedback(`"${oldPath}" renomeado para "${newName}${extension}".`, 'success');
       setRenamingItem(null);
       setRenameInputValue('');
       fetchDirectories();
-      if (selectedDirectory) {
-        fetchDirectoryContent(selectedDirectory);
-      }
+      if (selectedDirectory) fetchDirectoryContent(selectedDirectory);
     } catch (err) {
       handleApiError(err, 'Erro ao renomear item.');
     }
   };
 
-  // Cancela renomeação
   const cancelRename = () => {
     setRenamingItem(null);
     setRenameInputValue('');
   };
 
-  // Deleta arquivo ou diretório
   const handleDelete = async (path, type) => {
     if (!window.confirm(`Deseja deletar "${path}"?`)) return;
-
-    console.log('Deletando item:', { path, type });
-
     try {
       await api.delete('/delete-content', { data: { path, type } });
-      showMessage(`"${path}" deletado.`, 'success');
+      showFeedback(`"${path}" deletado.`, 'success');
       fetchDirectories();
-      if (selectedDirectory) {
-        fetchDirectoryContent(selectedDirectory);
-      }
+      if (selectedDirectory) fetchDirectoryContent(selectedDirectory);
     } catch (err) {
       handleApiError(err, 'Erro ao deletar item.');
     }
   };
 
-  // Handler para quando uma imagem é clicada na árvore
   const handleImageClick = (item) => {
     setSelectedImage(item);
   };
@@ -279,9 +243,17 @@ function ImageUploader() {
     <div className="image-uploader">
       <h3 className="image-uploader__title">Upload de Imagens</h3>
 
-      {message && <Feedback message={message} />}
+      {directoryFetchError && (
+        <div className="directory-error-message">
+          <p>Erro ao carregar os diretórios.</p>
+          <button onClick={retryFetchDirectories} className="image-uploader__button">
+            Tentar novamente
+          </button>
+        </div>
+      )}
 
-      {/* O DirectoryManager agora renderiza a lista de diretórios existentes e, abaixo dela, o conteúdo do diretório selecionado */}
+      <Feedback />
+
       <DirectoryManager
         selectedDirectory={selectedDirectory}
         newDirectoryName={newDirectoryName}
@@ -289,7 +261,6 @@ function ImageUploader() {
         createDirectory={createDirectory}
         existingDirectories={existingDirectories}
         fetchDirectoryContent={fetchDirectoryContent}
-        //
         directoryContent={directoryContent}
         filter={filter}
         setFilter={setFilter}
@@ -319,10 +290,7 @@ function ImageUploader() {
         setProgressMap={setProgressMap}
       />
 
-      <UploadHistory
-        history={history}
-        uploadResponses={uploadResponses}
-      />
+      <UploadHistory history={history} uploadResponses={uploadResponses} />
 
       {selectedImage && (
         <ImageModal image={selectedImage} onClose={() => setSelectedImage(null)} />

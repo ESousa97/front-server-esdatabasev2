@@ -1,0 +1,55 @@
+/* =====directory-list.css===== */
+
+.directory-list {
+    list-style: none;
+    padding-left: 1rem;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    border-left: 3px solid var(--color-border);
+  }
+  
+  .directory-item {
+    background-color: var(--color-surface);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    box-shadow: 0 1px 4px var(--color-shadow);
+    position: relative;
+    transition: background-color 0.2s, transform 0.2s;
+  }
+  
+  .directory-item:hover {
+    background-color: var(--color-bg-muted);
+    transform: translateX(4px);
+  }
+  
+  .directory-item .file-name {
+    flex: 1;
+    color: var(--color-text);
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .directory-item button,
+  .directory-item a {
+    background: none;
+    border: none;
+    color: var(--color-link);
+    font-size: 1rem;
+    padding: 0.4rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  
+  .directory-item button:hover,
+  .directory-item a:hover {
+    color: var(--color-primary);
+  }
+  

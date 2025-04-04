@@ -27,7 +27,6 @@ function FileUploader({
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
       >
-        <p>Arraste e solte imagens aqui ou clique para selecionar.</p>
         {dropError && (
           <div className="drop-error-message">
             {dropError}

@@ -7,7 +7,7 @@ import CardEditor from '../components/Card/CardEditor';
 import Sidebar from '../components/Layout/Sidebar';
 import Header from '../components/Layout/Header';
 import Footer from '../components/Layout/Footer';
-import ModalEditor from '../components/ModalEditor';
+import ModalEditor from '../components/Shared/ModalEditor';
 import ImageUploader from '../components/ImageUploader';
 import { useAuth } from '../contexts/AuthContext';
 import './DashboardPage.css';

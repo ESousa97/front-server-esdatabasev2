@@ -1,0 +1,7 @@
+/* =====directory-actions.css===== */
+
+.directory-actions button:hover {
+    color: var(--color-primary);
+    background-color: var(--color-warning);
+  }
+  

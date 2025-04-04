@@ -1,0 +1,46 @@
+.upload-history-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 1rem;
+  }
+  
+  .upload-history-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background-color: var(--color-surface);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px var(--color-shadow);
+    font-size: 0.95rem;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    margin-bottom: 0.75rem;
+  }
+  
+  .upload-history-list li:hover {
+    background-color: var(--color-bg-muted);
+    transform: translateY(-1px);
+  }
+  
+  .upload-history-link {
+    display: flex;
+    align-items: center;
+    color: var(--color-link);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    word-break: break-all;
+  }
+  
+  .upload-history-link:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+  
+  .upload-history-date {
+    font-size: 0.875rem;
+    color: var(--color-neutral);
+    white-space: nowrap;
+  }
+  

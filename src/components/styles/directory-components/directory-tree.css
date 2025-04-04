@@ -1,0 +1,54 @@
+/* === Tree Node === */
+.tree-node {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    background-color: var(--color-surface);
+    box-shadow: 0 1px 3px var(--color-shadow);
+    transition: background-color 0.2s ease;
+  }
+  
+  .tree-node:hover {
+    background-color: var(--color-bg-muted);
+  }
+  
+  .tree-node-folder,
+  .tree-node-file {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: var(--color-text);
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+  
+  .tree-node-actions button {
+    background: none;
+    border: none;
+    padding: 0.3rem;
+    border-radius: 6px;
+    color: var(--color-link);
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  
+  .tree-node-actions button:hover {
+    color: var(--color-primary);
+  }
+  
+  .tree-node-children {
+    list-style: none;
+    padding-left: 1.25rem;
+    margin-top: 0.5rem;
+  }
+  
+  .loading-text {
+    font-size: 0.85rem;
+    color: var(--color-neutral);
+    margin-left: 0.75rem;
+  }
+  

@@ -1,0 +1,20 @@
+@import './styles/container.css';
+@import './styles/form.css';
+@import './styles/drag-drop.css';
+@import './styles/preview.css';
+@import './styles/progress.css';
+@import './styles/feedback.css';
+@import './styles/history.css';
+@import './styles/animations.css';
+
+/*==Estilização dos componentes de imagem==*/
+@import './styles/directory-components/directory-layout.css';
+@import './styles/directory-components/directory-list.css';
+@import './styles/directory-components/directory-manager.css';
+@import './styles/directory-components/existing-directories.css';
+@import './styles/directory-components/directory-actions.css';
+@import './styles/directory-components/directory-content.css';
+@import './styles/directory-components/directory-tree.css';
+
+/*==Estilização dos componentes de erro==*/
+@import './styles/directory-components/directory-error.css';

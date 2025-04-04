@@ -1,4 +1,3 @@
-// src/components/ImageUploader/DirectoryContent.jsx
 import React from 'react';
 import DirectoryTreeNode from './DirectoryTreeNode';
 
@@ -20,7 +19,7 @@ function DirectoryContent({
   if (!selectedDirectory) return null;
 
   const filteredContent = filter
-    ? directoryContent.filter(item =>
+    ? directoryContent.filter((item) =>
         item.name.toLowerCase().includes(filter.toLowerCase())
       )
     : directoryContent;
