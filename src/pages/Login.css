@@ -6,6 +6,19 @@
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-bg) 100%);
 }
 
+/* Animação de flutuação contínua */
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-30px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
 .login-card {
   background-color: var(--color-input-bg);
   padding: 2.5rem;
@@ -14,10 +27,25 @@
   box-shadow: 0 4px 12px var(--color-shadow);
   text-align: center;
   transition: transform 0.3s ease;
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Ao passar o mouse, pausa a animação */
+.login-card:hover {
+  animation-play-state: paused;
+  transform: translateY(0);
+}
+
+/* Pausa a animação se algum input dentro do card estiver focado */
+.login-card:has(input:focus) {
+  animation-play-state: paused;
+  transform: translateY(0);
 }
 
 .login-card:hover {
-  transform: translateY(-5px);
+  /* Ao passar o mouse, a animação é pausada e o card é posicionado de forma estática */
+  animation-play-state: paused;
+  transform: translateY(0);
 }
 
 .login-title {
