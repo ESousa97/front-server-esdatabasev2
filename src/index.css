@@ -54,7 +54,7 @@
   --color-overlay: rgba(0, 0, 0, 0.6); /* Sombra intensa para modais em dark */
 
   --color-info: #3b82f6;            /* Azul claro para informações */
-  --color-neutral: #9ca3af;         /* Texto auxiliar ainda legível */
+  --color-neutral: #484a4e;         /* Texto auxiliar ainda legível */
   --color-disabled: #6b7280;        /* Texto desabilitado em dark */
 }
 

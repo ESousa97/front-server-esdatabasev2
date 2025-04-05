@@ -1,8 +1,9 @@
-// src/components/Project/ProjectForm.jsx
 import React, { useState, useEffect } from 'react';
-import ContentEditor from '../ContentEditor';
+import ContentEditor from '../ContentEditor/ContentEditor';
+import { Save, X } from 'lucide-react';
+import './ProjectForm.css';
 
-function ProjectForm({ project, onSubmit, onCancel }) {
+function ProjectForm({ project, onSubmit, onCancel, onContentChange }) {
   const [formData, setFormData] = useState({
     titulo: '',
     descricao: '',
@@ -28,64 +29,72 @@ function ProjectForm({ project, onSubmit, onCancel }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginBottom: '1rem' }}>
-      {/* Campo Título */}
-      <div style={{ marginBottom: '1rem' }}>
-        <label style={{ display: 'block', marginBottom: '0.3rem', fontWeight: 'bold' }}>
-          Título
-        </label>
-        <input
-          type="text"
-          placeholder="Título"
-          value={formData.titulo}
-          onChange={e => handleChange('titulo', e.target.value)}
-        />
+    <form className="project-form" onSubmit={handleSubmit}>
+      {/* Linha de cima: Título, Descrição, Categoria, e Botões todos em Grid */}
+      <div className="form-header">
+        <div className="form-group">
+          <label className="form-label">Título</label>
+          <input
+            className="form-input"
+            type="text"
+            placeholder="Título"
+            value={formData.titulo}
+            onChange={e => handleChange('titulo', e.target.value)}
+          />
+        </div>
+
+        <div className="form-group">
+          <label className="form-label">Descrição</label>
+          <input
+            className="form-input"
+            type="text"
+            placeholder="Descrição"
+            value={formData.descricao}
+            onChange={e => handleChange('descricao', e.target.value)}
+          />
+        </div>
+
+        <div className="form-group">
+          <label className="form-label">Categoria</label>
+          <input
+            className="form-input"
+            type="text"
+            placeholder="Categoria"
+            value={formData.categoria}
+            onChange={e => handleChange('categoria', e.target.value)}
+          />
+        </div>
+
+        {/* Botões */}
+        <div className="form-actions">
+          <button type="submit" className="btn-submit">
+            <Save size={16} style={{ marginRight: '4px' }} />
+            Salvar
+          </button>
+          {onCancel && (
+            <button
+              type="button"
+              className="btn-cancel"
+              onClick={onCancel}
+            >
+              <X size={16} style={{ marginRight: '4px' }} />
+              Cancelar
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Campo Descrição */}
-      <div style={{ marginBottom: '1rem' }}>
-        <label style={{ display: 'block', marginBottom: '0.3rem', fontWeight: 'bold' }}>
-          Descrição
-        </label>
-        <input
-          type="text"
-          placeholder="Descrição"
-          value={formData.descricao}
-          onChange={e => handleChange('descricao', e.target.value)}
-        />
-      </div>
-
-      {/* Editor de Conteúdo */}
-      <div style={{ marginBottom: '1rem' }}>
-        <label style={{ display: 'block', marginBottom: '0.3rem', fontWeight: 'bold' }}>
-          Conteúdo
-        </label>
+      {/* Abaixo, o editor de conteúdo ocupando espaço total abaixo da linha de inputs e botões */}
+      <div className="form-content">
+        <label className="form-label">Conteúdo</label>
         <ContentEditor
           value={formData.conteudo}
-          onChange={(val) => handleChange('conteudo', val)}
+          onChange={(val) => {
+            handleChange('conteudo', val);
+            onContentChange(val);
+          }}
         />
       </div>
-
-      {/* Campo Categoria */}
-      <div style={{ marginBottom: '1rem' }}>
-        <label style={{ display: 'block', marginBottom: '0.3rem', fontWeight: 'bold' }}>
-          Categoria
-        </label>
-        <input
-          type="text"
-          placeholder="Categoria"
-          value={formData.categoria}
-          onChange={e => handleChange('categoria', e.target.value)}
-        />
-      </div>
-
-      {/* Botões */}
-      <button type="submit" style={{ marginRight: '0.5rem' }}>Salvar</button>
-      {onCancel && (
-        <button type="button" onClick={onCancel}>
-          Cancelar
-        </button>
-      )}
     </form>
   );
 }

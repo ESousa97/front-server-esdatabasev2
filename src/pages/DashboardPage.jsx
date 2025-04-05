@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import ProjectForm from '../components/Project/ProjectForm';
+import ProjectEditor from '../components/Project/ProjectEditor';
 import CardEditor from '../components/Card/CardEditor';
 import Sidebar from '../components/Layout/Sidebar';
 import Header from '../components/Layout/Header';
@@ -239,23 +239,23 @@ function DashboardPage() {
       <Footer />
 
       {editingItem && (
-        <ModalEditor onClose={closeModal}>
+        <ModalEditor onClose={closeModal} fullscreen={editingItem?.type === 'project'}>
+        {editingItem.type === 'project' ? (
+          <ProjectEditor
+            project={editingItem.data.id ? editingItem.data : null}
+            onSubmit={handleSaveProject}
+            onCancel={closeModal}
+          />
+        ) : (
           <div className="modal-content">
-            <h3>{editingItem.data.id ? (editingItem.type === 'project' ? "Editar Projeto" : "Editar Card") : (editingItem.type === 'project' ? "Adicionar Projeto" : "Adicionar Card")}</h3>
-            {editingItem.type === 'project' ? (
-              <ProjectForm
-                project={editingItem.data.id ? editingItem.data : null}
-                onSubmit={handleSaveProject}
-                onCancel={closeModal}
-              />
-            ) : (
-              <CardEditor
-                initialCard={editingItem.data.id ? editingItem.data : null}
-                onSubmit={handleSaveCard}
-              />
-            )}
+            <h3>{editingItem.data.id ? "Editar Card" : "Adicionar Card"}</h3>
+            <CardEditor
+              initialCard={editingItem.data.id ? editingItem.data : null}
+              onSubmit={handleSaveCard}
+            />
           </div>
-        </ModalEditor>
+        )}
+      </ModalEditor>      
       )}
     </div>
   );

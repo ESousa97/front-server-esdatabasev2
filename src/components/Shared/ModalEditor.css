@@ -1,10 +1,11 @@
+/* ===== Overlay padrão ===== */
 .modal-overlay {
   position: fixed;
   inset: 0;
   background-color: var(--color-overlay);
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center; /* 🔥 centraliza verticalmente */
   z-index: 1000;
   opacity: 0;
   pointer-events: none;
@@ -14,22 +15,25 @@
 .modal-overlay.show {
   opacity: 1;
   pointer-events: auto;
-}
-
-.modal-content {
-  background: var(--color-bg);
   padding: 2rem;
-  border-radius: 12px;
-  width: 80%;
-  max-width: 900px;
-  position: relative;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
-  transform: scale(0.95);
-  opacity: 0;
-  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
+/* Ativado com overlay visível */
 .modal-overlay.show .modal-content {
   transform: scale(1);
   opacity: 1;
+}
+
+/* ===== Modo tela cheia para edições maiores (ex: ProjectEditor) ===== */
+.modal-content.fullscreen {
+  width: 100vw;
+  max-width: 100%;
+  max-height: calc(100vh - 4rem); /* Ajusta para caber na viewport, considerando padding */
+  overflow-y: auto; /* Permite scroll interno */
+  background-color: var(--color-surface);
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
 }

@@ -1,0 +1,38 @@
+.editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.editor-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-primary);
+  color: #fff;
+  border: 1px solid var(--color-border-2);
+  border-radius: 6px;
+  padding: 1rem;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.editor-button:hover {
+  background-color: var(--color-link);
+  box-shadow: 0 2px 4px var(--color-shadow);
+}
+
+.editor-button:active {
+  transform: scale(1.05);
+}
+
+.editor-button:focus {
+  outline: 2px solid var(--color-link);
+  outline-offset: 2px;
+}
+
+.button-label {
+  display: inline-block;
+}

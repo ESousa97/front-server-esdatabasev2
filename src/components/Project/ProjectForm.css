@@ -1,0 +1,106 @@
+/* Container geral do formulário – estilo card */
+.project-form {
+  width: 100vw;
+  max-width: 95%;
+  margin: 1rem auto;
+  padding: 1rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px var(--color-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Cabeçalho do formulário – campos e ações em uma linha compacta */
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Grupo de campos (título, descrição, categoria) */
+.form-field-group {
+  display: flex;
+  gap: 1rem;
+  flex: 1;
+}
+
+/* Cada campo do grupo */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
+}
+
+/* Rótulos dos campos */
+.form-label {
+  font-weight: bold;
+  color: var(--color-heading);
+  font-size: 0.9rem;
+  margin-bottom: 0.2rem;
+}
+
+/* Inputs dos campos */
+.form-input {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--color-border-2);
+  border-radius: 6px;
+  background-color: var(--color-input-bg);
+  color: var(--color-text);
+  font-size: 0.9rem;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(79,70,229,0.2);
+}
+
+/* Botões de ação */
+.form-actions {
+  margin-top: 0.6%;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-submit,
+.btn-cancel {
+  padding: 0.4rem 0.8rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.btn-submit {
+  background-color: var(--color-primary);
+  color: #fff;
+}
+
+.btn-submit:hover {
+  background-color: var(--color-link);
+}
+
+.btn-cancel {
+  background-color: var(--color-error);
+  color: #fff;
+}
+
+.btn-cancel:hover {
+  background-color: #dc2626;
+}
+
+/* Seção de conteúdo (editor) */
+.form-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

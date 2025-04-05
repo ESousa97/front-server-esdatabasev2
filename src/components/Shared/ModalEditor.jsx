@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { CloseIcon } from '../ImageUploader/icons';
 import './ModalEditor.css';
 
-function ModalEditor({ children, onClose }) {
+function ModalEditor({ children, onClose, fullscreen }) {
   const [visible, setVisible] = useState(false);
 
   const handleClose = useCallback(() => {
@@ -24,7 +24,7 @@ function ModalEditor({ children, onClose }) {
     return () => {
       window.removeEventListener('keydown', handleEsc);
     };
-  }, [handleClose]); // ✅ agora o ESLint está satisfeito
+  }, [handleClose]);
 
   const handleOverlayClick = (e) => {
     if (e.target.classList.contains('modal-overlay')) {
@@ -34,7 +34,7 @@ function ModalEditor({ children, onClose }) {
 
   return (
     <div className={`modal-overlay ${visible ? 'show' : ''}`} onClick={handleOverlayClick}>
-      <div className="modal-content">
+      <div className={`modal-content ${fullscreen ? 'fullscreen' : ''}`}>
         <button className="modal-close" onClick={handleClose} aria-label="Fechar modal">
           <CloseIcon size={20} strokeWidth={2.5} />
         </button>
@@ -47,6 +47,7 @@ function ModalEditor({ children, onClose }) {
 ModalEditor.propTypes = {
   children: PropTypes.node.isRequired,
   onClose: PropTypes.func.isRequired,
+  fullscreen: PropTypes.bool,
 };
 
 export default ModalEditor;

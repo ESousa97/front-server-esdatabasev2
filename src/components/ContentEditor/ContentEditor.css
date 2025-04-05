@@ -1,0 +1,52 @@
+/* Container principal do editor */
+.content-editor {
+  width: 100%;
+  max-width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+/* Título opcional */
+.editor-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: var(--color-heading);
+  margin-bottom: 1rem;
+}
+
+/* Painel do editor em si */
+.editor-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Textarea editável */
+.editor-textarea {
+  width: 100%;
+  min-height: 300px;
+  resize: vertical; /* permite redimensionar verticalmente */
+  padding: 0.75rem;
+  border: 1px solid var(--color-border-2);
+  border-radius: 6px;
+  background-color: var(--color-input-bg);
+  color: var(--color-text);
+  box-sizing: border-box;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+/* Efeito de foco */
+.editor-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+
+/* Ações (botões) do editor */
+.editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
