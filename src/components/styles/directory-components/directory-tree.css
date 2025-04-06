@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.25rem 0.5rem;
+  padding: 0.2rem 0.4rem;
   border-radius: 6px;
   transition: background-color 0.2s ease;
 }
@@ -38,7 +38,7 @@
 .tree-node-actions button {
   background: none;
   border: none;
-  padding: 0.25rem;
+  padding: 0.2rem;
   border-radius: 4px;
   color: var(--color-neutral);
   cursor: pointer;
@@ -56,7 +56,7 @@
 }
 
 .loading-text {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--color-neutral);
   margin-left: 0.5rem;
 }

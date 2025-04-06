@@ -1,0 +1,82 @@
+/* Container geral do layout */
+.layout {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+}
+
+/* Conteúdo principal, começa abaixo do Header */
+.content-wrapper {
+  margin-top: 60px; /* mesmo valor do header para não ficar encoberto */
+  min-height: calc(100vh - 60px);
+  transition: filter 0.3s ease;
+}
+
+/* Efeito de blur quando o sidebar está aberto */
+.content-wrapper.blur {
+  filter: blur(4px);
+  pointer-events: none; /* impede cliques no conteúdo borrado */
+}
+
+/* Overlay (fundo escuro) quando a sidebar estiver aberta */
+.overlay {
+  position: fixed;
+  top: 60px; /* inicia logo após o Header */
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 60px);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(3px);
+  z-index: 150;
+}
+
+/* Sidebar em formato de drawer abaixo do Header */
+.sidebar-drawer {
+  position: fixed;
+  top: 60px; /* Fica imediatamente abaixo do Header fixo */
+  left: 0;
+  width: 220px;
+  height: calc(100vh - 60px);
+  background: var(--color-secondary);
+  transform: translateX(-100%); /* escondido por padrão */
+  transition: transform 0.3s ease;
+  z-index: 200;
+  overflow-y: auto;
+}
+
+.sidebar-drawer.open {
+  transform: translateX(0); /* aparece */
+}
+
+/* Navegação do Sidebar */
+.sidebar-nav {
+  padding: 1rem;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  color: var(--color-text);
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 0.5rem;
+}
+
+.sidebar-icon {
+  font-size: 1.2rem;
+  margin-right: 0.5rem;
+}
+
+/* Área principal do layout */
+.layout-main {
+  padding: 1rem;
+}

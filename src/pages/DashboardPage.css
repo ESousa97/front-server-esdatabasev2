@@ -1,151 +1,195 @@
-/* DashboardPage.css */
-
-/* Página do Dashboard */
+/* Página principal */
 .dashboard-page {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  font-family: var(--font-family, 'Helvetica Neue', Helvetica, Arial, sans-serif);
+  font-family: var(--font-family, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif);
   color: var(--color-text);
   background-color: var(--color-bg);
+  font-size: 0.92rem; /* Tamanho base levemente reduzido */
 }
 
-/* Container do Dashboard (Sidebar + Conteúdo Principal) */
+/* Container do conteúdo */
 .dashboard-container {
   display: flex;
   flex: 1;
-  background-color: var(--color-bg);
+  height: 100%;
 }
 
-/* Conteúdo Principal */
+/* Área principal */
 .dashboard-main {
   flex: 1;
-  padding: 2rem;
+  padding: 2rem 2.5rem;
   overflow-y: auto;
 }
 
-/* Seções do Dashboard */
+/* Seções */
 .dashboard-section {
   background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  box-shadow: 0 2px 6px var(--color-shadow);
-  margin-bottom: 2rem;
+  border-radius: 10px;
   padding: 1.5rem;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+  border: 1px solid var(--color-border);
+  transition: box-shadow 0.3s ease;
 }
 
-/* Cabeçalho da Seção */
+.dashboard-section:hover {
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.07);
+}
+
+/* Cabeçalhos */
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.6rem;
   border-bottom: 1px solid var(--color-border);
-  margin-bottom: 1rem; /* ou utilize uma variável de espa\u00e7amento se tiver definida */ 
-  padding-bottom: 0.5rem;
 }
 
 .section-header h2 {
-  font-size: 1.75rem;
+  font-size: 1.4rem;
+  font-weight: 600;
   margin: 0;
   color: var(--color-heading);
 }
 
-/* Bot\u00f5es Gerais */
+/* Botões gerais (compactos) */
 .btn {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
+  padding: 0.35rem 0.75rem;           /* Menor altura e largura */
+  font-size: 0.82rem;                 /* Fonte menor */
+  font-weight: 500;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;                 /* Levemente menos arredondado */
   cursor: pointer;
-  transition: background 0.3s ease;
   background-color: var(--color-primary);
   color: var(--color-input-bg);
+  box-shadow: 0 1px 3px var(--color-shadow);
+  transition: all 0.2s ease;
 }
 
-.add-btn {
-  background-color: var(--color-primary);
-  color: var(--color-input-bg);
+.btn:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
 }
 
-.add-btn:hover {
-  opacity: 0.9;
-}
-
-/* Container da Tabela */
-.table-container {
-  overflow-x: auto;
-}
-
-/* Tabela do Dashboard */
-.dashboard-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 600px;
-}
-
-.dashboard-table th,
-.dashboard-table td {
-  padding: 0.75rem;
-  border: 1px solid var(--color-border);
-  text-align: left;
-}
-
-.dashboard-table th {
-  background-color: var(--color-bg-muted);
-  font-weight: bold;
-  color: var(--color-heading);
-}
-
-/* C\u00e9lulas de A\u00e7\u00e3o */
-.actions-cell {
-  text-align: center;
-}
-
-/* Bot\u00f5es Internos da Tabela */
 .table-btn {
-  background-color: var(--color-primary);
-  color: var(--color-input-bg);
-  margin-right: 0.5rem;
-  border: none;
-  border-radius: 4px;
-  padding: 0.5rem 1rem;
-}
-
-.table-btn:hover {
-  opacity: 0.9;
+  margin-right: 0.35rem;
 }
 
 .delete-btn {
   background-color: var(--color-error);
-  color: var(--color-input-bg);
-  border: none;
-  border-radius: 4px;
-  padding: 0.5rem 1rem;
 }
 
-.delete-btn:hover {
-  opacity: 0.9;
+.table-btn {
+  margin-right: 1rem;
+}
+
+.delete-btn {
+  background-color: var(--color-error);
+}
+
+/* Tabela */
+.table-container {
+  overflow-x: auto;
+}
+
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  min-width: 640px;
+  border-radius: 6px;
+  overflow: hidden;
+  background-color: var(--color-bg-muted);
+}
+
+.dashboard-table th,
+.dashboard-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.dashboard-table th {
+  background-color: var(--color-surface);
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+.dashboard-table tr:hover {
+  background-color: rgba(0, 0, 0, 0.025);
+}
+
+.col-conteudo {
+  max-width: 160px;
+  width: 15%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.actions-cell {
+  text-align: center;
 }
 
 /* Modal */
 .modal-content {
-  padding: 1rem;
+  padding: 1.25rem;
   background-color: var(--color-surface);
   border-radius: 8px;
-  box-shadow: 0 2px 6px var(--color-shadow);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .modal-content h3 {
   margin-top: 0;
   color: var(--color-heading);
+  font-size: 1.2rem;
 }
 
-/* Responsividade */
+/* Rodapé como assinatura */
+.footer {
+  text-align: center;
+  padding: 1.5rem 0 0.75rem;
+  font-size: 0.8rem;
+  color: var(--color-text, #555);
+  opacity: 0.5;
+  user-select: none;
+}
+
+.footer .signature {
+  font-family: 'Brush Script MT', cursive;
+  font-size: 1.1rem;
+  color: inherit;
+}
+
+/* Responsividade aprimorada */
 @media (max-width: 768px) {
   .dashboard-main {
-    padding: 1rem;
+    padding: 1.2rem 0.8rem;
   }
+
   .section-header h2 {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
+  }
+
+  .btn {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .dashboard-table {
+    font-size: 0.85rem;
+    min-width: 100%;
+  }
+
+  .dashboard-section {
+    padding: 1.2rem;
+  }
+
+  .modal-content h3 {
+    font-size: 1rem;
   }
 }

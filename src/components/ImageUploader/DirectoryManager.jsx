@@ -15,7 +15,6 @@ function DirectoryManager({
   createDirectory,
   existingDirectories,
   fetchDirectoryContent,
-
   directoryContent,
   filter,
   setFilter,
@@ -29,33 +28,40 @@ function DirectoryManager({
   exitDirectoryNavigation,
   onImageClick,
 }) {
-  const handleDirectoryToggle = (dir) => {
+  const toggleDirectory = (dir) => {
     if (selectedDirectory === dir) {
-      setSelectedDirectory(null); // Fecha se for a mesma pasta
+      setSelectedDirectory(null);
     } else {
-      fetchDirectoryContent(dir); // Abre nova pasta
+      fetchDirectoryContent(dir);
       setSelectedDirectory(dir);
     }
   };
 
   return (
     <div className="directory-manager">
+      {/* === Seção de Criação de Subpasta === */}
       <div className="directory-group">
-        <label className="image-uploader__label">
-          Criar novo diretório em: <code>/{selectedDirectory || '(assets)'}</code>
+        <label htmlFor="new-dir-input" className="image-uploader__label">
+          Criar subpasta em: <code>/{selectedDirectory || 'assets'}</code>
         </label>
         <input
+          id="new-dir-input"
           className="image-uploader__input"
           type="text"
           placeholder="Nome da nova pasta"
           value={newDirectoryName}
           onChange={(e) => setNewDirectoryName(e.target.value)}
         />
-        <button className="image-uploader__button" onClick={createDirectory}>
+        <button
+          type="button"
+          className="image-uploader__button"
+          onClick={createDirectory}
+        >
           Criar Subpasta
         </button>
       </div>
 
+      {/* === Lista de Diretórios === */}
       <div className="existing-directories">
         <h4>Diretórios existentes:</h4>
         <ul>
@@ -66,24 +72,26 @@ function DirectoryManager({
               <li
                 key={idx}
                 className={`existing-directory-item ${isOpen ? 'active' : ''}`}
-                onClick={() => handleDirectoryToggle(dir)}
                 role="button"
+                aria-pressed={isOpen}
                 tabIndex={0}
+                onClick={() => toggleDirectory(dir)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') handleDirectoryToggle(dir);
+                  if (e.key === 'Enter' || e.key === ' ') toggleDirectory(dir);
                 }}
               >
                 {isOpen ? <FolderOpenIcon size={18} /> : <FolderIcon size={18} />}
                 <strong>{dir}</strong>
                 <button
+                  type="button"
                   className="eye-button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleDirectoryToggle(dir);
+                    toggleDirectory(dir);
                   }}
                   title={isOpen ? 'Fechar diretório' : 'Ver conteúdo'}
+                  aria-label={isOpen ? 'Fechar diretório' : 'Abrir diretório'}
                 >
-                  {/* ✅ INVERTIDO AQUI */}
                   {isOpen ? <EyeIcon size={16} /> : <EyeOffIcon size={16} />}
                 </button>
               </li>
@@ -92,6 +100,7 @@ function DirectoryManager({
         </ul>
       </div>
 
+      {/* === Conteúdo da Pasta Selecionada === */}
       {selectedDirectory && (
         <DirectoryContent
           selectedDirectory={selectedDirectory}

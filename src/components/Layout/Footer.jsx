@@ -1,13 +1,14 @@
-// src/components/Layout/Footer.jsx
 import React from 'react';
 import './Footer.css';
 
-function Footer() {
+const Footer = () => {
   return (
     <footer className="footer">
-      <p>&copy; {new Date().getFullYear()} Projmanage</p>
+      <div className="footer-content">
+        Desenvolvido por <span className="signature">José Enoque</span>
+      </div>
     </footer>
   );
-}
+};
 
 export default Footer;

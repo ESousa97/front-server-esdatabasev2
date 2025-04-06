@@ -1,9 +1,17 @@
+/* Contêiner principal da página com flex em coluna */
+.login-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-bg) 100%);
+}
+
+/* Contêiner para centralizar o card de login */
 .login-container {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-bg) 100%);
 }
 
 /* Animação de flutuação contínua */

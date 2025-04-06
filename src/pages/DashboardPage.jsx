@@ -1,15 +1,10 @@
 // src/pages/DashboardPage.jsx
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import ProjectEditor from '../components/Project/ProjectEditor';
 import CardEditor from '../components/Card/CardEditor';
-import Sidebar from '../components/Layout/Sidebar';
-import Header from '../components/Layout/Header';
-import Footer from '../components/Layout/Footer';
 import ModalEditor from '../components/Shared/ModalEditor';
 import ImageUploader from '../components/ImageUploader';
-import { useAuth } from '../contexts/AuthContext';
 import './DashboardPage.css';
 
 // Função utilitária para truncar texto
@@ -21,8 +16,6 @@ function DashboardPage() {
   const [projects, setProjects] = useState([]);
   const [cards, setCards] = useState([]);
   const [editingItem, setEditingItem] = useState(null);
-  const { logout } = useAuth();
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchProjects();
@@ -39,18 +32,6 @@ function DashboardPage() {
     api.get('/cards')
       .then(response => setCards(response.data))
       .catch(error => console.error('Erro ao buscar cards:', error));
-  };
-
-  const handleLogout = async () => {
-    try {
-      const tokenRes = await api.get('/csrf-token');
-      const csrfToken = tokenRes.data.csrfToken;
-      await api.post('/auth/logout', {}, { headers: { 'X-CSRF-Token': csrfToken } });
-      logout();
-      navigate('/login');
-    } catch (error) {
-      console.error('Erro no logout:', error);
-    }
   };
 
   const handleEdit = (type, item) => setEditingItem({ type, data: item });
@@ -141,121 +122,114 @@ function DashboardPage() {
   };
 
   return (
-    <div className="dashboard-page">
-      <Header onLogout={handleLogout} />
-      <div className="dashboard-container">
-        <Sidebar />
-        <main className="dashboard-main">
-          <section className="dashboard-section">
-            <header className="section-header">
-              <h2>Projetos</h2>
-              <button className="btn add-btn" onClick={() => handleEdit('project', {})}>
-                Adicionar Projeto
-              </button>
-            </header>
-            <div className="table-container">
-              <table className="dashboard-table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Título</th>
-                    <th>Descrição</th>
-                    <th>Conteúdo</th>
-                    <th>Categoria</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {projects.map(project => (
-                    <tr key={project.id}>
-                      <td>{project.id}</td>
-                      <td>{project.titulo}</td>
-                      <td>{project.descricao}</td>
-                      <td>{truncateContent(project.conteudo, 60)}</td>
-                      <td>{project.categoria}</td>
-                      <td className="actions-cell">
-                        <button className="btn table-btn" onClick={() => handleEdit('project', project)}>
-                          Editar
-                        </button>
-                        <button className="btn delete-btn" onClick={() => handleDeleteProject(project.id)}>
-                          Deletar
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
+    <div className="dashboard-main">
+      <section className="dashboard-section">
+        <header className="section-header">
+          <h2>Projetos</h2>
+          <button className="btn add-btn" onClick={() => handleEdit('project', {})}>
+            Adicionar Projeto
+          </button>
+        </header>
+        <div className="table-container">
+          <table className="dashboard-table">
+          <thead>
+              <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Descrição</th>
+                <th className="col-conteudo">Conteúdo</th>
+                <th>Categoria</th>
+                <th className="col-acoes">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {projects.map(project => (
+                <tr key={project.id}>
+                  <td>{project.id}</td>
+                  <td>{project.titulo}</td>
+                  <td>{project.descricao}</td>
+                  <td>{truncateContent(project.conteudo, 60)}</td>
+                  <td>{project.categoria}</td>
+                  <td className="actions-cell col-acoes">
+                    <button className="btn table-btn" onClick={() => handleEdit('project', project)}>
+                      Editar
+                    </button>
+                    <button className="btn delete-btn" onClick={() => handleDeleteProject(project.id)}>
+                      Deletar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
-          <section className="dashboard-section">
-            <header className="section-header">
-              <h2>Cards</h2>
-              <button className="btn add-btn" onClick={() => handleEdit('card', {})}>
-                Adicionar Card
-              </button>
-            </header>
-            <div className="table-container">
-              <table className="dashboard-table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Título</th>
-                    <th>Descrição</th>
-                    <th>Imagem URL</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {cards.map(card => (
-                    <tr key={card.id}>
-                      <td>{card.id}</td>
-                      <td>{card.titulo}</td>
-                      <td>{card.descricao}</td>
-                      <td>{card.imageurl}</td>
-                      <td className="actions-cell">
-                        <button className="btn table-btn" onClick={() => handleEdit('card', card)}>
-                          Editar
-                        </button>
-                        <button className="btn delete-btn" onClick={() => handleDeleteCard(card.id)}>
-                          Deletar
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
+      <section className="dashboard-section">
+        <header className="section-header">
+          <h2>Cards</h2>
+          <button className="btn add-btn" onClick={() => handleEdit('card', {})}>
+            Adicionar Card
+          </button>
+        </header>
+        <div className="table-container">
+          <table className="dashboard-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Descrição</th>
+                <th>Imagem URL</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {cards.map(card => (
+                <tr key={card.id}>
+                  <td>{card.id}</td>
+                  <td>{card.titulo}</td>
+                  <td>{card.descricao}</td>
+                  <td>{card.imageurl}</td>
+                  <td className="actions-cell">
+                    <button className="btn table-btn" onClick={() => handleEdit('card', card)}>
+                      Editar
+                    </button>
+                    <button className="btn delete-btn" onClick={() => handleDeleteCard(card.id)}>
+                      Deletar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
-          <section className="dashboard-section">
-            <header className="section-header">
-              <h2>Upload de Imagens</h2>
-            </header>
-            <ImageUploader />
-          </section>
-        </main>
-      </div>
-      <Footer />
+      <section className="dashboard-section">
+        <header className="section-header">
+          <h2>Upload de Imagens</h2>
+        </header>
+        <ImageUploader />
+      </section>
 
       {editingItem && (
         <ModalEditor onClose={closeModal} fullscreen={editingItem?.type === 'project'}>
-        {editingItem.type === 'project' ? (
-          <ProjectEditor
-            project={editingItem.data.id ? editingItem.data : null}
-            onSubmit={handleSaveProject}
-            onCancel={closeModal}
-          />
-        ) : (
-          <div className="modal-content">
-            <h3>{editingItem.data.id ? "Editar Card" : "Adicionar Card"}</h3>
-            <CardEditor
-              initialCard={editingItem.data.id ? editingItem.data : null}
-              onSubmit={handleSaveCard}
+          {editingItem.type === 'project' ? (
+            <ProjectEditor
+              project={editingItem.data.id ? editingItem.data : null}
+              onSubmit={handleSaveProject}
+              onCancel={closeModal}
             />
-          </div>
-        )}
-      </ModalEditor>      
+          ) : (
+            <div className="modal-content">
+              <h3>{editingItem.data.id ? "Editar Card" : "Adicionar Card"}</h3>
+              <CardEditor
+                initialCard={editingItem.data.id ? editingItem.data : null}
+                onSubmit={handleSaveCard}
+              />
+            </div>
+          )}
+        </ModalEditor>
       )}
     </div>
   );

@@ -1,6 +1,10 @@
 /* Base do Sidebar */
+/* Sidebar fixa ocupando a lateral completa */
 .sidebar {
-  height: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
   background: var(--color-secondary);
   color: var(--color-text);
   width: 170px;
@@ -8,6 +12,8 @@
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--color-border);
+  z-index: 90;
+  overflow-y: auto;
 }
 
 /* Estado fechado: largura reduzida */

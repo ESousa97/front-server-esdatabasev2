@@ -2,31 +2,38 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import DashboardPage from '../pages/DashboardPage';
 import Home from '../pages/Home';
-import Login from '../pages/Login';
+import Login from '../pages/Login/Login';
 import ImageUploader from './ImageUploader';
 import LivePreviewPage from './Project/LivePreviewPage';
 import ContentEditor from './ContentEditor/ContentEditor';
 import PrivateRoute from './PrivateRoute';
+import Layout from './Layout/Layout';
 
 const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
 
+      {/* Rotas protegidas que usarão o Layout */}
       <Route
-        path="/dashboard"
+        path="/dashboard/*"
         element={
           <PrivateRoute>
-            <DashboardPage />
+            <Layout>
+              <DashboardPage />
+            </Layout>
           </PrivateRoute>
         }
       />
 
+      {/* Outras rotas protegidas */}
       <Route
         path="/home"
         element={
           <PrivateRoute>
-            <Home />
+            <Layout>
+              <Home />
+            </Layout>
           </PrivateRoute>
         }
       />
@@ -35,7 +42,9 @@ const AppRoutes = () => {
         path="/upload-image"
         element={
           <PrivateRoute>
-            <ImageUploader />
+            <Layout>
+              <ImageUploader />
+            </Layout>
           </PrivateRoute>
         }
       />
@@ -44,7 +53,9 @@ const AppRoutes = () => {
         path="/live-preview"
         element={
           <PrivateRoute>
-            <LivePreviewPage />
+            <Layout>
+              <LivePreviewPage />
+            </Layout>
           </PrivateRoute>
         }
       />
@@ -53,13 +64,15 @@ const AppRoutes = () => {
         path="/content-editor"
         element={
           <PrivateRoute>
-            <ContentEditor />
+            <Layout>
+              <ContentEditor />
+            </Layout>
           </PrivateRoute>
         }
       />
 
-      {/* Redireciona qualquer rota não definida para a dashboard */}
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      {/* Rota curinga redireciona para /dashboard */}
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );
 };

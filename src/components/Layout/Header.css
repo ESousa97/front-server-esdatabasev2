@@ -1,52 +1,105 @@
 .header {
-    background: var(--color-bg);
-    border-bottom: 1px solid var(--color-border);
-    color: var(--color-text);
-    padding: 0.1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px; /* altura fixa do Header */
+  z-index: 200; /* ou outro valor alto para ficar por cima do conteúdo */
   
-  .header-title {
-    font-size: 1.8rem;
-    font-weight: 600;
-  }
+  /* seu estilo de fundo, border, sombra etc */
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+
+  /* se já tiver padding, verifique se não aumenta a altura final:
+     - caso queira 60px total, use padding menor ou ajuste a height conforme necessário 
+     - por exemplo: padding: 0.5rem 1rem; */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+}
+
+.header-btn {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.header-btn:hover {
+  color: var(--color-primary);
+}
+
+.theme-btn {
+  margin-right: 1rem;
   
-  .header-nav {
-    display: flex;
-    align-items: center;
-  }
+  /* Centraliza o ícone dentro do botão */
+  display: flex;
+  align-items: center;
+  justify-content: center;
   
-  .header-btn {
-    background: transparent;
-    border: none;
-    color: inherit;
-    cursor: pointer;
-    font-size: 1.2rem;
-    transition: color 0.3s ease;
-  }
+  /* Animações suaves */
+  cursor: pointer;
+  transition: 
+    background-color 0.3s ease,
+    color 0.3s ease,
+    transform 0.2s ease;
+}
+
+/* Efeito no hover: botão “cresce” e destaca a cor */
+.theme-btn:hover {
+  color: #fff;
+  transform: scale(1.1);
+}
+
+/* Efeito de clique (opcional) */
+.theme-btn:active {
+  transform: scale(1.05);
+}
+
+.logout-btn {
+  background: var(--color-primary);
+  margin-right: 1rem;
+  color: #fff;
+  font-size: 0.95rem;
+  padding: 0.45rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+
+  /* Efeito suave nas transições */
+  transition:
+    background 0.3s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   
-  .header-btn:hover {
-    color: var(--color-primary);
-  }
-  
-  .theme-btn {
-    margin-right: 1rem;
-  }
-  
-  .logout-btn {
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    background: var(--color-primary);
-    color: #fff;
-    font-size: 1rem;
-    transition: background 0.3s ease, transform 0.2s ease;
-  }
-  
-  .logout-btn:hover {
-    background: var(--color-primary-dark);
-    transform: scale(1.05);
-  }
-  
+  /* Sombrinha sutil por padrão (opcional) */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+/* Ao passar o mouse */
+.logout-btn:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-2px); /* pequeno “sobe e desce” */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+}
+
+/* Quando o botão é clicado (opcional) */
+.logout-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}

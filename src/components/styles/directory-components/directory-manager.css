@@ -1,16 +1,77 @@
-/* =====directory-manager.css===== */
-
 .directory-manager {
   margin-bottom: 2rem;
-  padding: 1.5rem;
+  padding: 1rem 1.25rem;
   background-color: var(--color-bg-accent);
-  border-radius: 12px;
+  border-radius: 10px;
   box-shadow: 0 2px 6px var(--color-shadow);
   animation: fadeIn 0.3s ease;
+  font-size: 0.9rem;
 }
 
 .directory-group {
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem;
+}
+
+.existing-directories h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--color-heading);
+}
+
+.existing-directories ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.existing-directory-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 8px;
+  background-color: var(--color-surface);
+  box-shadow: 0 1px 4px var(--color-shadow);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+
+.existing-directory-item:hover {
+  background-color: var(--color-bg-muted);
+  transform: translateY(-1px);
+}
+
+.existing-directory-item.active {
+  background-color: var(--color-bg-accent);
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+.existing-directory-item strong {
+  flex: 1;
+  font-weight: 500;
+  color: var(--color-text);
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.eye-button {
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  border-radius: 6px;
+  color: var(--color-link);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.eye-button:hover {
+  background-color: var(--color-bg-muted);
+  color: var(--color-primary);
 }
 
 .existing-directory-item.active .eye-button svg {
@@ -19,8 +80,4 @@
 
 .existing-directory-item .eye-button svg {
   transition: color 0.3s ease;
-}
-
-.existing-directory-item .eye-button:hover svg {
-  color: var(--color-primary);
 }
