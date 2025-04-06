@@ -149,6 +149,33 @@
   font-size: 1.2rem;
 }
 
+.confirm-modal {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.confirm-modal h3 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: var(--color-heading);
+}
+
+.confirm-modal p {
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.confirm-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.confirm-buttons .btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
 /* Rodapé como assinatura */
 .footer {
   text-align: center;

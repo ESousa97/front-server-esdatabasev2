@@ -9,13 +9,16 @@ import './DashboardPage.css';
 
 // Função utilitária para truncar texto
 function truncateContent(content = '', maxLength = 60) {
-  return content.length <= maxLength ? content : content.substring(0, maxLength) + '...';
+  return content.length <= maxLength
+    ? content
+    : content.substring(0, maxLength) + '...';
 }
 
 function DashboardPage() {
   const [projects, setProjects] = useState([]);
   const [cards, setCards] = useState([]);
   const [editingItem, setEditingItem] = useState(null);
+  const [deleteConfirmation, setDeleteConfirmation] = useState(null);
 
   useEffect(() => {
     fetchProjects();
@@ -41,7 +44,9 @@ function DashboardPage() {
     if (projectData.id) {
       api.put(`/projects/${projectData.id}`, projectData)
         .then(response => {
-          setProjects(prev => prev.map(p => (p.id === projectData.id ? response.data : p)));
+          setProjects(prev =>
+            prev.map(p => (p.id === projectData.id ? response.data : p))
+          );
           closeModal();
         })
         .catch(error => console.error('Erro ao atualizar projeto:', error));
@@ -70,7 +75,9 @@ function DashboardPage() {
     if (cardData.id) {
       api.put(`/cards/${cardData.id}`, cardData)
         .then(response => {
-          setCards(prev => prev.map(c => (c.id === cardData.id ? response.data : c)));
+          setCards(prev =>
+            prev.map(c => (c.id === cardData.id ? response.data : c))
+          );
           closeModal();
         })
         .catch(error => console.error('Erro ao atualizar card:', error));
@@ -95,8 +102,16 @@ function DashboardPage() {
     }
   };
 
-  const handleDeleteProject = (id) => {
-    if (!window.confirm(`Tem certeza de que deseja deletar o projeto de ID ${id}?`)) return;
+  // Tratamento de deleção via modal de confirmação
+  const confirmDeleteProject = (id) => {
+    setDeleteConfirmation({ type: 'project', id });
+  };
+
+  const confirmDeleteCard = (id) => {
+    setDeleteConfirmation({ type: 'card', id });
+  };
+
+  const executeDeleteProject = (id) => {
     Promise.all([
       api.delete(`/projects/${id}`),
       api.delete(`/cards/${id}`)
@@ -108,8 +123,7 @@ function DashboardPage() {
       .catch(error => console.error('Erro ao deletar projeto e/ou card correspondente:', error));
   };
 
-  const handleDeleteCard = (id) => {
-    if (!window.confirm(`Tem certeza de que deseja deletar o card de ID ${id}?`)) return;
+  const executeDeleteCard = (id) => {
     Promise.all([
       api.delete(`/cards/${id}`),
       api.delete(`/projects/${id}`)
@@ -123,6 +137,7 @@ function DashboardPage() {
 
   return (
     <div className="dashboard-main">
+      {/* Seção de Projetos */}
       <section className="dashboard-section">
         <header className="section-header">
           <h2>Projetos</h2>
@@ -132,7 +147,7 @@ function DashboardPage() {
         </header>
         <div className="table-container">
           <table className="dashboard-table">
-          <thead>
+            <thead>
               <tr>
                 <th>ID</th>
                 <th>Título</th>
@@ -154,7 +169,7 @@ function DashboardPage() {
                     <button className="btn table-btn" onClick={() => handleEdit('project', project)}>
                       Editar
                     </button>
-                    <button className="btn delete-btn" onClick={() => handleDeleteProject(project.id)}>
+                    <button className="btn delete-btn" onClick={() => confirmDeleteProject(project.id)}>
                       Deletar
                     </button>
                   </td>
@@ -165,6 +180,7 @@ function DashboardPage() {
         </div>
       </section>
 
+      {/* Seção de Cards */}
       <section className="dashboard-section">
         <header className="section-header">
           <h2>Cards</h2>
@@ -180,7 +196,7 @@ function DashboardPage() {
                 <th>Título</th>
                 <th>Descrição</th>
                 <th>Imagem URL</th>
-                <th>Ações</th>
+                <th className="col-acoes">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -190,11 +206,11 @@ function DashboardPage() {
                   <td>{card.titulo}</td>
                   <td>{card.descricao}</td>
                   <td>{card.imageurl}</td>
-                  <td className="actions-cell">
+                  <td className="actions-cell col-acoes">
                     <button className="btn table-btn" onClick={() => handleEdit('card', card)}>
                       Editar
                     </button>
-                    <button className="btn delete-btn" onClick={() => handleDeleteCard(card.id)}>
+                    <button className="btn delete-btn" onClick={() => confirmDeleteCard(card.id)}>
                       Deletar
                     </button>
                   </td>
@@ -205,6 +221,7 @@ function DashboardPage() {
         </div>
       </section>
 
+      {/* Seção de Upload de Imagens */}
       <section className="dashboard-section">
         <header className="section-header">
           <h2>Upload de Imagens</h2>
@@ -212,6 +229,7 @@ function DashboardPage() {
         <ImageUploader />
       </section>
 
+      {/* Modal para Edição */}
       {editingItem && (
         <ModalEditor onClose={closeModal} fullscreen={editingItem?.type === 'project'}>
           {editingItem.type === 'project' ? (
@@ -229,6 +247,36 @@ function DashboardPage() {
               />
             </div>
           )}
+        </ModalEditor>
+      )}
+
+      {/* Modal de Confirmação para Deleção */}
+      {deleteConfirmation && (
+        <ModalEditor onClose={() => setDeleteConfirmation(null)}>
+          <div className="confirm-modal">
+            <h3>Confirmar Exclusão</h3>
+            <p>
+              Tem certeza de que deseja deletar {deleteConfirmation.type === 'project' ? 'o projeto' : 'o card'} de ID {deleteConfirmation.id}?
+            </p>
+            <div className="confirm-buttons">
+              <button
+                className="btn delete-btn"
+                onClick={() => {
+                  if (deleteConfirmation.type === 'project') {
+                    executeDeleteProject(deleteConfirmation.id);
+                  } else {
+                    executeDeleteCard(deleteConfirmation.id);
+                  }
+                  setDeleteConfirmation(null);
+                }}
+              >
+                Sim, deletar
+              </button>
+              <button className="btn" onClick={() => setDeleteConfirmation(null)}>
+                Cancelar
+              </button>
+            </div>
+          </div>
         </ModalEditor>
       )}
     </div>
