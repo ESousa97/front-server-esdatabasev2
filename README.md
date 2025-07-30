@@ -49,17 +49,17 @@ A motivação principal para o desenvolvimento do Projmanage é empoderar criado
 
 ## 📸 Prévia do Projeto
 
-![ES Database V2 Interface](./public/esdatabasev1.jpeg)
+![ES Database V2 Interface1](./public/projmanager1.jpeg)
 
-![ES Database V2 Interface](./public/esdatabasev2.jpeg)
+![ES Database V2 Interface2](./public/projmanager2.jpeg)
 
-![ES Database V2 Interface](./public/esdatabasev3.jpeg)
+![ES Database V2 Interface3](./public/projmanager3.jpeg)
 
-![ES Database V2 Interface](./public/esdatabasev4.jpeg)
+![ES Database V2 Interface4](./public/projmanager4.jpeg)
 
-![ES Database V2 Interface](./public/esdatabasev5.jpeg)
+![ES Database V2 Interface5](./public/projmanager5.jpeg)
 
-![ES Database V2 Interface](./public/esdatabasev6.jpeg)
+![ES Database V2 Interface6](./public/projmanager6.jpeg)
 
 ## Arquitetura do Sistema
 
@@ -69,49 +69,59 @@ A arquitetura é modular e componentizada, seguindo os princípios do React, com
 
 ```mermaid
 graph TD
-    User(Usuário) -->|Acessa| Frontend[Projmanage Frontend (React SPA)];
-
-    Frontend -->|1. Requisições HTTP (Axios)| Backend[Backend API (serverdatabase.onrender.com)];
-    Backend -->|2. Persistência de Dados| Database[(Banco de Dados)];
-
-    subgraph Frontend Components
-        Frontend -- Autenticação --> AuthContext[Contexto de Autenticação];
-        Frontend -- Tema --> ThemeContext[Contexto de Tema];
-        Frontend -- Feedback UI --> FeedbackContext[Contexto de Feedback];
-        Frontend -- Navegação --> ReactRouterDOM[React Router DOM];
-        Frontend -- Componentes Reutilizáveis --> SharedComponents[Shared/Modal, ImageModal];
-        Frontend -- Gerenciamento de Conteúdo --> ContentEditor[ContentEditor/EditorActions];
-        Frontend -- Gerenciamento de Mídia --> ImageUploader[ImageUploader/DirectoryManager];
-        Frontend -- Vistas Principais --> Pages[Pages/Dashboard, Login];
-        Frontend -- Layout da Aplicação --> Layout[Layout/Header, Sidebar, Footer];
-        Frontend -- Gerenciamento de Cards --> CardComponents[Card/CardList, CardEditor];
-        Frontend -- Gerenciamento de Projetos --> ProjectComponents[Project/ProjectList, ProjectEditor, LivePreview];
+    User["👤 Usuário"] --> Frontend["🌐 Projmanage Frontend (React SPA)"]
+    Frontend --> Backend["⚙️ Backend API"]
+    Backend --> Database[("💾 Banco de Dados")]
+    
+    subgraph "Frontend Components"
+        Frontend --> AuthContext["🔐 Contexto de Autenticação"]
+        Frontend --> ThemeContext["🎨 Contexto de Tema"]
+        Frontend --> FeedbackContext["💬 Contexto de Feedback"]
+        Frontend --> ReactRouterDOM["🧭 React Router DOM"]
+        Frontend --> SharedComponents["🔄 Shared/Modal, ImageModal"]
+        Frontend --> ContentEditor["📝 ContentEditor/EditorActions"]
+        Frontend --> ImageUploader["📷 ImageUploader/DirectoryManager"]
+        Frontend --> Pages["📄 Pages/Dashboard, Login"]
+        Frontend --> Layout["🏗️ Layout/Header, Sidebar, Footer"]
+        Frontend --> CardComponents["🃏 Card/CardList, CardEditor"]
+        Frontend --> ProjectComponents["📊 Project/ProjectList, ProjectEditor, LivePreview"]
     end
-
-    AuthContext -->|Gerencia Estado de Autenticação| Frontend;
-    ThemeContext -->|Gerencia Tema (Claro/Escuro)| Frontend;
-    FeedbackContext -->|Exibe Notificações Toast| Frontend;
-
-    CardComponents -- Sincronização CRUD --> ProjectComponents;
-    ProjectComponents -- Sincronização CRUD --> CardComponents;
-    ContentEditor -->|Conteúdo Markdown| LivePreview[LivePreviewPage];
-    ImageUploader -->|Gerencia Imagens/Diretórios| Backend;
-
-    style Frontend fill:#f9f,stroke:#333,stroke-width:2px;
-    style Backend fill:#ccf,stroke:#333,stroke-width:2px;
-    style Database fill:#cfc,stroke:#333,stroke-width:2px;
-    style AuthContext fill:#fdd,stroke:#333,stroke-width:1px;
-    style ThemeContext fill:#ddf,stroke:#333,stroke-width:1px;
-    style FeedbackContext fill:#dfd,stroke:#333,stroke-width:1px;
-    style ReactRouterDOM fill:#ffd,stroke:#333,stroke-width:1px;
-    style SharedComponents fill:#eef,stroke:#333,stroke-width:1px;
-    style ContentEditor fill:#fee,stroke:#333,stroke-width:1px;
-    style ImageUploader fill:#efe,stroke:#333,stroke-width:1px;
-    style Pages fill:#ffe,stroke:#333,stroke-width:1px;
-    style Layout fill:#eff,stroke:#333,stroke-width:1px;
-    style CardComponents fill:#fef,stroke:#333,stroke-width:1px;
-    style ProjectComponents fill:#ffe,stroke:#333,stroke-width:1px;
-    style LivePreview fill:#eee,stroke:#333,stroke-width:1px;
+    
+    AuthContext --> Frontend
+    ThemeContext --> Frontend
+    FeedbackContext --> Frontend
+    CardComponents -.-> ProjectComponents
+    ProjectComponents -.-> CardComponents
+    ContentEditor --> LivePreview["👁️ LivePreviewPage"]
+    ImageUploader --> Backend
+    
+    %% Estilos principais
+    style User fill:#FF6B6B,stroke:#333,stroke-width:3px,color:#fff
+    style Frontend fill:#4ECDC4,stroke:#333,stroke-width:3px,color:#fff
+    style Backend fill:#45B7D1,stroke:#333,stroke-width:3px,color:#fff
+    style Database fill:#96CEB4,stroke:#333,stroke-width:3px,color:#fff
+    
+    %% Contextos
+    style AuthContext fill:#FFE66D,stroke:#FF6B6B,stroke-width:2px,color:#333
+    style ThemeContext fill:#B8A9FF,stroke:#6C5CE7,stroke-width:2px,color:#fff
+    style FeedbackContext fill:#A8E6CF,stroke:#00B894,stroke-width:2px,color:#333
+    
+    %% Navegação e compartilhados
+    style ReactRouterDOM fill:#FFD93D,stroke:#FDCB6E,stroke-width:2px,color:#333
+    style SharedComponents fill:#E17055,stroke:#D63031,stroke-width:2px,color:#fff
+    
+    %% Editores e upload
+    style ContentEditor fill:#74B9FF,stroke:#0984E3,stroke-width:2px,color:#fff
+    style ImageUploader fill:#55A3FF,stroke:#2D3436,stroke-width:2px,color:#fff
+    style LivePreview fill:#FD79A8,stroke:#E84393,stroke-width:2px,color:#fff
+    
+    %% Layout e páginas
+    style Pages fill:#FDCB6E,stroke:#E17055,stroke-width:2px,color:#333
+    style Layout fill:#81ECEC,stroke:#00CEC9,stroke-width:2px,color:#333
+    
+    %% Componentes principais
+    style CardComponents fill:#FD79A8,stroke:#E84393,stroke-width:2px,color:#fff
+    style ProjectComponents fill:#A29BFE,stroke:#6C5CE7,stroke-width:2px,color:#fff
 ```
 
 **Componentes Principais e Interações:**
@@ -257,49 +267,59 @@ A arquitetura é modular e componentizada, seguindo os princípios do React, com
 
 ```mermaid
 graph TD
-    User(Usuário) -->|Acessa| Frontend[Projmanage Frontend (React SPA)];
+    User["👤 Usuário"] --> Frontend["🌐 Projmanage Frontend (React SPA)"]
+    Frontend --> Backend["⚙️ Backend API (serverdatabase.onrender.com)"]
+    Backend --> Database[("💾 Banco de Dados")]
 
-    Frontend -->|1. Requisições HTTP (Axios)| Backend[Backend API (serverdatabase.onrender.com)];
-    Backend -->|2. Persistência de Dados| Database[(Banco de Dados)];
-
-    subgraph Frontend Components
-        Frontend -- Autenticação --> AuthContext[Contexto de Autenticação];
-        Frontend -- Tema --> ThemeContext[Contexto de Tema];
-        Frontend -- Feedback UI --> FeedbackContext[Contexto de Feedback];
-        Frontend -- Navegação --> ReactRouterDOM[React Router DOM];
-        Frontend -- Componentes Reutilizáveis --> SharedComponents[Shared/Modal, ImageModal];
-        Frontend -- Gerenciamento de Conteúdo --> ContentEditor[ContentEditor/EditorActions];
-        Frontend -- Gerenciamento de Mídia --> ImageUploader[ImageUploader/DirectoryManager];
-        Frontend -- Vistas Principais --> Pages[Pages/Dashboard, Login];
-        Frontend -- Layout da Aplicação --> Layout[Layout/Header, Sidebar, Footer];
-        Frontend -- Gerenciamento de Cards --> CardComponents[Card/CardList, CardEditor];
-        Frontend -- Gerenciamento de Projetos --> ProjectComponents[Project/ProjectList, ProjectEditor, LivePreview];
+    subgraph "Frontend Components"
+        Frontend --> AuthContext["🔐 Contexto de Autenticação"]
+        Frontend --> ThemeContext["🎨 Contexto de Tema"]
+        Frontend --> FeedbackContext["💬 Contexto de Feedback"]
+        Frontend --> ReactRouterDOM["🧭 React Router DOM"]
+        Frontend --> SharedComponents["🔄 Shared/Modal, ImageModal"]
+        Frontend --> ContentEditor["📝 ContentEditor/EditorActions"]
+        Frontend --> ImageUploader["📷 ImageUploader/DirectoryManager"]
+        Frontend --> Pages["📄 Pages/Dashboard, Login"]
+        Frontend --> Layout["🏗️ Layout/Header, Sidebar, Footer"]
+        Frontend --> CardComponents["🃏 Card/CardList, CardEditor"]
+        Frontend --> ProjectComponents["📊 Project/ProjectList, ProjectEditor, LivePreview"]
     end
 
-    AuthContext -->|Gerencia Estado de Autenticação| Frontend;
-    ThemeContext -->|Gerencia Tema (Claro/Escuro)| Frontend;
-    FeedbackContext -->|Exibe Notificações Toast| Frontend;
+    AuthContext --> Frontend
+    ThemeContext --> Frontend
+    FeedbackContext --> Frontend
+    CardComponents -.-> ProjectComponents
+    ProjectComponents -.-> CardComponents
+    ContentEditor --> LivePreview["👁️ LivePreviewPage"]
+    ImageUploader --> Backend
 
-    CardComponents -- Sincronização CRUD --> ProjectComponents;
-    ProjectComponents -- Sincronização CRUD --> CardComponents;
-    ContentEditor -->|Conteúdo Markdown| LivePreview[LivePreviewPage];
-    ImageUploader -->|Gerencia Imagens/Diretórios| Backend;
-
-    style Frontend fill:#f9f,stroke:#333,stroke-width:2px;
-    style Backend fill:#ccf,stroke:#333,stroke-width:2px;
-    style Database fill:#cfc,stroke:#333,stroke-width:2px;
-    style AuthContext fill:#fdd,stroke:#333,stroke-width:1px;
-    style ThemeContext fill:#ddf,stroke:#333,stroke-width:1px;
-    style FeedbackContext fill:#dfd,stroke:#333,stroke-width:1px;
-    style ReactRouterDOM fill:#ffd,stroke:#333,stroke-width:1px;
-    style SharedComponents fill:#eef,stroke:#333,stroke-width:1px;
-    style ContentEditor fill:#fee,stroke:#333,stroke-width:1px;
-    style ImageUploader fill:#efe,stroke:#333,stroke-width:1px;
-    style Pages fill:#ffe,stroke:#333,stroke-width:1px;
-    style Layout fill:#eff,stroke:#333,stroke-width:1px;
-    style CardComponents fill:#fef,stroke:#333,stroke-width:1px;
-    style ProjectComponents fill:#ffe,stroke:#333,stroke-width:1px;
-    style LivePreview fill:#eee,stroke:#333,stroke-width:1px;
+    %% Estilos principais com cores vibrantes
+    style User fill:#FF6B6B,stroke:#333,stroke-width:4px,color:#fff
+    style Frontend fill:#4ECDC4,stroke:#333,stroke-width:4px,color:#fff
+    style Backend fill:#45B7D1,stroke:#333,stroke-width:4px,color:#fff
+    style Database fill:#96CEB4,stroke:#333,stroke-width:4px,color:#fff
+    
+    %% Contextos com cores coordenadas
+    style AuthContext fill:#FFE66D,stroke:#FF6B6B,stroke-width:3px,color:#333
+    style ThemeContext fill:#B8A9FF,stroke:#6C5CE7,stroke-width:3px,color:#fff
+    style FeedbackContext fill:#A8E6CF,stroke:#00B894,stroke-width:3px,color:#333
+    
+    %% Navegação e componentes compartilhados
+    style ReactRouterDOM fill:#FFD93D,stroke:#FDCB6E,stroke-width:3px,color:#333
+    style SharedComponents fill:#E17055,stroke:#D63031,stroke-width:3px,color:#fff
+    
+    %% Editores e gerenciamento
+    style ContentEditor fill:#74B9FF,stroke:#0984E3,stroke-width:3px,color:#fff
+    style ImageUploader fill:#55A3FF,stroke:#2D3436,stroke-width:3px,color:#fff
+    style LivePreview fill:#FD79A8,stroke:#E84393,stroke-width:3px,color:#fff
+    
+    %% Layout e páginas
+    style Pages fill:#FDCB6E,stroke:#E17055,stroke-width:3px,color:#333
+    style Layout fill:#81ECEC,stroke:#00CEC9,stroke-width:3px,color:#333
+    
+    %% Componentes principais
+    style CardComponents fill:#FD79A8,stroke:#E84393,stroke-width:3px,color:#fff
+    style ProjectComponents fill:#A29BFE,stroke:#6C5CE7,stroke-width:3px,color:#fff
 ```
 
 **Componentes Principais e Interações:**
