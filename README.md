@@ -49,17 +49,31 @@ A motivação principal para o desenvolvimento do Projmanage é empoderar criado
 
 ## 📸 Prévia do Projeto
 
+---
+
 ![ES Database V2 Interface1](./public/projmanager1.jpeg)
+
+---
 
 ![ES Database V2 Interface2](./public/projmanager2.jpeg)
 
+---
+
 ![ES Database V2 Interface3](./public/projmanager3.jpeg)
+
+---
 
 ![ES Database V2 Interface4](./public/projmanager4.jpeg)
 
+---
+
 ![ES Database V2 Interface5](./public/projmanager5.jpeg)
 
+---
+
 ![ES Database V2 Interface6](./public/projmanager6.jpeg)
+
+---
 
 ## Arquitetura do Sistema
 
