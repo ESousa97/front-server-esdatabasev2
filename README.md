@@ -1,1109 +1,406 @@
-# Projmanage - Sistema Avançado de Gerenciamento de Projetos e Conteúdo Dinâmico
+<div align="center">
 
-**Slogan Filosófico:** *Orquestrando ideias, catalisando a criação e fomentando a colaboração em projetos através de uma interface intuitiva, enriquecida por recursos avançados de edição e gerenciamento de mídia.*
+# Projmanage
 
-## Abstract (Resumo Técnico)
+[![CI](https://img.shields.io/github/actions/workflow/status/ESousa97/esdatabasev2/ci.yml?branch=main&style=flat&logo=github-actions&logoColor=white)](https://github.com/ESousa97/esdatabasev2/actions/workflows/ci.yml)
+[![CodeFactor](https://img.shields.io/codefactor/grade/github/ESousa97/esdatabasev2?style=flat&logo=codefactor&logoColor=white)](https://www.codefactor.io/repository/github/esousa97/esdatabasev2)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat&logo=opensourceinitiative&logoColor=white)](https://opensource.org/licenses/MIT)
+[![Status](https://img.shields.io/badge/Status-Archived-lightgrey.svg?style=flat&logo=archive&logoColor=white)](#)
 
-Projmanage emerge como uma solução de frontend sofisticada, desenvolvida em React, destinada a otimizar o ciclo de vida de gerenciamento de projetos e seus respectivos conteúdos multimídia. No contexto de aplicações web contemporâneas, onde a agilidade na criação, organização e apresentação de informações é paramount, Projmanage aborda a lacuna existente por ferramentas integradas que combinem gerenciamento de dados estruturados (projetos e cards informativos) com edição de conteúdo rico (Markdown) e um sistema robusto para manipulação de ativos visuais (imagens). A plataforma propõe uma arquitetura componentizada, interagindo com um endpoint de backend (inferido como `https://serverdatabase.onrender.com/api/v1`) para persistência e lógica de negócios. A metodologia central emprega React para a construção da interface do usuário, React Router DOM para navegação, Context API para gerenciamento de estado global (autenticação, temas), e Axios para comunicação com a API RESTful. Funcionalidades chave incluem CRUD completo para "Cards" (representações sumárias) e "Projetos" (conteúdos detalhados), com um mecanismo de sincronização que assegura a criação e remoção coesa de entidades pareadas. Destaca-se um editor de conteúdo Markdown com preview em tempo real, enriquecido com syntax highlighting e sanitização de HTML, e um sistema de upload de imagens com gerenciamento hierárquico de diretórios no servidor. O resultado é uma aplicação web funcional e intuitiva, acessível em [https://esdatabase-projmanage.vercel.app/login](https://esdatabase-projmanage.vercel.app/login), que visa potencializar a produtividade de usuários na gestão de portfólios, documentações técnicas ou qualquer acervo de projetos que demande uma apresentação elaborada e um controle granular de seus componentes.
+**Painel administrativo do ecossistema ES Data Base — SPA em React (Create React App) para gerenciamento de Cards, Projetos e ativos de imagem, com editor Markdown com live preview, upload de imagens com gerenciamento hierárquico de diretórios, sincronização automática Card↔Projeto, autenticação via token JWT, tema claro/escuro e comunicação com a [ES Database API](https://github.com/ESousa97/serverdatabase) via Axios.**
 
-## Badges Abrangentes
+[Demo](https://esdatabase-projmanage.vercel.app/login)
 
-![License](https://img.shields.io/github/license/ESousa97/esdatabasev2?style=for-the-badge)
-![Issues](https://img.shields.io/github/issues/ESousa97/esdatabasev2?style=for-the-badge)
-![Pull Requests](https://img.shields.io/github/issues-pr/ESousa97/esdatabasev2?style=for-the-badge)
-![Last Commit](https://img.shields.io/github/last-commit/ESousa97/esdatabasev2?style=for-the-badge)
-![Top Language](https://img.shields.io/github/languages/top/ESousa97/esdatabasev2?style=for-the-badge)
-![Code Size](https://img.shields.io/github/languages/code-size/ESousa97/esdatabasev2?style=for-the-badge)
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen?style=for-the-badge)
-
-## Sumário (Table of Contents)
-
-*   [Abstract (Resumo Técnico)](#abstract-resumo-técnico)
-*   [Badges Abrangentes](#badges-abrangentes)
-*   [Sumário (Table of Contents)](#sumário-table-of-contents)
-*   [Introdução e Motivação](#introdução-e-motivação)
-*   [Arquitetura do Sistema](#arquitetura-do-sistema)
-*   [Decisões de Design Chave](#decisões-de-design-chave)
-*   [✨ Funcionalidades Detalhadas (com Casos de Uso)](#-funcionalidades-detalhadas-com-casos-de-uso)
-*   [🛠️ Tech Stack Detalhado](#️-tech-stack-detalhado)
-*   [📂 Estrutura Detalhada do Código-Fonte](#-estrutura-detalhada-do-código-fonte)
-*   [📋 Pré-requisitos Avançados](#-pré-requisitos-avançados)
-*   [🚀 Guia de Instalação e Configuração Avançada](#-guia-de-instalação-e-configuração-avançada)
-*   [⚙️ Uso Avançado e Exemplos](#️-uso-avançado-e-exemplos)
-*   [🔧 API Reference](#-api-reference)
-*   [🧪 Estratégia de Testes e Qualidade de Código](#-estratégia-de-testes-e-qualidade-de-código)
-*   [🚢 Deployment Detalhado e Escalabilidade](#-deployment-detalhado-e-escalabilidade)
-*   [📜 Licença e Aspectos Legais](#-licença-e-aspectos-legais)
-*   [📚 Publicações, Artigos e Citações](#-publicações-artigos-e-citações)
-*   [👥 Equipe Principal e Colaboradores Chave](#-equipe-principal-e-colaboradores-chave)
-*   [❓ FAQ (Perguntas Frequentes)](#-faq-perguntas-frequentes)
-*   [📞 Contato e Suporte](#-contato-e-suporte)
-
-## Introdução e Motivação
-
-A gestão eficaz de projetos, especialmente aqueles que envolvem a criação e curadoria de conteúdo digital rico e diversificado, apresenta desafios significativos. Frequentemente, profissionais e equipes recorrem a um conjunto fragmentado de ferramentas para gerenciar diferentes aspectos de seus trabalhos: editores de texto para conteúdo, sistemas de armazenamento em nuvem para mídias, e plataformas de gerenciamento de tarefas para organização. Essa dispersão pode levar a ineficiências, perda de contexto e dificuldades na manutenção da consistência e qualidade do material produzido. Soluções existentes podem ser excessivamente genéricas, não atendendo às necessidades específicas de projetos orientados a conteúdo, ou podem impor custos proibitivos e uma curva de aprendizado íngreme.
-
-Projmanage foi concebido para endereçar essas lacunas, oferecendo uma plataforma unificada e focada, que integra o gerenciamento de "Cards" – entidades visuais e sumárias ideais para visão geral e navegação – e "Projetos" – contêineres para conteúdo detalhado elaborado em Markdown. A proposta de valor central reside na sinergia entre um editor Markdown poderoso, que suporta preview em tempo real e funcionalidades avançadas de formatação, e um gerenciador de imagens robusto, que permite o upload e organização de ativos visuais em uma estrutura de diretórios no servidor. Adicionalmente, o sistema implementa uma lógica de sincronização inteligente: a criação de um Card automaticamente gera um Projeto correspondente (e vice-versa), e a remoção de uma entidade implica na remoção de sua contraparte, garantindo a integridade referencial dos dados.
-
-A motivação principal para o desenvolvimento do Projmanage é empoderar criadores de conteúdo, desenvolvedores, e gestores de projetos, fornecendo-lhes uma ferramenta que simplifica o fluxo de trabalho desde a concepção da ideia até a sua publicação e manutenção. Seja para a construção de portfólios dinâmicos, elaboração de documentações técnicas interativas, criação de bases de conhecimento colaborativas, ou qualquer iniciativa que demande uma apresentação de conteúdo rica e um gerenciamento eficiente de seus componentes, Projmanage visa ser a solução de escolha, promovendo a organização, a criatividade e a produtividade.
-
-## 📸 Prévia do Projeto
+</div>
 
 ---
 
-![ES Database V2 Interface1](./public/projmanager1.jpeg)
+> **⚠️ Projeto Arquivado**
+> Este projeto não recebe mais atualizações ou correções. O código permanece disponível como referência e pode ser utilizado livremente sob a licença MIT. Fique à vontade para fazer fork caso deseje continuar o desenvolvimento.
 
 ---
 
-![ES Database V2 Interface2](./public/projmanager2.jpeg)
+## Índice
+
+- [Sobre o Projeto](#sobre-o-projeto)
+- [Prévia](#prévia)
+- [Funcionalidades](#funcionalidades)
+- [Tecnologias](#tecnologias)
+- [Arquitetura](#arquitetura)
+- [Estrutura do Projeto](#estrutura-do-projeto)
+- [Começando](#começando)
+  - [Pré-requisitos](#pré-requisitos)
+  - [Instalação](#instalação)
+  - [Configuração](#configuração)
+  - [Uso Local](#uso-local)
+- [Scripts Disponíveis](#scripts-disponíveis)
+- [Endpoints Consumidos](#endpoints-consumidos)
+- [FAQ](#faq)
+- [Licença](#licença)
+- [Contato](#contato)
 
 ---
 
-![ES Database V2 Interface3](./public/projmanager3.jpeg)
+## Sobre o Projeto
+
+Painel administrativo (backoffice) do ecossistema **ES Data Base**, integrado à [ES Database API Server](https://github.com/ESousa97/serverdatabase). Enquanto o [ES Database V2](https://github.com/ESousa97/esdatabasev2) é o frontend público de visualização, o Projmanage é a interface de gestão para criar, editar e organizar todo o conteúdo.
+
+O repositório prioriza:
+
+- **CRUD completo de Cards e Projetos** — Criação, edição e exclusão com sincronização automática entre entidades pareadas (um Card gera um Projeto correspondente e vice-versa)
+- **Editor Markdown com live preview** — Textarea com barra de ações (títulos, negrito, itálico, listas, código, links, imagens) e preview em tempo real via `localStorage` em nova aba, usando marked + DOMPurify + highlight.js
+- **Sintaxes customizadas** — `@@texto@@` para botões de cópia e `:::texto:::` para blocos de destaque visual, além de embed automático de vídeos do YouTube
+- **Gerenciamento de imagens** — Upload drag-and-drop de arquivos PNG, criação/renomeação/exclusão de diretórios hierárquicos, visualização em modal e histórico de uploads recentes
+- **Autenticação JWT** — Login com email/senha, tokens de acesso e refresh gerenciados via Context API, rotas protegidas com `PrivateRoute`
+- **Tema claro/escuro** — Toggle via header com persistência em CSS variables e `ThemeContext`
 
 ---
 
-![ES Database V2 Interface4](./public/projmanager4.jpeg)
+## Prévia
+
+![Projmanage Interface 1](./public/projmanager1.jpeg)
+
+![Projmanage Interface 2](./public/projmanager2.jpeg)
+
+![Projmanage Interface 3](./public/projmanager3.jpeg)
+
+![Projmanage Interface 4](./public/projmanager4.jpeg)
+
+![Projmanage Interface 5](./public/projmanager5.jpeg)
+
+![Projmanage Interface 6](./public/projmanager6.jpeg)
 
 ---
 
-![ES Database V2 Interface5](./public/projmanager5.jpeg)
+## Funcionalidades
+
+- **Gerenciamento de Cards** — CRUD com título, descrição e URL de imagem; exclusão remove automaticamente o Projeto correspondente
+- **Gerenciamento de Projetos** — CRUD com título, descrição, categoria e conteúdo Markdown; exclusão remove automaticamente o Card correspondente
+- **Editor Markdown** — Barra de ações com inserção rápida de formatação, syntax highlighting via highlight.js, sanitização com DOMPurify e live preview em nova aba sincronizado via `localStorage`
+- **Sintaxes customizadas** — `@@texto@@` cria botões de cópia para clipboard; `:::texto:::` renderiza blocos de destaque visual; URLs do YouTube são automaticamente convertidas em players embed
+- **Upload de imagens** — Drag-and-drop de múltiplos arquivos PNG com renomeação pré-upload, seleção de diretório destino e barra de progresso
+- **Gerenciamento de diretórios** — Criação, renomeação e exclusão de pastas hierárquicas no servidor; árvore de navegação com visualização de imagens em modal
+- **Histórico de uploads** — Registro com URLs e timestamps das imagens enviadas recentemente para referência rápida no editor
+- **Autenticação** — Login JWT com tokens de acesso e refresh, rotas protegidas via `PrivateRoute` e Context API
+- **Tema claro/escuro** — Toggle via ícone no header com CSS variables e `ThemeContext`
+- **Feedback** — Notificações toast via react-toastify encapsuladas em `FeedbackContext` e hook `useFeedback`
+- **Retry automático** — Hook `useRetryRequest` para retry de requisições com falha
 
 ---
 
-![ES Database V2 Interface6](./public/projmanager6.jpeg)
+## Tecnologias
+
+![React](https://img.shields.io/badge/React_18-61DAFB?style=flat&logo=react&logoColor=black)
+![React Router](https://img.shields.io/badge/React_Router_6-CA4245?style=flat&logo=react-router&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios-5A29E4?style=flat&logo=axios&logoColor=white)
+![MUI](https://img.shields.io/badge/MUI-007FFF?style=flat&logo=mui&logoColor=white)
+![Emotion](https://img.shields.io/badge/Emotion-D26AC2?style=flat&logoColor=white)
+![Lucide](https://img.shields.io/badge/Lucide_React-F56565?style=flat&logoColor=white)
+![Sass](https://img.shields.io/badge/Sass-CC6699?style=flat&logo=sass&logoColor=white)
+![highlight.js](https://img.shields.io/badge/highlight.js-000000?style=flat&logoColor=white)
+![DOMPurify](https://img.shields.io/badge/DOMPurify-4CAF50?style=flat&logoColor=white)
+![marked](https://img.shields.io/badge/marked-000000?style=flat&logoColor=white)
+![Jest](https://img.shields.io/badge/Jest-C21325?style=flat&logo=jest&logoColor=white)
+![Testing Library](https://img.shields.io/badge/Testing_Library-E33332?style=flat&logo=testinglibrary&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat&logo=vercel&logoColor=white)
+
+**Dependências principais:** react 18, react-router-dom 6, axios, @mui/material, @emotion/react, lucide-react, marked, dompurify, highlight.js, react-toastify, sass.
 
 ---
 
-## Arquitetura do Sistema
-
-O Projmanage é uma aplicação Single Page Application (SPA) desenvolvida com React, que constitui o frontend do sistema. Ele interage com um backend RESTful (hospedado em `https://serverdatabase.onrender.com/api/v1`, conforme o proxy no `package.json`) responsável pela lógica de negócios, autenticação e persistência de dados.
-
-A arquitetura é modular e componentizada, seguindo os princípios do React, com uma clara separação de preocupações entre a interface do usuário, o gerenciamento de estado e a comunicação com a API.
+## Arquitetura
 
 ```mermaid
 graph TD
-    User["👤 Usuário"] --> Frontend["🌐 Projmanage Frontend (React SPA)"]
-    Frontend --> Backend["⚙️ Backend API"]
-    Backend --> Database[("💾 Banco de Dados")]
-    
-    subgraph "Frontend Components"
-        Frontend --> AuthContext["🔐 Contexto de Autenticação"]
-        Frontend --> ThemeContext["🎨 Contexto de Tema"]
-        Frontend --> FeedbackContext["💬 Contexto de Feedback"]
-        Frontend --> ReactRouterDOM["🧭 React Router DOM"]
-        Frontend --> SharedComponents["🔄 Shared/Modal, ImageModal"]
-        Frontend --> ContentEditor["📝 ContentEditor/EditorActions"]
-        Frontend --> ImageUploader["📷 ImageUploader/DirectoryManager"]
-        Frontend --> Pages["📄 Pages/Dashboard, Login"]
-        Frontend --> Layout["🏗️ Layout/Header, Sidebar, Footer"]
-        Frontend --> CardComponents["🃏 Card/CardList, CardEditor"]
-        Frontend --> ProjectComponents["📊 Project/ProjectList, ProjectEditor, LivePreview"]
-    end
-    
-    AuthContext --> Frontend
-    ThemeContext --> Frontend
-    FeedbackContext --> Frontend
-    CardComponents -.-> ProjectComponents
-    ProjectComponents -.-> CardComponents
-    ContentEditor --> LivePreview["👁️ LivePreviewPage"]
-    ImageUploader --> Backend
-    
-    %% Estilos principais
-    style User fill:#FF6B6B,stroke:#333,stroke-width:3px,color:#fff
-    style Frontend fill:#4ECDC4,stroke:#333,stroke-width:3px,color:#fff
-    style Backend fill:#45B7D1,stroke:#333,stroke-width:3px,color:#fff
-    style Database fill:#96CEB4,stroke:#333,stroke-width:3px,color:#fff
-    
-    %% Contextos
-    style AuthContext fill:#FFE66D,stroke:#FF6B6B,stroke-width:2px,color:#333
-    style ThemeContext fill:#B8A9FF,stroke:#6C5CE7,stroke-width:2px,color:#fff
-    style FeedbackContext fill:#A8E6CF,stroke:#00B894,stroke-width:2px,color:#333
-    
-    %% Navegação e compartilhados
-    style ReactRouterDOM fill:#FFD93D,stroke:#FDCB6E,stroke-width:2px,color:#333
-    style SharedComponents fill:#E17055,stroke:#D63031,stroke-width:2px,color:#fff
-    
-    %% Editores e upload
-    style ContentEditor fill:#74B9FF,stroke:#0984E3,stroke-width:2px,color:#fff
-    style ImageUploader fill:#55A3FF,stroke:#2D3436,stroke-width:2px,color:#fff
-    style LivePreview fill:#FD79A8,stroke:#E84393,stroke-width:2px,color:#fff
-    
-    %% Layout e páginas
-    style Pages fill:#FDCB6E,stroke:#E17055,stroke-width:2px,color:#333
-    style Layout fill:#81ECEC,stroke:#00CEC9,stroke-width:2px,color:#333
-    
-    %% Componentes principais
-    style CardComponents fill:#FD79A8,stroke:#E84393,stroke-width:2px,color:#fff
-    style ProjectComponents fill:#A29BFE,stroke:#6C5CE7,stroke-width:2px,color:#fff
-```
-
-**Componentes Principais e Interações:**
-
-1.  **Frontend (Aplicação React Projmanage):**
-    *   **Interface do Usuário (UI):** Renderizada no navegador do cliente, construída com componentes React, estilização customizada e Material-UI/Emotion para elementos específicos.
-    *   **Gerenciamento de Estado Global:** Utiliza a Context API do React para gerenciar estados globais como autenticação (`AuthContext`), tema da aplicação (`ThemeContext`) e feedback/notificações (`FeedbackContext`). Isso evita o prop drilling e centraliza a lógica de estado.
-    *   **Roteamento:** O `React Router DOM` é empregado para gerenciar a navegação entre as diferentes páginas da SPA, incluindo rotas protegidas por autenticação (`PrivateRoute`).
-    *   **Comunicação com API:** A biblioteca `Axios` é utilizada para fazer requisições HTTP assíncronas ao backend, encapsulada no serviço `api.js` para facilitar a manutenção e a reutilização.
-    *   **Módulos Funcionais:** O código é organizado em módulos lógicos (`components/Card`, `components/Project`, `components/ImageUploader`, `components/ContentEditor`) que encapsulam funcionalidades específicas, promovendo a modularidade e a manutenibilidade.
-
-2.  **Backend API (`https://serverdatabase.onrender.com/api/v1`):**
-    *   Responsável por toda a lógica de negócio, autenticação de usuários, validação de dados, e persistência de informações (Cards, Projetos, Imagens, Diretórios).
-    *   Expõe endpoints RESTful consumidos pelo frontend. A comunicação é realizada via HTTP/HTTPS.
-
-3.  **Banco de Dados:**
-    *   O backend interage com um banco de dados para armazenar os dados estruturados dos Cards e Projetos, bem como metadados de imagens e diretórios. A natureza exata do banco de dados não é especificada no frontend, mas é abstraída pela API.
-
-**Fluxo de Dados e Controle:**
-
-*   O usuário interage com o Frontend.
-*   Requisições de dados (CRUD de Cards e Projetos, gerenciamento de imagens) são enviadas do Frontend para o Backend via `Axios` (através do `services/api.js`).
-*   O Backend processa as requisições, interage com o Banco de Dados para persistência ou recuperação de dados, e retorna as respostas ao Frontend.
-*   Os `Contexts` fornecem dados e funções globais para os componentes, como o status de autenticação ou a função para exibir toasts.
-*   A lógica de sincronização entre Cards e Projetos (`CardList.jsx` e `ProjectList.jsx`) garante a consistência dos dados, criando ou deletando a entidade correspondente no outro módulo ao realizar uma operação.
-*   O `ContentEditor` e o `LivePreviewPage` trabalham em conjunto, utilizando o `localStorage` para compartilhar o conteúdo Markdown em tempo real, permitindo uma experiência de edição e visualização fluida.
-*   O `ImageUploader` orquestra as operações de upload, criação de diretórios, renomeação e exclusão de arquivos e pastas no servidor, fornecendo feedback visual ao usuário.
-
-A escolha de uma arquitetura SPA com React no frontend e uma API RESTful separada no backend proporciona flexibilidade, escalabilidade e a possibilidade de evoluir o frontend e o backend de forma independente.
-
-## Decisões de Design Chave
-
-As escolhas de design e tecnologia no Projmanage foram guiadas pelos princípios de performance, manutenibilidade, experiência do usuário e segurança.
-
-1.  **Frontend em React (SPA):**
-    *   **Porquê:** React foi escolhido pela sua eficiência na construção de interfaces de usuário complexas e reativas, através de um modelo de componentes declarativo. Isso facilita a reutilização de código, a modularização da UI e a criação de uma experiência de usuário fluida, típica de uma Single Page Application. O DOM virtual do React otimiza as atualizações da interface, resultando em alta performance.
-    *   **Alternativas Consideradas:** Angular, Vue.js. React foi preferido pela sua flexibilidade, grande ecossistema e forte comunidade, além de ser mais leve em termos de opiniões sobre a estrutura do projeto.
-
-2.  **Gerenciamento de Estado com Context API:**
-    *   **Porquê:** Para estados globais como autenticação (`AuthContext`) e tema (`ThemeContext`), a Context API do React foi utilizada. Embora Redux ou Zustand pudessem ser opções para estados mais complexos, a Context API foi suficiente para as necessidades do Projmanage, evitando a complexidade adicional de bibliotecas de gerenciamento de estado mais robustas e mantendo a aplicação mais "nativa" React.
-    *   **Trade-offs:** Para aplicações de escala muito maior com muitos estados interconectados, a Context API pode levar a renderizações excessivas e dificuldade de depuração. No entanto, para o escopo atual, é uma solução performática e elegante.
-
-3.  **Comunicação com API via Axios:**
-    *   **Porquê:** Axios é um cliente HTTP baseado em Promises para o navegador e Node.js. Ele oferece uma API limpa e poderosa para fazer requisições HTTP, com recursos como interceptores (para tratamento de tokens de autenticação, por exemplo), tratamento automático de JSON e tratamento robusto de erros. A centralização das chamadas na pasta `services/api.js` facilita a manutenção e a aplicação de lógicas comuns (como autenticação ou retry).
-    *   **Alternativas Consideradas:** `fetch` API nativa. Axios foi escolhido por sua conveniência e recursos adicionais que simplificam o código e aumentam a robustez.
-
-4.  **Edição de Conteúdo Markdown com `marked`, `DOMPurify` e `highlight.js`:**
-    *   **Porquê:** A escolha do Markdown para edição de conteúdo proporciona flexibilidade e simplicidade para o usuário, permitindo formatação rica sem a complexidade de um editor WYSIWYG completo.
-        *   `marked`: Biblioteca eficiente para converter Markdown em HTML.
-        *   `DOMPurify`: Essencial para segurança, sanitizando o HTML gerado para prevenir ataques de Cross-Site Scripting (XSS), garantindo que apenas conteúdo seguro seja renderizado.
-        *   `highlight.js`: Oferece realce de sintaxe para blocos de código, melhorando a legibilidade e a apresentação de snippets de código dentro do conteúdo.
-    *   **Customizações:** A implementação de sintaxes customizadas (`@@` para copiável, `:::` para destaque) estende as capacidades do Markdown padrão para atender a necessidades específicas do projeto, sem depender de plugins complexos.
-
-5.  **Gerenciamento Hierárquico de Imagens:**
-    *   **Porquê:** A capacidade de criar e organizar imagens em uma estrutura de diretórios no servidor é crucial para projetos com muitos ativos visuais. Isso permite uma organização lógica dos recursos, facilitando a localização e a reutilização de imagens, e espelha a estrutura comum de gerenciamento de arquivos em sistemas operacionais. A restrição a `.png` garante consistência e otimização para web.
-    *   **Trade-offs:** Exige um backend com capacidades de manipulação de sistema de arquivos, o que pode ter implicações de segurança e escalabilidade se não for bem gerenciado.
-
-6.  **Sistema de Feedback com `react-toastify` (via `useFeedback`):**
-    *   **Porquê:** Fornecer feedback imediato e não intrusivo ao usuário sobre o sucesso ou falha de operações é vital para uma boa UX. `react-toastify` é uma biblioteca popular e personalizável para exibir notificações "toast". A encapsulação em um hook customizado (`useFeedback`) e um `FeedbackContext` centraliza a lógica de notificação, tornando-a fácil de usar em qualquer componente.
-
-7.  **Estilização com CSS Modules e CSS Variáveis:**
-    *   **Porquê:** A aplicação utiliza uma combinação de CSS modules e variáveis CSS para gerenciar o estilo.
-        *   **CSS Modules:** Ajuda a escopar os estilos a componentes específicos, evitando conflitos de nomes e facilitando a manutenção.
-        *   **Variáveis CSS:** Permitem uma tematização dinâmica (claro/escuro) e uma gestão centralizada de cores, fontes e espaçamentos, tornando o design consistente e fácil de adaptar.
-
-Essas decisões foram tomadas visando um equilíbrio entre a agilidade no desenvolvimento, a performance da aplicação e a robustez para futuras expansões.
-
-## ✨ Funcionalidades Detalhadas (com Casos de Uso)
-
-O Projmanage oferece um conjunto robusto de funcionalidades para gerenciar projetos e seus conteúdos associados, com foco na eficiência e na experiência do usuário.
-
-1.  **Autenticação e Autorização de Usuários:**
-    *   **Propósito:** Garante que apenas usuários autorizados possam acessar e manipular os dados do projeto. Implementa um fluxo de login seguro.
-    *   **Casos de Uso:**
-        *   **Acesso Controlado:** Um gestor de conteúdo acessa a plataforma através da página de login (`/login`), fornecendo suas credenciais. Após a autenticação bem-sucedida, ele é redirecionado para o Dashboard.
-        *   **Proteção de Rotas:** Tentativas de acesso a rotas protegidas (ex: `/dashboard`, `/upload-image`) sem autenticação resultam em redirecionamento automático para a página de login (`PrivateRoute`).
-
-2.  **Gerenciamento de Cards (CRUD):**
-    *   **Propósito:** Permite a criação, leitura, atualização e exclusão de "Cards", que são representações sumárias e visuais de projetos ou itens de informação. Ideal para uma visão geral rápida.
-    *   **Casos de Uso:**
-        *   **Criação Rápida:** Um usuário cria um novo Card com título, descrição e uma URL de imagem para representar um novo projeto em sua visão geral.
-        *   **Atualização de Informações:** Um gestor de portfólio edita a descrição ou a imagem de um Card existente para refletir mudanças rápidas no projeto.
-        *   **Visão Geral:** Navega pela lista de Cards para ter uma percepção imediata dos projetos ativos.
-
-3.  **Gerenciamento de Projetos (CRUD):**
-    *   **Propósito:** Habilita a criação, leitura, atualização e exclusão de "Projetos", que são contêineres para conteúdo detalhado e rico, geralmente em formato Markdown.
-    *   **Casos de Uso:**
-        *   **Elaboração Detalhada:** Um desenvolvedor cria um novo Projeto para documentar um software, utilizando o editor Markdown para incluir código, imagens e links.
-        *   **Revisão de Conteúdo:** Um editor atualiza o conteúdo de um Projeto existente, corrigindo informações ou adicionando novas seções.
-        *   **Visualização de Detalhes:** Um usuário seleciona um Projeto para ver sua documentação completa e interagir com o conteúdo.
-
-4.  **Sincronização Automática Card-Projeto:**
-    *   **Propósito:** Garante a integridade referencial e a consistência dos dados entre Cards e Projetos. Evita a necessidade de gerenciar duas entidades separadas manualmente.
-    *   **Casos de Uso:**
-        *   **Criação Coesa:** Ao adicionar um novo Card, um Projeto correspondente com o mesmo `id` e metadados básicos é automaticamente criado, pronto para receber conteúdo detalhado.
-        *   **Exclusão Integrada:** A exclusão de um Card implica na remoção automática do Projeto associado, e vice-versa, prevenindo dados órfãos e mantendo o sistema limpo.
-
-5.  **Editor de Conteúdo Markdown com Live Preview:**
-    *   **Propósito:** Oferece uma ferramenta poderosa e intuitiva para criar e editar conteúdo rico usando Markdown, com feedback visual em tempo real.
-    *   **Casos de Uso:**
-        *   **Criação de Documentação:** Um autor escreve a documentação de um projeto, utilizando Markdown para títulos, listas, negrito, itálico e blocos de código.
-        *   **Visualização Instantânea:** Enquanto digita, o autor vê imediatamente como o conteúdo será renderizado na página de preview, ajustando a formatação conforme necessário.
-        *   **Inserção de Mídia:** O editor insere referências a imagens e vídeos do YouTube diretamente no Markdown, que são renderizados corretamente no preview.
-        *   **Recursos Avançados:** Utiliza as sintaxes customizadas `@@texto@@` para criar botões de cópia e `:::texto:::` para destacar informações importantes.
-
-6.  **Gerenciamento de Imagens e Diretórios (Upload, Organização, Renomear, Deletar):**
-    *   **Propósito:** Fornece um sistema completo para upload e organização de ativos de imagem, suportando uma estrutura hierárquica de diretórios no servidor.
-    *   **Casos de Uso:**
-        *   **Upload Simplificado:** Um designer arrasta e solta múltiplas imagens `.png` para o uploader, renomeando-as antes do envio.
-        *   **Organização de Mídias:** Um usuário cria uma nova subpasta (`assets/meu-projeto-novo`) e faz o upload de todas as imagens relacionadas a esse projeto para lá, mantendo a organização.
-        *   **Manutenção de Ativos:** Um administrador renomeia um arquivo de imagem ou exclui um diretório inteiro de imagens não utilizadas.
-        *   **Visualização Rápida:** Clica em uma imagem na árvore de diretórios para visualizá-la em um modal, confirmando se é a imagem correta para usar.
-        *   **Histórico de Uploads:** Consulta o histórico recente de uploads para encontrar rapidamente as URLs das imagens recém-enviadas.
-
-7.  **Tematização Dinâmica (Claro/Escuro):**
-    *   **Propósito:** Permite ao usuário alternar entre um tema claro e um tema escuro para a interface da aplicação, melhorando a ergonomia e a preferência pessoal.
-    *   **Casos de Uso:**
-        *   **Conforto Visual:** Um usuário trabalhando à noite muda para o tema escuro para reduzir o cansaço visual.
-        *   **Acessibilidade:** Um usuário com preferência por alto contraste escolhe o tema que melhor se adapta às suas necessidades.
-
-8.  **Navegação e Layout Responsivo:**
-    *   **Propósito:** Oferece uma navegação intuitiva através de um sidebar e um layout que se adapta a diferentes tamanhos de tela.
-    *   **Casos de Uso:**
-        *   **Acesso Rápido:** Um usuário navega facilmente entre o Dashboard, o editor de projetos e o uploader de imagens usando o menu lateral.
-        *   **Uso em Dispositivos Móveis:** A interface se ajusta automaticamente para ser utilizável em tablets e smartphones, com o sidebar transformando-se em um drawer.
-
-Essas funcionalidades combinadas tornam o Projmanage uma ferramenta poderosa para gerenciamento de conteúdo e projetos, desde a concepção até a publicação.
-
-## 🛠️ Tech Stack Detalhado
-
-O Projmanage é construído sobre uma pilha de tecnologias modernas e eficientes, garantindo um desenvolvimento ágil, performance robusta e uma experiência de usuário rica.
-
-| Categoria       | Tecnologia          | Versão Específica (se aplicável) | Propósito no Projeto                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ```
-  **Descrição:** Este projeto é uma versão do Projmanage, uma aplicação frontend que interage com um serviço de backend para gerenciamento de projetos e imagens.
-  
-  **Autor:** Enoque Sousa ([LinkedIn](https://www.linkedin.com/in/enoque-sousa-bb89aa168/))
-
-## Arquitetura do Sistema
-
-O Projmanage é uma aplicação Single Page Application (SPA) desenvolvida com React, que constitui o frontend do sistema. Ele interage com um backend RESTful (hospedado em `https://serverdatabase.onrender.com/api/v1`, conforme o proxy no `package.json`) responsável pela lógica de negócios, autenticação e persistência de dados.
-
-A arquitetura é modular e componentizada, seguindo os princípios do React, com uma clara separação de preocupações entre a interface do usuário, o gerenciamento de estado e a comunicação com a API.
-
-```mermaid
-graph TD
-    User["👤 Usuário"] --> Frontend["🌐 Projmanage Frontend (React SPA)"]
-    Frontend --> Backend["⚙️ Backend API (serverdatabase.onrender.com)"]
-    Backend --> Database[("💾 Banco de Dados")]
-
-    subgraph "Frontend Components"
-        Frontend --> AuthContext["🔐 Contexto de Autenticação"]
-        Frontend --> ThemeContext["🎨 Contexto de Tema"]
-        Frontend --> FeedbackContext["💬 Contexto de Feedback"]
-        Frontend --> ReactRouterDOM["🧭 React Router DOM"]
-        Frontend --> SharedComponents["🔄 Shared/Modal, ImageModal"]
-        Frontend --> ContentEditor["📝 ContentEditor/EditorActions"]
-        Frontend --> ImageUploader["📷 ImageUploader/DirectoryManager"]
-        Frontend --> Pages["📄 Pages/Dashboard, Login"]
-        Frontend --> Layout["🏗️ Layout/Header, Sidebar, Footer"]
-        Frontend --> CardComponents["🃏 Card/CardList, CardEditor"]
-        Frontend --> ProjectComponents["📊 Project/ProjectList, ProjectEditor, LivePreview"]
+    subgraph Browser
+        A[Usuário]
     end
 
-    AuthContext --> Frontend
-    ThemeContext --> Frontend
-    FeedbackContext --> Frontend
-    CardComponents -.-> ProjectComponents
-    ProjectComponents -.-> CardComponents
-    ContentEditor --> LivePreview["👁️ LivePreviewPage"]
-    ImageUploader --> Backend
+    subgraph "Projmanage (React SPA)"
+        B[React Router DOM]
+        C[Pages — Dashboard, Login]
+        D[Components — Card, Project, ContentEditor, ImageUploader]
+        E[Layout — Header, Sidebar, Footer]
+        F[Contexts — Auth, Theme, Feedback]
+        G[Services — api.js Axios]
+        H[Hooks — useRetryRequest, useFeedback]
+    end
 
-    %% Estilos principais com cores vibrantes
-    style User fill:#FF6B6B,stroke:#333,stroke-width:4px,color:#fff
-    style Frontend fill:#4ECDC4,stroke:#333,stroke-width:4px,color:#fff
-    style Backend fill:#45B7D1,stroke:#333,stroke-width:4px,color:#fff
-    style Database fill:#96CEB4,stroke:#333,stroke-width:4px,color:#fff
-    
-    %% Contextos com cores coordenadas
-    style AuthContext fill:#FFE66D,stroke:#FF6B6B,stroke-width:3px,color:#333
-    style ThemeContext fill:#B8A9FF,stroke:#6C5CE7,stroke-width:3px,color:#fff
-    style FeedbackContext fill:#A8E6CF,stroke:#00B894,stroke-width:3px,color:#333
-    
-    %% Navegação e componentes compartilhados
-    style ReactRouterDOM fill:#FFD93D,stroke:#FDCB6E,stroke-width:3px,color:#333
-    style SharedComponents fill:#E17055,stroke:#D63031,stroke-width:3px,color:#fff
-    
-    %% Editores e gerenciamento
-    style ContentEditor fill:#74B9FF,stroke:#0984E3,stroke-width:3px,color:#fff
-    style ImageUploader fill:#55A3FF,stroke:#2D3436,stroke-width:3px,color:#fff
-    style LivePreview fill:#FD79A8,stroke:#E84393,stroke-width:3px,color:#fff
-    
-    %% Layout e páginas
-    style Pages fill:#FDCB6E,stroke:#E17055,stroke-width:3px,color:#333
-    style Layout fill:#81ECEC,stroke:#00CEC9,stroke-width:3px,color:#333
-    
-    %% Componentes principais
-    style CardComponents fill:#FD79A8,stroke:#E84393,stroke-width:3px,color:#fff
-    style ProjectComponents fill:#A29BFE,stroke:#6C5CE7,stroke-width:3px,color:#fff
+    subgraph Backend
+        I[ES Database API Server]
+        J[Banco de Dados]
+    end
+
+    A --> B
+    B --> C
+    C --> D
+    C --> E
+    D --> F
+    D --> G
+    D --> H
+    G --> I
+    I --> J
 ```
 
-**Componentes Principais e Interações:**
+### Camadas Principais
 
-1.  **Frontend (Aplicação React Projmanage):**
-    *   **Interface do Usuário (UI):** Renderizada no navegador do cliente, construída com componentes React, estilização customizada e Material-UI/Emotion para elementos específicos.
-    *   **Gerenciamento de Estado Global:** Utiliza a Context API do React para gerenciar estados globais como autenticação (`AuthContext`), tema da aplicação (`ThemeContext`) e feedback/notificações (`FeedbackContext`). Isso evita o prop drilling e centraliza a lógica de estado.
-    *   **Roteamento:** O `React Router DOM` é empregado para gerenciar a navegação entre as diferentes páginas da SPA, incluindo rotas protegidas por autenticação (`PrivateRoute`).
-    *   **Comunicação com API:** A biblioteca `Axios` é utilizada para fazer requisições HTTP assíncronas ao backend, encapsulada no serviço `api.js` para facilitar a manutenção e a reutilização.
-    *   **Módulos Funcionais:** O código é organizado em módulos lógicos (`components/Card`, `components/Project`, `components/ImageUploader`, `components/ContentEditor`) que encapsulam funcionalidades específicas, promovendo a modularidade e a manutenibilidade.
+| Camada | Responsabilidade |
+| --- | --- |
+| **Pages** | Dashboard (visão geral), Login, Home |
+| **Card** | CardList (CRUD + sync com Project), CardEditor, CardItem |
+| **Project** | ProjectList (CRUD + sync com Card), ProjectEditor, ProjectForm, LivePreviewPage |
+| **ContentEditor** | Editor Markdown com barra de ações e preview |
+| **ImageUploader** | FileUploader, DirectoryManager, DirectoryTreeNode, DirectoryContent, UploadHistory |
+| **Layout** | Header (tema + logout), Sidebar (navegação), Footer |
+| **Contexts** | AuthContext (JWT), ThemeContext (claro/escuro), FeedbackContext (toasts) |
+| **Services** | api.js (Axios com proxy para backend) |
 
-2.  **Backend API (`https://serverdatabase.onrender.com/api/v1`):**
-    *   Responsável por toda a lógica de negócio, autenticação de usuários, validação de dados, e persistência de informações (Cards, Projetos, Imagens, Diretórios).
-    *   Expõe endpoints RESTful consumidos pelo frontend. A comunicação é realizada via HTTP/HTTPS.
+---
 
-3.  **Banco de Dados:**
-    *   O backend interage com um banco de dados para armazenar os dados estruturados dos Cards e Projetos, bem como metadados de imagens e diretórios. A natureza exata do banco de dados não é especificada no frontend, mas é abstraída pela API.
-
-**Fluxo de Dados e Controle:**
-
-*   O usuário interage com o Frontend.
-*   Requisições de dados (CRUD de Cards e Projetos, gerenciamento de imagens) são enviadas do Frontend para o Backend via `Axios` (através do `services/api.js`).
-*   O Backend processa as requisições, interage com o Banco de Dados para persistência ou recuperação de dados, e retorna as respostas ao Frontend.
-*   Os `Contexts` fornecem dados e funções globais para os componentes, como o status de autenticação ou a função para exibir toasts.
-*   A lógica de sincronização entre Cards e Projetos (`CardList.jsx` e `ProjectList.jsx`) garante a consistência dos dados, criando ou deletando a entidade correspondente no outro módulo ao realizar uma operação.
-*   O `ContentEditor` e o `LivePreviewPage` trabalham em conjunto, utilizando o `localStorage` para compartilhar o conteúdo Markdown em tempo real, permitindo uma experiência de edição e visualização fluida.
-*   O `ImageUploader` orquestra as operações de upload, criação de diretórios, renomeação e exclusão de arquivos e pastas no servidor, fornecendo feedback visual ao usuário.
-
-A escolha de uma arquitetura SPA com React no frontend e uma API RESTful separada no backend proporciona flexibilidade, escalabilidade e a possibilidade de evoluir o frontend e o backend de forma independente.
-
-## Decisões de Design Chave
-
-As escolhas de design e tecnologia no Projmanage foram guiadas pelos princípios de performance, manutenibilidade, experiência do usuário e segurança.
-
-1.  **Frontend em React (SPA):**
-    *   **Porquê:** React foi escolhido pela sua eficiência na construção de interfaces de usuário complexas e reativas, através de um modelo de componentes declarativo. Isso facilita a reutilização de código, a modularização da UI e a criação de uma experiência de usuário fluida, típica de uma Single Page Application. O DOM virtual do React otimiza as atualizações da interface, resultando em alta performance.
-    *   **Alternativas Consideradas:** Angular, Vue.js. React foi preferido pela sua flexibilidade, grande ecossistema e forte comunidade, além de ser mais leve em termos de opiniões sobre a estrutura do projeto.
-
-2.  **Gerenciamento de Estado com Context API:**
-    *   **Porquê:** Para estados globais como autenticação (`AuthContext`) e tema (`ThemeContext`), a Context API do React foi utilizada. Embora Redux ou Zustand pudessem ser opções para estados mais complexos, a Context API foi suficiente para as necessidades do Projmanage, evitando a complexidade adicional de bibliotecas de gerenciamento de estado mais robustas e mantendo a aplicação mais "nativa" React.
-    *   **Trade-offs:** Para aplicações de escala muito maior com muitos estados interconectados, a Context API pode levar a renderizações excessivas e dificuldade de depuração. No entanto, para o escopo atual, é uma solução performática e elegante.
-
-3.  **Comunicação com API via Axios:**
-    *   **Porquê:** Axios é um cliente HTTP baseado em Promises para o navegador e Node.js. Ele oferece uma API limpa e poderosa para fazer requisições HTTP, com recursos como interceptores (para tratamento de tokens de autenticação, por exemplo), tratamento automático de JSON e tratamento robusto de erros. A centralização das chamadas na pasta `services/api.js` facilita a manutenção e a aplicação de lógicas comuns (como autenticação ou retry).
-    *   **Alternativas Consideradas:** `fetch` API nativa. Axios foi escolhido por sua conveniência e recursos adicionais que simplificam o código e aumentam a robustez.
-
-4.  **Edição de Conteúdo Markdown com `marked`, `DOMPurify` e `highlight.js`:**
-    *   **Porquê:** A escolha do Markdown para edição de conteúdo proporciona flexibilidade e simplicidade para o usuário, permitindo formatação rica sem a complexidade de um editor WYSIWYG completo.
-        *   `marked`: Biblioteca eficiente para converter Markdown em HTML.
-        *   `DOMPurify`: Essencial para segurança, sanitizando o HTML gerado para prevenir ataques de Cross-Site Scripting (XSS), garantindo que apenas conteúdo seguro seja renderizado.
-        *   `highlight.js`: Oferece realce de sintaxe para blocos de código, melhorando a legibilidade e a apresentação de snippets de código dentro do conteúdo.
-    *   **Customizações:** A implementação de sintaxes customizadas (`@@` para copiável, `:::` para destaque) estende as capacidades do Markdown padrão para atender a necessidades específicas do projeto, sem depender de plugins complexos.
-
-5.  **Gerenciamento Hierárquico de Imagens:**
-    *   **Porquê:** A capacidade de criar e organizar imagens em uma estrutura de diretórios no servidor é crucial para projetos com muitos ativos visuais. Isso permite uma organização lógica dos recursos, facilitando a localização e a reutilização de imagens, e espelha a estrutura comum de gerenciamento de arquivos em sistemas operacionais. A restrição a `.png` garante consistência e otimização para web.
-    *   **Trade-offs:** Exige um backend com capacidades de manipulação de sistema de arquivos, o que pode ter implicações de segurança e escalabilidade se não for bem gerenciado.
-
-6.  **Sistema de Feedback com `react-toastify` (via `useFeedback`):**
-    *   **Porquê:** Fornecer feedback imediato e não intrusivo ao usuário sobre o sucesso ou falha de operações é vital para uma boa UX. `react-toastify` é uma biblioteca popular e personalizável para exibir notificações "toast". A encapsulação em um hook customizado (`useFeedback`) e um `FeedbackContext` centraliza a lógica de notificação, tornando-a fácil de usar em qualquer componente.
-
-7.  **Estilização com CSS Modules e CSS Variáveis:**
-    *   **Porquê:** A aplicação utiliza uma combinação de CSS modules e variáveis CSS para gerenciar o estilo.
-        *   **CSS Modules:** Ajuda a escopar os estilos a componentes específicos, evitando conflitos de nomes e facilitando a manutenção.
-        *   **Variáveis CSS:** Permitem uma tematização dinâmica (claro/escuro) e uma gestão centralizada de cores, fontes e espaçamentos, tornando o design consistente e fácil de adaptar.
-
-Essas decisões foram tomadas visando um equilíbrio entre a agilidade no desenvolvimento, a performance da aplicação e a robustez para futuras expansões.
-
-## ✨ Funcionalidades Detalhadas (com Casos de Uso)
-
-O Projmanage oferece um conjunto robusto de funcionalidades para gerenciar projetos e seus conteúdos associados, com foco na eficiência e na experiência do usuário.
-
-1.  **Autenticação e Autorização de Usuários:**
-    *   **Propósito:** Garante que apenas usuários autorizados possam acessar e manipular os dados do projeto. Implementa um fluxo de login seguro.
-    *   **Casos de Uso:**
-        *   **Acesso Controlado:** Um gestor de conteúdo acessa a plataforma através da página de login (`/login`), fornecendo suas credenciais. Após a autenticação bem-sucedida, ele é redirecionado para o Dashboard.
-        *   **Proteção de Rotas:** Tentativas de acesso a rotas protegidas (ex: `/dashboard`, `/upload-image`) sem autenticação resultam em redirecionamento automático para a página de login (`PrivateRoute`).
-
-2.  **Gerenciamento de Cards (CRUD):**
-    *   **Propósito:** Permite a criação, leitura, atualização e exclusão de "Cards", que são representações sumárias e visuais de projetos ou itens de informação. Ideal para uma visão geral rápida.
-    *   **Casos de Uso:**
-        *   **Criação Rápida:** Um usuário cria um novo Card com título, descrição e uma URL de imagem para representar um novo projeto em sua visão geral.
-        *   **Atualização de Informações:** Um gestor de portfólio edita a descrição ou a imagem de um Card existente para refletir mudanças rápidas no projeto.
-        *   **Visão Geral:** Navega pela lista de Cards para ter uma percepção imediata dos projetos ativos.
-
-3.  **Gerenciamento de Projetos (CRUD):**
-    *   **Propósito:** Habilita a criação, leitura, atualização e exclusão de "Projetos", que são contêineres para conteúdo detalhado e rico, geralmente em formato Markdown.
-    *   **Casos de Uso:**
-        *   **Elaboração Detalhada:** Um desenvolvedor cria um novo Projeto para documentar um software, utilizando o editor Markdown para incluir código, imagens e links.
-        *   **Revisão de Conteúdo:** Um editor atualiza o conteúdo de um Projeto existente, corrigindo informações ou adicionando novas seções.
-        *   **Visualização de Detalhes:** Um usuário seleciona um Projeto para ver sua documentação completa e interagir com o conteúdo.
-
-4.  **Sincronização Automática Card-Projeto:**
-    *   **Propósito:** Garante a integridade referencial e a consistência dos dados entre Cards e Projetos. Evita a necessidade de gerenciar duas entidades separadas manualmente.
-    *   **Casos de Uso:**
-        *   **Criação Coesa:** Ao adicionar um novo Card, um Projeto correspondente com o mesmo `id` e metadados básicos é automaticamente criado, pronto para receber conteúdo detalhado.
-        *   **Exclusão Integrada:** A exclusão de um Card implica na remoção automática do Projeto associado, e vice-versa, prevenindo dados órfãos e mantendo o sistema limpo.
-
-5.  **Editor de Conteúdo Markdown com Live Preview:**
-    *   **Propósito:** Oferece uma ferramenta poderosa e intuitiva para criar e editar conteúdo rico usando Markdown, com feedback visual em tempo real.
-    *   **Casos de Uso:**
-        *   **Criação de Documentação:** Um autor escreve a documentação de um projeto, utilizando Markdown para títulos, listas, negrito, itálico e blocos de código.
-        *   **Visualização Instantânea:** Enquanto digita, o autor vê imediatamente como o conteúdo será renderizado na página de preview, ajustando a formatação conforme necessário.
-        *   **Inserção de Mídia:** O editor insere referências a imagens e vídeos do YouTube diretamente no Markdown, que são renderizados corretamente no preview.
-        *   **Recursos Avançados:** Utiliza as sintaxes customizadas `@@texto@@` para criar botões de cópia e `:::texto:::` para destacar informações importantes.
-
-6.  **Gerenciamento de Imagens e Diretórios (Upload, Organização, Renomear, Deletar):**
-    *   **Propósito:** Fornece um sistema completo para upload e organização de ativos de imagem, suportando uma estrutura hierárquica de diretórios no servidor.
-    *   **Casos de Uso:**
-        *   **Upload Simplificado:** Um designer arrasta e solta múltiplas imagens `.png` para o uploader, renomeando-as antes do envio.
-        *   **Organização de Mídias:** Um usuário cria uma nova subpasta (`assets/meu-projeto-novo`) e faz o upload de todas as imagens relacionadas a esse projeto para lá, mantendo a organização.
-        *   **Manutenção de Ativos:** Um administrador renomeia um arquivo de imagem ou exclui um diretório inteiro de imagens não utilizadas.
-        *   **Visualização Rápida:** Clica em uma imagem na árvore de diretórios para visualizá-la em um modal, confirmando se é a imagem correta para usar.
-        *   **Histórico de Uploads:** Consulta o histórico recente de uploads para encontrar rapidamente as URLs das imagens recém-enviadas.
-
-7.  **Tematização Dinâmica (Claro/Escuro):**
-    *   **Propósito:** Permite ao usuário alternar entre um tema claro e um tema escuro para a interface da aplicação, melhorando a ergonomia e a preferência pessoal.
-    *   **Casos de Uso:**
-        *   **Conforto Visual:** Um usuário trabalhando à noite muda para o tema escuro para reduzir o cansaço visual.
-        *   **Acessibilidade:** Um usuário com preferência por alto contraste escolhe o tema que melhor se adapta às suas necessidades.
-
-8.  **Navegação e Layout Responsivo:**
-    *   **Propósito:** Oferece uma navegação intuitiva através de um sidebar e um layout que se adapta a diferentes tamanhos de tela.
-    *   **Casos de Uso:**
-        *   **Acesso Rápido:** Um usuário navega facilmente entre o Dashboard, o editor de projetos e o uploader de imagens usando o menu lateral.
-        *   **Uso em Dispositivos Móveis:** A interface se ajusta automaticamente para ser utilizável em tablets e smartphones, com o sidebar transformando-se em um drawer.
-
-Essas funcionalidades combinadas tornam o Projmanage uma ferramenta poderosa para gerenciamento de conteúdo e projetos, desde a concepção até a publicação.
-
-## 🛠️ Tech Stack Detalhado
-
-O Projmanage é construído sobre uma pilha de tecnologias modernas e eficientes, garantindo um desenvolvimento ágil, performance robusta e uma experiência de usuário rica.
-
-| Categoria         | Tecnologia           | Versão Específica | Propósito no Projeto                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         ```
-## 📂 Estrutura Detalhada do Código-Fonte
-
-A estrutura de diretórios do Projmanage é organizada de forma a promover a modularidade, a manutenibilidade e a escalabilidade, seguindo as convenções de projetos React e Node.js.
+## Estrutura do Projeto
 
 ```
-front-server-esdatabasev2-master/
-├── .gitignore               # Define arquivos e diretórios a serem ignorados pelo Git (ex: node_modules, build).
-├── README.md                # Este arquivo de documentação do projeto.
-├── package-lock.json        # Garante que as dependências sejam instaladas com as versões exatas.
-├── package.json             # Define metadados do projeto e lista as dependências e scripts.
-├── public/                  # Contém arquivos estáticos que são servidos diretamente (HTML, ícones, manifest).
-│   ├── favicon.ico          # Ícone da aplicação.
-│   ├── index.html           # Ponto de entrada HTML da aplicação.
-│   ├── logo192.png          # Logo da aplicação (192x192).
-│   ├── logo512.png          # Logo da aplicação (512x512).
-│   ├── manifest.json        # Manifest para Progressive Web App (PWA).
-│   └── robots.txt           # Instruções para rastreadores de motores de busca.
-└── src/                     # Contém todo o código fonte da aplicação React.
-    ├── App.jsx              # Componente principal que orquestra contextos e rotas.
-    ├── App.test.js          # Exemplo de teste para o componente App.
-    ├── components/          # Coleção de componentes React reutilizáveis.
-    │   ├── AppRoutes.jsx    # Define as rotas da aplicação, incluindo as protegidas.
-    │   ├── Auth/            # Componentes relacionados à autenticação.
-    │   │   ├── LoginForm.css  # Estilos para o formulário de login.
-    │   │   └── LoginForm.js   # Componente de formulário de login.
-    │   ├── Card/            # Componentes para gerenciamento de Cards.
-    │   │   ├── CardEditor.css # Estilos para o editor de cards.
-    │   │   ├── CardEditor.jsx # Componente para criar/editar um Card.
-    │   │   ├── CardItem.jsx   # Componente para exibir um único Card.
-    │   │   └── CardList.jsx   # Componente para listar e gerenciar Cards (CRUD).
-    │   ├── ContentEditor/   # Componentes para o editor de conteúdo Markdown.
-    │   │   ├── ContentEditor.css # Estilos do editor de conteúdo.
-    │   │   ├── ContentEditor.jsx # Componente principal do editor Markdown.
-    │   │   ├── EditorActions.css # Estilos para os botões de ação do editor.
-    │   │   └── EditorActions.jsx # Botões de formatação para o editor Markdown.
-    │   ├── ImageUploader/   # Componentes para upload e gerenciamento de imagens/diretórios.
-    │   │   ├── DirectoryContent.jsx # Exibe o conteúdo de um diretório selecionado.
-    │   │   ├── DirectoryManager.jsx # Gerencia a criação e navegação de diretórios.
-    │   │   ├── DirectoryTreeNode.jsx # Representa um nó (arquivo/pasta) na árvore de diretórios.
-    │   │   ├── Feedback.jsx   # Componente para exibir mensagens de feedback (toasts).
-    │   │   ├── FeedbackContext.js # Contexto para gerenciar o estado de feedback.
-    │   │   ├── FeedbackProvider.jsx # Provedor do contexto de feedback.
-    │   │   ├── FileUploader.jsx # Componente para seleção e upload de arquivos.
-    │   │   ├── UploadHistory.jsx # Exibe o histórico de uploads.
-    │   │   ├── icons.js       # Exporta ícones Lucide-React para uso em outros componentes.
-    │   │   └── useFeedback.js # Hook customizado para usar o sistema de feedback.
-    │   ├── Layout/          # Componentes para o layout geral da aplicação.
-    │   │   ├── Footer.css     # Estilos do rodapé.
-    │   │   ├── Footer.jsx     # Componente de rodapé.
-    │   │   ├── Header.css     # Estilos do cabeçalho.
-    │   │   ├── Header.jsx     # Componente de cabeçalho (com toggle de tema e logout).
-    │   │   ├── Layout.css     # Estilos do layout principal.
-    │   │   ├── Layout.jsx     # Componente de layout que envolve as páginas.
-    │   │   ├── Sidebar.css    # Estilos da barra lateral.
-    │   │   └── Sidebar.jsx    # Componente de barra lateral de navegação.
-    │   ├── PrivateRoute.jsx # Componente para proteger rotas por autenticação.
-    │   ├── Project/         # Componentes para gerenciamento de Projetos.
-    │   │   ├── LivePreviewPage.jsx # Página para visualização em tempo real do conteúdo Markdown.
-    │   │   ├── LivePreviewStyles.js # Estilos específicos para o preview de conteúdo.
-    │   │   ├── ProjectEditor.css # Estilos do editor de projetos.
-    │   │   ├── ProjectEditor.jsx # Componente para criar/editar um Projeto.
-    │   │   ├── ProjectForm.css # Estilos do formulário de projetos.
-    │   │   ├── ProjectForm.jsx # Formulário para dados e conteúdo do Projeto.
-    │   │   ├── ProjectItem.jsx # Componente para exibir um único Projeto.
-    │   │   └── ProjectList.jsx # Componente para listar e gerenciar Projetos (CRUD).
-    │   ├── Shared/          # Componentes genéricos e reutilizáveis entre módulos.
-    │   │   ├── DirectoryErrorMessage.css # Estilos para mensagens de erro de diretório.
-    │   │   ├── DirectoryErrorMessage.jsx # Componente para exibir mensagens de erro.
-    │   │   ├── ImageModal.css # Estilos do modal de visualização de imagem.
-    │   │   ├── ImageModal.jsx # Modal para exibir imagens em tela cheia.
-    │   │   ├── ModalEditor.css # Estilos do modal genérico.
-    │   │   └── ModalEditor.jsx # Componente de modal reutilizável.
-    │   ├── style.css        # Importa todos os arquivos de estilo CSS.
-    │   └── styles/          # Coleção de arquivos CSS para estilização global e de componentes.
-    │       ├── animations.css # Animações CSS.
-    │       ├── container.css  # Estilos de contêineres gerais.
-    │       ├── directory-components/ # Estilos específicos para componentes de diretório.
-    │       │   ├── directory-actions.css
-    │       │   ├── directory-content.css
-    │       │   ├── directory-error.css
-    │       │   ├── directory-layout.css
-    │       │   ├── directory-list.css
-    │       │   ├── directory-manager.css
-    │       │   ├── directory-tree.css
-    │       │   └── existing-directories.css
-    │       ├── drag-drop.css  # Estilos para a área de drag-and-drop.
-    │       ├── feedback-toast.css # Estilos para as notificações toast.
-    │       ├── feedback.css   # Estilos para caixas de feedback.
-    │       ├── form.css       # Estilos para formulários genéricos.
-    │       ├── history.css    # Estilos para histórico de uploads.
-    │       ├── index-directory.css # (Pode ser um erro de nome, geralmente para estilos globais de diretório)
-    │       ├── preview.css    # Estilos para pré-visualizações.
-    │       └── progress.css   # Estilos para barras de progresso.
-    ├── contexts/            # Contextos React para gerenciamento de estado global.
-    │   ├── AuthContext.js   # Contexto para autenticação de usuário.
-    │   └── ThemeContext.js  # Contexto para alternar entre temas claro/escuro.
-    ├── hooks/               # Hooks React customizados.
-    │   └── useRetryRequest.js # Hook para lógica de retry em requisições.
-    ├── index.css            # Estilos CSS globais (variáveis, resets).
-    ├── index.js             # Ponto de entrada JavaScript da aplicação (renderiza o App).
-    ├── logo.svg             # Logo SVG da aplicação.
-    ├── pages/               # Componentes de página (vistas principais).
-    │   ├── DashboardPage.css # Estilos da página de Dashboard.
-    │   ├── DashboardPage.jsx # Página principal do Dashboard.
-    │   ├── Home.css         # Estilos da página Home (se diferente do Dashboard).
-    │   ├── Home.jsx         # Página Home.
-    │   └── Login/           # Página de Login.
-    │       ├── Login.css      # Estilos da página de Login.
-    │       └── Login.jsx      # Componente da página de Login.
-    ├── reportWebVitals.js   # Funções para medir performance web.
-    ├── services/            # Módulos para comunicação com APIs externas.
-    │   └── api.js           # Instância configurada do Axios para a API de backend.
-    └── setupTests.js        # Arquivo de configuração para testes (Jest/React Testing Library).
+front-server-esdatabasev2/
+├── public/
+│   ├── index.html                      # HTML entry point
+│   ├── manifest.json                   # PWA manifest
+│   ├── projmanager1-6.jpeg             # Screenshots da interface
+│   └── favicon.ico
+├── src/
+│   ├── App.jsx                         # Componente raiz (Contexts + Router)
+│   ├── index.js                        # Entry point (ReactDOM.render)
+│   ├── components/
+│   │   ├── AppRoutes.jsx               # Definição de rotas + PrivateRoute
+│   │   ├── PrivateRoute.jsx            # Guard de autenticação
+│   │   ├── Auth/
+│   │   │   ├── LoginForm.js            # Formulário de login
+│   │   │   └── LoginForm.css
+│   │   ├── Card/
+│   │   │   ├── CardList.jsx            # CRUD de Cards + sync com Projects
+│   │   │   ├── CardEditor.jsx          # Editor de Card (título, descrição, imagem)
+│   │   │   ├── CardItem.jsx            # Exibição de Card individual
+│   │   │   └── CardEditor.css
+│   │   ├── Project/
+│   │   │   ├── ProjectList.jsx         # CRUD de Projects + sync com Cards
+│   │   │   ├── ProjectEditor.jsx       # Editor de Project
+│   │   │   ├── ProjectForm.jsx         # Formulário de dados + ContentEditor
+│   │   │   ├── ProjectItem.jsx         # Exibição de Project individual
+│   │   │   ├── LivePreviewPage.jsx     # Preview Markdown em tempo real
+│   │   │   ├── LivePreviewStyles.js    # Estilos do preview
+│   │   │   ├── ProjectEditor.css
+│   │   │   └── ProjectForm.css
+│   │   ├── ContentEditor/
+│   │   │   ├── ContentEditor.jsx       # Editor Markdown com textarea + ações
+│   │   │   ├── EditorActions.jsx       # Barra de botões de formatação
+│   │   │   ├── ContentEditor.css
+│   │   │   └── EditorActions.css
+│   │   ├── ImageUploader/
+│   │   │   ├── FileUploader.jsx        # Drag-and-drop + renomeação pré-upload
+│   │   │   ├── DirectoryManager.jsx    # Criação e navegação de diretórios
+│   │   │   ├── DirectoryTreeNode.jsx   # Nó da árvore de diretórios
+│   │   │   ├── DirectoryContent.jsx    # Conteúdo do diretório selecionado
+│   │   │   ├── UploadHistory.jsx       # Histórico de uploads recentes
+│   │   │   ├── Feedback.jsx            # Componente de toast
+│   │   │   ├── FeedbackContext.js      # Context de feedback
+│   │   │   ├── FeedbackProvider.jsx    # Provider do feedback
+│   │   │   ├── useFeedback.js          # Hook para toasts
+│   │   │   └── icons.js               # Exportação de ícones Lucide
+│   │   ├── Layout/
+│   │   │   ├── Layout.jsx             # Wrapper com Header + Sidebar + Footer
+│   │   │   ├── Header.jsx             # Barra com tema toggle e logout
+│   │   │   ├── Sidebar.jsx            # Menu lateral de navegação
+│   │   │   ├── Footer.jsx             # Rodapé
+│   │   │   ├── Layout.css
+│   │   │   ├── Header.css
+│   │   │   ├── Sidebar.css
+│   │   │   └── Footer.css
+│   │   ├── Shared/
+│   │   │   ├── ModalEditor.jsx         # Modal reutilizável
+│   │   │   ├── ImageModal.jsx          # Modal de visualização de imagem
+│   │   │   ├── DirectoryErrorMessage.jsx  # Mensagem de erro de diretório
+│   │   │   ├── ModalEditor.css
+│   │   │   ├── ImageModal.css
+│   │   │   └── DirectoryErrorMessage.css
+│   │   ├── style.css                   # Import centralizado de estilos
+│   │   └── styles/
+│   │       ├── animations.css
+│   │       ├── container.css
+│   │       ├── drag-drop.css
+│   │       ├── feedback.css
+│   │       ├── feedback-toast.css
+│   │       ├── form.css
+│   │       ├── history.css
+│   │       ├── preview.css
+│   │       ├── progress.css
+│   │       └── directory-components/
+│   │           ├── directory-actions.css
+│   │           ├── directory-content.css
+│   │           ├── directory-error.css
+│   │           ├── directory-layout.css
+│   │           ├── directory-list.css
+│   │           ├── directory-manager.css
+│   │           ├── directory-tree.css
+│   │           └── existing-directories.css
+│   ├── contexts/
+│   │   ├── AuthContext.js              # Autenticação JWT + tokens
+│   │   └── ThemeContext.js             # Toggle claro/escuro
+│   ├── hooks/
+│   │   └── useRetryRequest.js          # Retry automático de requisições
+│   ├── pages/
+│   │   ├── DashboardPage.jsx           # Dashboard principal
+│   │   ├── DashboardPage.css
+│   │   ├── Home.jsx                    # Página home
+│   │   ├── Home.css
+│   │   └── Login/
+│   │       ├── Login.jsx               # Página de login
+│   │       └── Login.css
+│   ├── services/
+│   │   └── api.js                      # Axios instance (proxy → backend)
+│   ├── index.css                       # CSS global (variables, resets)
+│   └── setupTests.js                   # Config de testes (Jest)
+├── package.json
+├── .gitignore
+├── LICENSE
+└── README.md
 ```
 
-**Filosofia da Estrutura:**
+---
 
-*   **Separação de Preocupações:** O diretório `src/` é claramente dividido em `components/` (componentes reutilizáveis e modulares), `pages/` (componentes de alto nível que representam páginas), `contexts/` (gerenciamento de estado global), `services/` (lógica de comunicação com APIs) e `hooks/` (lógica reutilizável encapsulada).
-*   **Modularidade por Domínio:** Dentro de `components/`, subdiretórios como `Auth/`, `Card/`, `Project/`, `ContentEditor/`, `ImageUploader/` e `Layout/` agrupam componentes relacionados a uma funcionalidade específica, facilitando a localização e o entendimento do código.
-*   **Centralização de Estilos:** A pasta `src/components/styles/` centraliza todos os arquivos CSS, que são importados por `src/components/style.css`, promovendo uma gestão de estilos organizada e consistente.
-*   **Assets Estáticos:** A pasta `public/` é dedicada a arquivos estáticos que não são processados pelo Webpack, como o `index.html`, manifestos e ícones.
+## Começando
 
-Essa organização visa facilitar o desenvolvimento em equipe, a depuração e a adição de novas funcionalidades, mantendo o código limpo e fácil de navegar.
+### Pré-requisitos
 
-## 📋 Pré-requisitos Avançados
+```bash
+node --version  # v14 ou superior (recomendado v18+)
+npm --version   # v6 ou superior
+```
 
-Para configurar e executar o projeto Projmanage em seu ambiente de desenvolvimento local, você precisará ter as seguintes ferramentas e dependências instaladas e configuradas:
-
-1.  **Node.js:**
-    *   **Versão Mínima:** v14.0.0 (Recomendado: v18.x LTS ou superior).
-    *   **Propósito:** Ambiente de execução JavaScript para o backend (se você for rodar localmente, embora o proxy aponte para um backend remoto) e, crucialmente, para o gerenciamento de pacotes e scripts de build do frontend React.
-    *   **Verificação:** Execute `node -v` no terminal.
-
-2.  **npm (Node Package Manager) ou Yarn:**
-    *   **Versão Mínima:** npm v6.0.0 (Recomendado: npm v8.x ou Yarn v1.x).
-    *   **Propósito:** Gerenciador de dependências do projeto. `npm` é instalado automaticamente com o Node.js.
-    *   **Verificação:** Execute `npm -v` ou `yarn -v` no terminal.
-
-3.  **Git:**
-    *   **Versão Mínima:** v2.0.0.
-    *   **Propósito:** Sistema de controle de versão para clonar o repositório do projeto.
-    *   **Verificação:** Execute `git --version` no terminal.
-
-4.  **Conexão com a Internet:**
-    *   **Propósito:** Necessário para baixar as dependências do projeto (npm/Yarn) e para se comunicar com o backend API remoto (`https://serverdatabase.onrender.com/api/v1`).
-
-**Configurações de Ambiente (Variáveis de Ambiente):**
-
-Embora este projeto frontend utilize um proxy para o backend remoto (`https://serverdatabase.onrender.com/api/v1`) configurado diretamente no `package.json`, em cenários de desenvolvimento local ou para customizações, você pode precisar de variáveis de ambiente.
-
-*   **`REACT_APP_API_BASE_URL` (Opcional):**
-    *   **Propósito:** Se você precisar apontar o frontend para um backend diferente do configurado no proxy (ex: um backend local rodando em `http://localhost:3001/api/v1`), você pode definir esta variável.
-    *   **Uso:** Crie um arquivo `.env` na raiz do projeto (o mesmo nível de `package.json`) e adicione:
-        ```
-        REACT_APP_API_BASE_URL=http://localhost:3001/api/v1
-        ```
-    *   **Nota:** Se esta variável for definida, ela geralmente sobrescreve a configuração de `proxy` no `package.json` para chamadas `fetch` ou `axios` relativas. No entanto, a configuração do proxy no `package.json` é primariamente para redirecionar chamadas da porta de desenvolvimento (e.g., 3000) para a API durante o desenvolvimento. Para builds de produção, o `proxy` não é usado, e as chamadas devem ser absolutas ou configuradas via variável de ambiente. O `api.js` já usa o proxy configurado, mas para builds de produção, o `axios` fará chamadas absolutas para `https://serverdatabase.onrender.com/api/v1` (ou para o `REACT_APP_API_BASE_URL` se definido e usado no `api.js`).
-
-## 🚀 Guia de Instalação e Configuração Avançada
-
-Siga os passos abaixo para clonar o repositório, instalar as dependências e executar o Projmanage em seu ambiente de desenvolvimento local.
-
-### 1. Clonar o Repositório
-
-Abra seu terminal ou prompt de comando e execute o seguinte comando para clonar o projeto do GitHub:
+### Instalação
 
 ```bash
 git clone https://github.com/ESousa97/esdatabasev2
-```
-
-### 2. Navegar até o Diretório do Projeto
-
-Após a clonagem, entre no diretório principal do projeto:
-
-```bash
-cd front-server-esdatabasev2-master
-```
-
-### 3. Instalar Dependências
-
-O projeto utiliza o `npm` (Node Package Manager) para gerenciar suas dependências. Certifique-se de ter o Node.js e o npm instalados (ver [Pré-requisitos](#-pré-requisitos-avançados)).
-
-Execute o comando de instalação de dependências:
-
-```bash
+cd front-server-esdatabasev2
 npm install
-# Ou, se preferir usar Yarn:
-# yarn install
 ```
 
-Este comando irá baixar e instalar todas as bibliotecas e frameworks listados no `package.json` para a pasta `node_modules/`.
+### Configuração
 
-### 4. Configuração de Variáveis de Ambiente (Opcional)
+O projeto usa o proxy do `package.json` para redirecionar chamadas `/api/v1/*` para o backend remoto `https://serverdatabase.onrender.com/api/v1` durante desenvolvimento.
 
-O projeto está configurado para se comunicar com um backend remoto (`https://serverdatabase.onrender.com/api/v1`) através da propriedade `proxy` no `package.json`. Isso significa que, em desenvolvimento, requisições para `/api/v1/*` serão automaticamente redirecionadas para o backend configurado.
+Para apontar para um backend diferente, crie um arquivo `.env` na raiz:
 
-Se, por algum motivo, você precisar apontar para um backend diferente (ex: um backend local), você pode criar um arquivo `.env` na raiz do projeto (`front-server-esdatabasev2-master/`) e definir a variável `REACT_APP_API_BASE_URL`.
-
-Exemplo de `.env` (se você estiver rodando um backend local na porta 3001):
-
-```dotenv
-# .env
+```env
 REACT_APP_API_BASE_URL=http://localhost:3001/api/v1
 ```
 
-**Nota:** Para que esta variável seja reconhecida, o servidor de desenvolvimento do React precisa ser reiniciado.
-
-### 5. Iniciar a Aplicação
-
-Com as dependências instaladas e as configurações de ambiente (se houver) prontas, você pode iniciar o servidor de desenvolvimento do React:
+### Uso Local
 
 ```bash
 npm start
-# Ou, se preferir usar Yarn:
-# yarn start
 ```
 
-Este comando irá:
-*   Compilar o código-fonte do React.
-*   Iniciar um servidor de desenvolvimento local, geralmente na porta `3000`.
-*   Abrir automaticamente a aplicação no seu navegador padrão (geralmente em `http://localhost:3000`).
-
-A aplicação estará acessível em `http://localhost:3000/login`.
-
-### 6. Acesso ao Backend (Importante)
-
-Lembre-se que o Projmanage é um frontend. Para que ele funcione plenamente, o backend correspondente deve estar ativo e acessível. Este projeto está configurado para usar o backend hospedado em `https://serverdatabase.onrender.com/api/v1`. Se este backend estiver offline ou se você desejar usar uma instância local do backend, você precisará configurá-lo e iniciá-lo separadamente, conforme a documentação do projeto de backend.
-
-## ⚙️ Uso Avançado e Exemplos
-
-O Projmanage oferece recursos avançados, especialmente no editor de conteúdo Markdown e no gerenciamento de imagens.
-
-### 1. Editor de Conteúdo Markdown (ContentEditor)
-
-O editor de conteúdo permite a criação de documentos ricos com sintaxes Markdown padrão e algumas extensões personalizadas para funcionalidades específicas.
-
-*   **Sintaxe Padrão Markdown:**
-    *   **Títulos:** `# Título 1`, `## Título 2`, `### Título 3`
-    *   **Negrito:** `**texto em negrito**`
-    *   **Itálico:** `*texto em itálico*`
-    *   **Listas:** `- Item 1`, `- Item 2`
-    *   **Links:** `[Texto do Link](https://exemplo.com)`
-    *   **Imagens:** `![Descrição da Imagem](/assets/caminho/para/imagem.png)` - **Importante:** As imagens devem ser previamente carregadas via o `Image Uploader` e ter seus caminhos corretos (ex: `/assets/projects0001/projects0001__1.png`).
-    *   **Blocos de Código Inline:** `` `código inline` ``
-    *   **Blocos de Código Multi-linha:**
-        ```markdown
-        ```javascript
-        const exemplo = "código";
-        console.log(exemplo);
-        ```
-        ```
-
-*   **Sintaxes Customizadas:**
-    *   **Texto Copiável:** Use `@@Seu texto aqui@@`. Isso renderizará um botão clicável que, ao ser pressionado, copiará o texto interno (`Seu texto aqui`) para a área de transferência do usuário. Ideal para credenciais, comandos ou trechos de código pequenos.
-        *   **Exemplo:** `Para clonar, use @@git clone https://github.com/ESousa97/esdatabasev2@@`
-    *   **Texto de Destaque:** Use `:::Seu texto aqui:::`. Isso aplicará um estilo visual de destaque (geralmente um fundo e/ou cor de texto diferente) ao conteúdo, útil para avisos, observações importantes ou informações críticas.
-        *   **Exemplo:** `:::Atenção: A exclusão de um Card também removerá o Projeto associado.:::`
-    *   **Incorporação de Vídeos do YouTube:** Cole a URL completa de um vídeo do YouTube diretamente no editor. O sistema detectará a URL e renderizará um player incorporado.
-        *   **Exemplo:** `https://www.youtube.com/watch?v=dQw4w9WgXcQ`
-
-*   **Live Preview:**
-    *   O botão "Live Preview" no editor abre uma nova aba com a renderização em tempo real do seu conteúdo Markdown. Isso é crucial para verificar a formatação, a exibição de imagens, vídeos e as sintaxes customizadas antes de salvar o projeto. O conteúdo é salvo temporariamente no `localStorage` para ser acessado pela página de preview.
-
-### 2. Gerenciamento de Imagens (ImageUploader)
-
-O módulo de upload de imagens oferece controle granular sobre os arquivos e a estrutura de diretórios no servidor.
-
-*   **Criação de Diretórios Aninhados:**
-    *   Na seção "Criar subpasta em:", você pode criar novas pastas. Se um diretório principal (`assets/`) estiver selecionado, a nova pasta será criada dentro dele. Se nenhum diretório estiver selecionado, a pasta será criada diretamente sob `assets/`.
-    *   **Exemplo:** Para criar `assets/meu-projeto/imagens`, primeiro você pode criar `assets/meu-projeto`, depois selecioná-lo e criar `imagens` dentro dele.
-
-*   **Renomear Arquivos e Pastas:**
-    *   Na visualização do conteúdo do diretório, ao lado de cada arquivo ou pasta, há um ícone de edição. Clicar nele permite que você insira um novo nome para o item. Isso é útil para padronizar nomes ou corrigir erros.
-
-*   **Visualização de Imagens:**
-    *   Clique em qualquer arquivo de imagem na lista de conteúdo do diretório para abri-lo em um modal de visualização. Isso permite confirmar o conteúdo da imagem antes de usá-la em um projeto.
-
-*   **Histórico de Uploads:**
-    *   A seção "Histórico recente de uploads" mantém um registro das últimas imagens que você enviou, com links diretos para suas URLs e o timestamp do upload. Isso agiliza a recuperação de URLs de imagens para uso no editor de conteúdo.
-
-*   **Drag-and-Drop e Renomeação Pré-Upload:**
-    *   Você pode arrastar e soltar múltiplos arquivos `.png` diretamente na área de upload. Antes de clicar em "Enviar Imagens", você tem a oportunidade de renomear cada arquivo individualmente na lista de pré-visualização. Isso é útil para garantir que os nomes dos arquivos sejam consistentes e descritivos no servidor.
-
-Esses recursos avançados visam otimizar o fluxo de trabalho de criação e gerenciamento de conteúdo, proporcionando maior controle e flexibilidade aos usuários.
-
-## 🔧 API Reference
-
-O frontend do Projmanage interage com um backend RESTful hospedado em `https://serverdatabase.onrender.com/api/v1`. Abaixo estão os principais endpoints consumidos pela aplicação:
-
-**Base URL:** `https://serverdatabase.onrender.com/api/v1`
-
-### 1. Autenticação
-
-*   **`POST /auth/login`**
-    *   **Propósito:** Autentica um usuário e retorna tokens de acesso e refresh.
-    *   **Request Body (JSON):**
-        ```json
-        {
-          "email": "user@example.com",
-          "password": "your_password"
-        }
-        ```
-    *   **Response (Sucesso - 200 OK):**
-        ```json
-        {
-          "accessToken": "eyJ...",
-          "refreshToken": "eyJ..."
-        }
-        ```
-    *   **Response (Erro - 401 Unauthorized):**
-        ```json
-        {
-          "message": "Email ou senha inválidos."
-        }
-        ```
-
-### 2. Gerenciamento de Cards
-
-*   **`GET /cards`**
-    *   **Propósito:** Lista todos os cards existentes.
-    *   **Response (Sucesso - 200 OK):**
-        ```json
-        [
-          { "id": "card-id-1", "titulo": "Card Exemplo", "descricao": "Descrição do card", "imageurl": "/assets/path/image.png" },
-          // ...
-        ]
-        ```
-
-*   **`POST /cards`**
-    *   **Propósito:** Cria um novo card. Um projeto correspondente é criado automaticamente no backend.
-    *   **Request Body (JSON):**
-        ```json
-        {
-          "titulo": "Novo Card",
-          "descricao": "Breve descrição do novo card",
-          "imageurl": "/assets/projects0001/projects0001__2.png"
-        }
-        ```
-    *   **Response (Sucesso - 201 Created):**
-        ```json
-        {
-          "id": "novo-card-id",
-          "titulo": "Novo Card",
-          "descricao": "Breve descrição do novo card",
-          "imageurl": "/assets/projects0001/projects0001__2.png"
-        }
-        ```
-
-*   **`PUT /cards/:id`**
-    *   **Propósito:** Atualiza um card existente.
-    *   **Parâmetros de Path:** `id` (ID do card a ser atualizado).
-    *   **Request Body (JSON):**
-        ```json
-        {
-          "titulo": "Card Atualizado",
-          "descricao": "Nova descrição",
-          "imageurl": "/assets/new-path/new-image.png"
-        }
-        ```
-    *   **Response (Sucesso - 200 OK):** Retorna o objeto do card atualizado.
-
-*   **`DELETE /cards/:id`**
-    *   **Propósito:** Deleta um card existente. O projeto correspondente é deletado automaticamente no backend.
-    *   **Parâmetros de Path:** `id` (ID do card a ser deletado).
-    *   **Response (Sucesso - 204 No Content):** (Sem conteúdo de resposta)
-
-### 3. Gerenciamento de Projetos
-
-*   **`GET /projects`**
-    *   **Propósito:** Lista todos os projetos existentes.
-    *   **Response (Sucesso - 200 OK):**
-        ```json
-        [
-          { "id": "project-id-1", "titulo": "Projeto A", "descricao": "Detalhes do proj A", "conteudo": "# Conteúdo Markdown", "categoria": "Desenvolvimento" },
-          // ...
-        ]
-        ```
-
-*   **`POST /projects`**
-    *   **Propósito:** Cria um novo projeto. Um card correspondente é criado automaticamente no backend.
-    *   **Request Body (JSON):**
-        ```json
-        {
-          "titulo": "Novo Projeto",
-          "descricao": "Descrição detalhada do projeto",
-          "conteudo": "# Introdução\nEste é o conteúdo do projeto em Markdown.",
-          "categoria": "Documentação"
-        }
-        ```
-    *   **Response (Sucesso - 201 Created):** Retorna o objeto do projeto criado.
-
-*   **`PUT /projects/:id`**
-    *   **Propósito:** Atualiza um projeto existente.
-    *   **Parâmetros de Path:** `id` (ID do projeto a ser atualizado).
-    *   **Request Body (JSON):** (Mesmo formato do POST, com os campos a serem atualizados)
-    *   **Response (Sucesso - 200 OK):** Retorna o objeto do projeto atualizado.
-
-*   **`DELETE /projects/:id`**
-    *   **Propósito:** Deleta um projeto existente. O card correspondente é deletado automaticamente no backend.
-    *   **Parâmetros de Path:** `id` (ID do projeto a ser deletado).
-    *   **Response (Sucesso - 204 No Content):** (Sem conteúdo de resposta)
-
-### 4. Gerenciamento de Imagens e Diretórios
-
-*   **`GET /directories`**
-    *   **Propósito:** Lista todos os diretórios de ativos de imagem disponíveis no servidor.
-    *   **Response (Sucesso - 200 OK):**
-        ```json
-        {
-          "directories": ["assets/projects0001", "assets/uploads", "assets/new-folder"]
-        }
-        ```
-
-*   **`GET /directory-content/:path`**
-    *   **Propósito:** Lista o conteúdo (arquivos e subdiretórios) de um diretório específico.
-    *   **Parâmetros de Path:** `path` (Caminho do diretório, ex: `assets/projects0001`).
-    *   **Response (Sucesso - 200 OK):**
-        ```json
-        {
-          "content": [
-            { "name": "image.png", "type": "file", "download_url": "http://..." },
-            { "name": "subfolder", "type": "dir" }
-          ]
-        }
-        ```
-
-*   **`POST /create-directory`**
-    *   **Propósito:** Cria um novo diretório no servidor.
-    *   **Request Body (JSON):**
-        ```json
-        {
-          "name": "assets/novo-diretorio"
-        }
-        ```
-    *   **Response (Sucesso - 201 Created):** `{"message": "Diretório criado com sucesso."}`
-    *   **Response (Erro - 409 Conflict):** `{"message": "O diretório já existe."}`
-
-*   **`POST /imageupload`**
-    *   **Propósito:** Faz o upload de uma imagem PNG para um diretório especificado.
-    *   **Request Body (FormData):**
-        *   `image`: O arquivo da imagem (tipo `File`).
-        *   `directory`: O diretório de destino (string, ex: `assets/my-project`).
-        *   `overwrite`: Booleano, `true` para sobrescrever se o arquivo já existir.
-    *   **Response (Sucesso - 200 OK / 201 Created):**
-        ```json
-        {
-          "message": "Upload realizado com sucesso.",
-          "imageUrl": "http://serverdatabase.onrender.com/assets/my-project/image.png"
-        }
-        ```
-    *   **Response (Erro - 409 Conflict):** `{"message": "Arquivo já existe."}` (se `overwrite` for `false`)
-
-*   **`PUT /rename`**
-    *   **Propósito:** Renomeia um arquivo ou diretório.
-    *   **Request Body (JSON):**
-        ```json
-        {
-          "oldPath": "assets/old-name.png",
-          "newPath": "assets/new-name.png"
-        }
-        ```
-    *   **Response (Sucesso - 200 OK):** `{"message": "Renomeado com sucesso."}`
-
-*   **`DELETE /delete`**
-    *   **Propósito:** Deleta um arquivo ou diretório.
-    *   **Request Body (JSON):**
-        ```json
-        {
-          "path": "assets/arquivo-a-deletar.png",
-          "type": "file" # ou "dir"
-        }
-        ```
-    *   **Response (Sucesso - 204 No Content):** (Sem conteúdo de resposta)
-
-### Notas sobre a API:
-
-*   **Autenticação:** As requisições para endpoints protegidos exigem um token de acesso válido no cabeçalho `Authorization: Bearer <token>`. O frontend gerencia a obtenção e o envio desses tokens.
-*   **Tratamento de Erros:** O frontend implementa um tratamento de erros robusto, utilizando `useRetryRequest` para requisições com falha e `useFeedback` para exibir mensagens de erro informativas ao usuário.
-
-## 🧪 Estratégia de Testes e Qualidade de Código
-
-A estratégia de testes do Projmanage visa garantir a confiabilidade e a estabilidade da aplicação, focando na interface do usuário e na integração com os serviços.
-
-1.  **Tipos de Testes Implementados:**
-    *   **Testes Unitários de Componentes:** Focados em testar unidades isoladas da UI (componentes React) para garantir que renderizem corretamente e respondam às interações do usuário como esperado.
-    *   **Testes de Integração:** Verificam a interação entre múltiplos componentes ou entre componentes e serviços (ex: chamadas à API), assegurando que os fluxos de dados e as lógicas de negócio funcionem em conjunto.
-
-2.  **Ferramentas e Frameworks de Teste:**
-    *   **Jest:** Framework de teste JavaScript amplamente utilizado, conhecido por sua velocidade e facilidade de configuração, especialmente em projetos React.
-    *   **React Testing Library (`@testing-library/react`):** Biblioteca complementar ao Jest, que incentiva testes que se assemelham mais à forma como os usuários interagem com a aplicação. Prioriza testar o comportamento do usuário em vez de detalhes de implementação interna dos componentes.
-    *   **`@testing-library/jest-dom`:** Fornece matchers personalizados para Jest que permitem fazer asserções sobre o estado do DOM de forma mais declarativa e amigável.
-
-3.  **Execução da Suíte de Testes:**
-    Para executar todos os testes definidos no projeto, utilize o seguinte comando no terminal, a partir da raiz do projeto:
-
-    ```bash
-    npm test
-    # Ou, se preferir usar Yarn:
-    # yarn test
-    ```
-    Este comando iniciará o Jest em modo de observação (`watch mode`), executando os testes e re-executando-os automaticamente a cada alteração nos arquivos. Para uma execução única:
-
-    ```bash
-    npm test -- --watchAll=false
-    # Ou
-    # CI=true npm test
-    ```
-
-4.  **Qualidade de Código e CI/CD (Sugestão):**
-    Atualmente, o projeto contém exemplos de testes (`App.test.js`). Para um ambiente de produção e colaboração contínua, recomenda-se a implementação de:
-    *   **Linters (ESLint):** Configurados para impor um estilo de código consistente e identificar potenciais erros ou anti-padrões. O `package.json` já inclui configurações `eslintConfig` que estendem `react-app` e `react-app/jest`.
-    *   **Formatadores (Prettier):** Para garantir a formatação automática do código, reduzindo discussões em code reviews sobre estilo.
-    *   **Integração Contínua (CI):** Implementação de pipelines de CI (ex: GitHub Actions, GitLab CI/CD, Jenkins) para automatizar a execução de testes e linters a cada push ou Pull Request, garantindo que novas contribuições não quebrem funcionalidades existentes ou introduzam problemas de estilo.
-    *   **Cobertura de Código:** Ferramentas para gerar relatórios de cobertura de código (ex: `jest --coverage`) para identificar áreas do código com baixa cobertura de testes, direcionando os esforços de escrita de testes.
-
-A adoção dessas práticas e ferramentas adicionais fortalecerá a qualidade do código, a estabilidade da aplicação e a eficiência do processo de desenvolvimento.
-
-## 🚢 Deployment Detalhado e Escalabilidade
-
-O Projmanage, sendo uma aplicação frontend em React, possui um processo de deployment e considerações de escalabilidade distintas de um backend.
-
-### Processo de Deployment
-
-O frontend do Projmanage é projetado para ser uma aplicação estática (SPA) após o build, o que simplifica significativamente o processo de deployment.
-
-1.  **Build da Aplicação:**
-    *   Primeiramente, é necessário gerar a versão otimizada para produção da aplicação. Isso é feito através do comando:
-        ```bash
-        npm run build
-        # Ou, se preferir usar Yarn:
-        # yarn build
-        ```
-    *   Este comando cria uma pasta `build/` na raiz do projeto, contendo todos os arquivos estáticos (HTML, CSS, JavaScript, imagens otimizados e minificados) prontos para serem servidos por qualquer servidor web estático.
-
-2.  **Plataformas de Deployment:**
-    *   **Vercel (Atualmente em Uso):** O Projmanage está atualmente hospedado na Vercel ([https://esdatabase-projmanage.vercel.app/login](https://esdatabase-projmanage.vercel.app/login)). A Vercel é uma plataforma de deployment para frontends que oferece integração contínua (CI/CD) automática com repositórios Git (como o GitHub). Cada push para o branch principal pode disparar um novo build e deployment.
-        *   **Vantagens:** Deploy instantâneo, CDN global, SSL automático, escalabilidade automática para tráfego web, preview deployments para Pull Requests.
-    *   **Outras Opções de Hosting Estático:**
-        *   **Netlify:** Similar à Vercel, com foco em JAMstack e deploys contínuos.
-        *   **GitHub Pages:** Gratuito para projetos de código aberto, ideal para demonstrações.
-        *   **AWS S3 + CloudFront:** Para maior controle e integração com outros serviços AWS, o `build/` pode ser hospedado em um bucket S3 e distribuído via CloudFront (CDN).
-        *   **Nginx/Apache:** Servidores web tradicionais podem servir os arquivos da pasta `build/` diretamente.
-
-### Escalabilidade do Frontend
-
-A escalabilidade de um frontend SPA é inerentemente mais simples do que a de um backend, pois a maior parte do processamento ocorre no lado do cliente.
-
-1.  **Escalabilidade Horizontal (CDN):**
-    *   A principal estratégia para escalar um frontend SPA é através do uso de uma **Content Delivery Network (CDN)**. Plataformas como Vercel e Netlify já incluem CDNs por padrão.
-    *   **Benefícios:**
-        *   **Latência Reduzida:** Os arquivos da aplicação são armazenados em servidores geograficamente distribuídos, próximos aos usuários, resultando em carregamento mais rápido.
-        *   **Alta Disponibilidade:** Se um servidor de borda falhar, outros podem servir o conteúdo.
-        *   **Capacidade de Tráfego:** CDNs são projetadas para lidar com picos de tráfego, absorvendo a carga e protegendo o servidor de origem.
-
-2.  **Otimização de Performance:**
-    *   Para garantir que o frontend seja rápido e responsivo mesmo com muitos usuários, são aplicadas otimizações durante o processo de build:
-        *   **Minificação e Bundling:** Redução do tamanho dos arquivos JavaScript, CSS e HTML.
-        *   **Code Splitting:** Divisão do código em chunks menores que são carregados sob demanda, melhorando o tempo de carregamento inicial.
-        *   **Lazy Loading:** Carregamento de componentes ou módulos apenas quando são necessários.
-        *   **Otimização de Imagens:** Compressão e redimensionamento de imagens (embora o upload aceite apenas PNG, otimizações adicionais podem ser aplicadas no servidor de assets ou CDN).
-
-### Considerações Adicionais
-
-*   **Backend Escalabilidade:** É crucial que o backend (`https://serverdatabase.onrender.com/api/v1`) também seja escalável para suportar o aumento de requisições do frontend. O Render.com, onde o backend está hospedado, oferece recursos de escalabilidade automática para aplicações web.
-*   **Monitoramento:** Implementar ferramentas de monitoramento de performance de aplicações (APM) para o frontend (ex: Google Analytics, Sentry, New Relic) para rastrear tempos de carregamento, erros de JavaScript e interações do usuário.
-*   **Logging:** Centralizar logs de erros e atividades do frontend para facilitar a depuração e identificar problemas em produção.
-
-Ao focar na otimização do build, no uso de CDNs e em práticas de monitoramento, o Projmanage pode escalar eficientemente para atender a uma base de usuários crescente, mantendo uma experiência de alta performance.
-
-## 📜 Licença e Aspectos Legais
-
-Este projeto, Projmanage, é distribuído sob a licença **MIT License**.
-
-A Licença MIT é uma licença de software livre permissiva, o que significa que você pode usar, copiar, modificar, mesclar, publicar, distribuir, sublicenciar e/ou vender cópias do software, e permitir que pessoas a quem o software é fornecido o façam, sujeito às seguintes condições:
-
-*   Aviso de direitos autorais e permissão devem ser incluídos em todas as cópias substanciais ou partes do Software.
-*   O software é fornecido "no estado em que se encontra", sem garantia de qualquer tipo, expressa ou implícita, incluindo, mas não se limitando a, garantias de comercialização, adequação a um fim específico e não violação. Em nenhum caso os autores ou detentores dos direitos autorais serão responsáveis por qualquer reivindicação, danos ou outra responsabilidade, seja em uma ação de contrato, delito ou de outra forma, decorrentes de, fora de ou em conexão com o software ou o uso ou outras negociações no software.
-
-Para o texto completo da licença, consulte o arquivo [LICENSE](https://github.com/ESousa97/esdatabasev2/blob/main/LICENSE) na raiz do repositório.
-
-## 📚 Publicações, Artigos e Citações
-
-Não aplicável a este projeto neste momento. O Projmanage é um projeto de desenvolvimento de software prático focado em funcionalidades e experiência do usuário, não sendo diretamente vinculado a publicações acadêmicas ou artigos científicos.
-
-## 👥 Equipe Principal e Colaboradores Chave
-
-O desenvolvimento e manutenção do Projmanage são liderados por:
-
-*   **Enoque Sousa** - Desenvolvedor Principal e Mantenedor ([LinkedIn](https://www.linkedin.com/in/enoque-sousa-bb89aa168/))
-
-Agradecemos a todos os contribuidores e membros da comunidade que, de alguma forma, apoiam este projeto.
-
-## ❓ FAQ (Perguntas Frequentes)
-
-Aqui estão algumas perguntas frequentes sobre o Projmanage. Se sua dúvida não for respondida aqui, por favor, entre em contato ou abra uma issue.
-
-**1. Preciso de um backend para rodar o Projmanage?**
-Sim, o Projmanage é um frontend e requer um backend para todas as operações de dados (autenticação, CRUD de cards/projetos, gerenciamento de imagens). Ele está configurado para se comunicar com um backend remoto em `https://serverdatabase.onrender.com/api/v1`.
-
-**2. Posso usar meu próprio backend?**
-Sim. Você pode configurar a URL do seu backend criando um arquivo `.env` na raiz do projeto e definindo `REACT_APP_API_BASE_URL=sua_url_do_backend_aqui`. Lembre-se de que seu backend deve implementar os mesmos endpoints e contratos de API esperados pelo frontend.
-
-**3. Quais tipos de arquivos de imagem posso fazer upload?**
-Atualmente, o uploader de imagens aceita apenas arquivos no formato `.png`.
-
-**4. Como faço para inserir uma imagem no editor de conteúdo?**
-Você deve primeiro fazer o upload da imagem usando a funcionalidade de "Upload de Imagens". Após o upload, copie o caminho da imagem (ex: `/assets/projects0001/minha-imagem.png`) e use a sintaxe Markdown `![Descrição da Imagem](/assets/projects0001/minha-imagem.png)` no editor de conteúdo. O editor oferece um botão para inserir um template de imagem.
-
-**5. O que acontece se eu deletar um Card ou um Projeto?**
-O Projmanage implementa uma sincronização bidirecional. Se você deletar um Card, o Projeto correspondente com o mesmo ID será automaticamente deletado. O mesmo ocorre se você deletar um Projeto; seu Card associado será removido. Isso garante a integridade dos dados.
-
-**6. Como posso alternar entre o tema claro e escuro?**
-No cabeçalho da aplicação (Header), há um botão com um ícone de sol/lua. Clique nele para alternar entre o tema claro e o tema escuro.
-
-**7. Tive um erro de "Rede Indisponível" ou "Falha na Requisição". O que fazer?**
-Isso geralmente indica um problema de conexão com a internet ou que o backend está inacessível. Verifique sua conexão. Se o problema persistir, o backend pode estar temporariamente offline. O projeto possui um mecanismo de retry para requisições, mas em casos de falha persistente, pode ser um problema do servidor.
-
-**8. Como posso contribuir para o projeto?**
-Agradecemos seu interesse! Consulte a seção [Contribuição](#-contribuição-nível-avançado) para um guia detalhado sobre como configurar seu ambiente, seguir as convenções de código e enviar Pull Requests.
-
-## 📞 Contato e Suporte
-
-Para dúvidas, sugestões, relatórios de bugs ou discussões sobre o projeto Projmanage, utilize os seguintes canais:
-
-*   **Issues do GitHub:** Para relatar bugs, propor novas funcionalidades ou discutir problemas técnicos. Por favor, verifique as issues existentes antes de abrir uma nova.
-    *   [Abrir uma Nova Issue](https://github.com/ESousa97/esdatabasev2/issues/new)
-    *   [Visualizar Issues Existentes](https://github.com/ESousa97/esdatabasev2/issues)
-
-*   **Pull Requests do GitHub:** Para enviar suas contribuições de código, documentação ou outras melhorias.
-    *   [Visualizar Pull Requests](https://github.com/ESousa97/esdatabasev2/pulls)
-
-*   **LinkedIn do Autor:** Para contato profissional ou dúvidas mais diretas com o desenvolvedor principal.
-    *   [Enoque Sousa no LinkedIn](https://www.linkedin.com/in/enoque-sousa-bb89aa168/)
-
-<p align="center">
-  <em>Interface moderna para o ecossistema ES Data Base - Desenvolvido com ❤️ por José Enoque Sousa</em>
-</p>
-
-> ✨ **Criado em:** 20 de mar. de 2025 às 20:39
+Acesse: `http://localhost:3000/login`
 
+> O backend [ES Database API](https://github.com/ESousa97/serverdatabase) deve estar ativo para que a aplicação funcione. Por padrão, o proxy aponta para a instância em produção no Render.
+
+---
+
+## Scripts Disponíveis
+
+```bash
+# Servidor de desenvolvimento
+npm start
+
+# Build de produção (pasta build/)
+npm run build
+
+# Testes (Jest + Testing Library)
+npm test
+
+# Ejetar configuração do CRA (irreversível)
+npm run eject
+```
+
+---
+
+## Endpoints Consumidos
+
+O frontend consome a [ES Database API](https://github.com/ESousa97/serverdatabase) (`https://serverdatabase.onrender.com/api/v1`):
+
+| Método | Endpoint | Descrição |
+| --- | --- | --- |
+| `POST` | `/auth/login` | Autenticação (retorna access + refresh tokens) |
+| `GET` | `/cards` | Lista todos os cards |
+| `POST` | `/cards` | Cria card (+ projeto correspondente) |
+| `PUT` | `/cards/:id` | Atualiza card |
+| `DELETE` | `/cards/:id` | Remove card (+ projeto correspondente) |
+| `GET` | `/projects` | Lista todos os projetos |
+| `POST` | `/projects` | Cria projeto (+ card correspondente) |
+| `PUT` | `/projects/:id` | Atualiza projeto |
+| `DELETE` | `/projects/:id` | Remove projeto (+ card correspondente) |
+| `GET` | `/directories` | Lista diretórios de imagens |
+| `GET` | `/directory-content/:path` | Conteúdo de um diretório |
+| `POST` | `/create-directory` | Cria diretório |
+| `POST` | `/imageupload` | Upload de imagem PNG (FormData) |
+| `PUT` | `/rename` | Renomeia arquivo ou diretório |
+| `DELETE` | `/delete` | Remove arquivo ou diretório |
+
+---
+
+## FAQ
+
+<details>
+<summary><strong>Qual a diferença entre Projmanage e ES Database V2?</strong></summary>
+
+O **ES Database V2** é o frontend público para visualização de projetos e procedimentos (Next.js, SSR, NextAuth). O **Projmanage** é o painel administrativo (React SPA, CRA) para criar, editar e gerenciar todo o conteúdo — cards, projetos, imagens e diretórios. Ambos consomem a mesma API backend.
+</details>
+
+<details>
+<summary><strong>Como funciona a sincronização Card↔Projeto?</strong></summary>
+
+Ao criar um Card, um Projeto com o mesmo ID é automaticamente criado no backend, e vice-versa. A exclusão de qualquer um remove o par correspondente, garantindo integridade referencial. A lógica está em `CardList.jsx` e `ProjectList.jsx`.
+</details>
+
+<details>
+<summary><strong>Como funciona o live preview do editor Markdown?</strong></summary>
+
+O `ContentEditor` salva o conteúdo no `localStorage` a cada alteração. O botão "Live Preview" abre `LivePreviewPage` em nova aba, que lê o `localStorage` e renderiza o HTML via marked + DOMPurify + highlight.js, atualizando em tempo real.
+</details>
+
+<details>
+<summary><strong>Quais formatos de imagem são aceitos no upload?</strong></summary>
+
+Apenas arquivos PNG. O `FileUploader` valida o tipo antes do envio. O upload suporta drag-and-drop de múltiplos arquivos com renomeação individual antes do envio.
+</details>
+
+---
+
+## Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+```
+MIT License - você pode usar, copiar, modificar e distribuir este código.
+```
+
+---
+
+## Contato
+
+**José Enoque Costa de Sousa**
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/enoque-sousa-bb89aa168/)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white)](https://github.com/ESousa97)
+[![Portfolio](https://img.shields.io/badge/Portfolio-FF5722?style=flat&logo=todoist&logoColor=white)](https://enoquesousa.vercel.app)
+
+---
+
+<div align="center">
+
+**[⬆ Voltar ao topo](#projmanage)**
+
+Feito com ❤️ por [José Enoque](https://github.com/ESousa97)
+
+**Status do Projeto:** Archived — Sem novas atualizações
+
+</div>
