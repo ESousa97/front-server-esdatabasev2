@@ -39,15 +39,19 @@ function DirectoryTreeNode({ item, parentPath, onRename, onDelete, onImageClick 
     <li className="tree-node-wrapper">
       <div className={`tree-node ${item.type}`}>
         {item.type === 'dir' ? (
-          <span onClick={toggleExpand} className="tree-node-folder">
+          <button type="button" onClick={toggleExpand} className="tree-node-folder">
             <Icon size={16} />
             <span className="tree-node-name">{item.name}</span>
-          </span>
+          </button>
         ) : (
-          <span onClick={() => onImageClick(item)} className="tree-node-file">
+          <button
+            type="button"
+            onClick={() => onImageClick(item)}
+            className="tree-node-file"
+          >
             <FileImageIcon size={16} />
             <span className="tree-node-name">{item.name}</span>
-          </span>
+          </button>
         )}
 
         <div className="tree-node-actions">

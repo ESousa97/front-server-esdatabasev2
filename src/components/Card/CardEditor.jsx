@@ -25,8 +25,9 @@ function CardEditor({ initialCard, onSubmit }) {
       <h3 className="card-editor__title">Editor de Card</h3>
 
       <div className="card-editor__group">
-        <label className="card-editor__label">Título:</label>
+        <label className="card-editor__label" htmlFor="card-title">Título:</label>
         <input
+          id="card-title"
           className="card-editor__input"
           type="text"
           value={cardData.titulo}
@@ -36,8 +37,9 @@ function CardEditor({ initialCard, onSubmit }) {
       </div>
 
       <div className="card-editor__group">
-        <label className="card-editor__label">Imagem (URL):</label>
+        <label className="card-editor__label" htmlFor="card-image-url">Imagem (URL):</label>
         <input
+          id="card-image-url"
           className="card-editor__input"
           type="text"
           value={cardData.imageurl}
@@ -53,8 +55,9 @@ function CardEditor({ initialCard, onSubmit }) {
       </div>
 
       <div className="card-editor__group">
-        <label className="card-editor__label">Descrição:</label>
+        <label className="card-editor__label" htmlFor="card-description">Descrição:</label>
         <input
+          id="card-description"
           className="card-editor__input"
           type="text"
           value={cardData.descricao}

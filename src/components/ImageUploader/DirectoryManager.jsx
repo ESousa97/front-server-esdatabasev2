@@ -69,31 +69,27 @@ function DirectoryManager({
             const isOpen = selectedDirectory === dir;
 
             return (
-              <li
-                key={idx}
-                className={`existing-directory-item ${isOpen ? 'active' : ''}`}
-                role="button"
-                aria-pressed={isOpen}
-                tabIndex={0}
-                onClick={() => toggleDirectory(dir)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') toggleDirectory(dir);
-                }}
-              >
-                {isOpen ? <FolderOpenIcon size={18} /> : <FolderIcon size={18} />}
-                <strong>{dir}</strong>
-                <button
-                  type="button"
-                  className="eye-button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleDirectory(dir);
-                  }}
-                  title={isOpen ? 'Fechar diretório' : 'Ver conteúdo'}
-                  aria-label={isOpen ? 'Fechar diretório' : 'Abrir diretório'}
-                >
-                  {isOpen ? <EyeIcon size={16} /> : <EyeOffIcon size={16} />}
-                </button>
+              <li key={idx}>
+                <div className={`existing-directory-item ${isOpen ? 'active' : ''}`}>
+                  <button
+                    type="button"
+                    className="existing-directory-trigger"
+                    aria-pressed={isOpen}
+                    onClick={() => toggleDirectory(dir)}
+                  >
+                    {isOpen ? <FolderOpenIcon size={18} /> : <FolderIcon size={18} />}
+                    <strong>{dir}</strong>
+                  </button>
+                  <button
+                    type="button"
+                    className="eye-button"
+                    onClick={() => toggleDirectory(dir)}
+                    title={isOpen ? 'Fechar diretório' : 'Ver conteúdo'}
+                    aria-label={isOpen ? 'Fechar diretório' : 'Abrir diretório'}
+                  >
+                    {isOpen ? <EyeIcon size={16} /> : <EyeOffIcon size={16} />}
+                  </button>
+                </div>
               </li>
             );
           })}

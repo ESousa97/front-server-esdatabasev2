@@ -1,0 +1,9 @@
+# Default ownership
+* @ESousa97
+
+# Core application
+/src/components/ @ESousa97
+/src/contexts/ @ESousa97
+/src/services/ @ESousa97
+/src/pages/ @ESousa97
+/.github/ @ESousa97

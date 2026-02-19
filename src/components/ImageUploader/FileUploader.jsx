@@ -30,7 +30,15 @@ function FileUploader({
         onClick={() => inputRef.current?.click()}
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            inputRef.current?.click();
+          }
+        }}
+        role="button"
         tabIndex={0}
+        aria-label="Selecionar arquivos PNG"
       >
         <input
           ref={inputRef}
@@ -105,8 +113,9 @@ function FileUploader({
 
       {/* Input de diretório de destino */}
       <div className="image-uploader__group">
-        <label className="image-uploader__label">Diretório de destino:</label>
+        <label className="image-uploader__label" htmlFor="target-directory">Diretório de destino:</label>
         <input
+          id="target-directory"
           className="image-uploader__input"
           type="text"
           placeholder="Ex.: pasta-projeto"

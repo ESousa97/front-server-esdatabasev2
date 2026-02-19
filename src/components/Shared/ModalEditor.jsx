@@ -32,8 +32,21 @@ function ModalEditor({ children, onClose, fullscreen }) {
     }
   };
 
+  const handleOverlayKeyDown = (e) => {
+    if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+      handleClose();
+    }
+  };
+
   return (
-    <div className={`modal-overlay ${visible ? 'show' : ''}`} onClick={handleOverlayClick}>
+    <div
+      className={`modal-overlay ${visible ? 'show' : ''}`}
+      onClick={handleOverlayClick}
+      onKeyDown={handleOverlayKeyDown}
+      role="button"
+      tabIndex={0}
+      aria-label="Fechar modal"
+    >
       <div className={`modal-content ${fullscreen ? 'fullscreen' : ''}`}>
         <button className="modal-close" onClick={handleClose} aria-label="Fechar modal">
           <CloseIcon size={20} strokeWidth={2.5} />

@@ -8,6 +8,8 @@ import FileUploader from './ImageUploader/FileUploader';
 import UploadHistory from './ImageUploader/UploadHistory';
 import Feedback from './ImageUploader/Feedback';
 import ImageModal from './Shared/ImageModal';
+import { STORAGE_KEYS } from '../constants/storageKeys';
+import { getJsonStorageItem, setStorageItem } from '../utils/storage';
 
 import './style.css';
 
@@ -21,7 +23,9 @@ function ImageUploader() {
   const [selectedDirectory, setSelectedDirectory] = useState(null);
   const [directoryContent, setDirectoryContent] = useState([]);
   const [filter, setFilter] = useState('');
-  const [history, setHistory] = useState(() => JSON.parse(localStorage.getItem('uploadHistory')) || []);
+  const [history, setHistory] = useState(
+    () => getJsonStorageItem(STORAGE_KEYS.UPLOAD_HISTORY, [])
+  );
   const [renamingItem, setRenamingItem] = useState(null);
   const [renameInputValue, setRenameInputValue] = useState('');
   const [dropError, setDropError] = useState('');
@@ -177,7 +181,7 @@ function ImageUploader() {
       }
     }
 
-    localStorage.setItem('uploadHistory', JSON.stringify(newHistory.slice(0, 20)));
+    setStorageItem(STORAGE_KEYS.UPLOAD_HISTORY, JSON.stringify(newHistory.slice(0, 20)));
     setHistory(newHistory.slice(0, 20));
 
     fetchDirectories();

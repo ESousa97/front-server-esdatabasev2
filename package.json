@@ -2,7 +2,21 @@
   "name": "projmanage",
   "version": "0.1.0",
   "private": true,
+  "description": "Painel administrativo React para gerenciamento de cards, projetos e ativos de imagem.",
+  "author": "Enoque Sousa (https://enoquesousa.vercel.app)",
+  "license": "MIT",
+  "homepage": "https://github.com/ESousa97/front-server-esdatabasev2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ESousa97/front-server-esdatabasev2.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ESousa97/front-server-esdatabasev2/issues"
+  },
   "proxy": "https://serverdatabase.onrender.com/api/v1",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
@@ -21,15 +35,23 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.5.0",
-    "react-router-dom": "^7.4.1",
+    "react-router-dom": "^6.30.1",
     "react-scripts": "^5.0.1",
     "react-toastify": "^11.0.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "dev": "react-scripts start",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --watchAll=false",
+    "test:watch": "react-scripts test",
+    "test:coverage": "react-scripts test --watchAll=false --coverage",
+    "lint": "eslint . --ext js,jsx --max-warnings 0",
+    "lint:fix": "eslint . --ext js,jsx --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "validate": "npm run lint && npm run test && npm run build",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -49,5 +71,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.2",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "prettier": "^3.8.1"
   }
 }

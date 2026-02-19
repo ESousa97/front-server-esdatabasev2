@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import api from '../../services/api';
 import './LoginForm.css';
 import { Eye, EyeOff } from 'lucide-react';
+import { STORAGE_KEYS } from '../../constants/storageKeys';
+import { setStorageItem } from '../../utils/storage';
 
 function LoginForm({ onLogin }) {
   const [email, setEmail] = useState('');
@@ -19,8 +21,8 @@ function LoginForm({ onLogin }) {
 
     try {
       const res = await api.post('/auth/login', { email, password });
-      localStorage.setItem('accessToken', res.data.accessToken);
-      localStorage.setItem('refreshToken', res.data.refreshToken);
+      setStorageItem(STORAGE_KEYS.ACCESS_TOKEN, res.data.accessToken);
+      setStorageItem(STORAGE_KEYS.REFRESH_TOKEN, res.data.refreshToken);
       onLogin();
     } catch (err) {
       setErrorMsg('Email ou senha inválidos. Tente novamente.');

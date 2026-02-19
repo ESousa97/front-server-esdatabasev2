@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import ProjectForm from './ProjectForm';
 import './ProjectEditor.css';
+import { STORAGE_KEYS } from '../../constants/storageKeys';
+import { setStorageItem } from '../../utils/storage';
 
 function ProjectEditor({ project, onSubmit, onCancel }) {
   const [formData, setFormData] = useState(
@@ -14,7 +16,7 @@ function ProjectEditor({ project, onSubmit, onCancel }) {
 
   // Atualiza o localStorage com o conteúdo para que a página de preview possa lê-lo
   useEffect(() => {
-    localStorage.setItem('livePreviewContent', formData.conteudo);
+    setStorageItem(STORAGE_KEYS.LIVE_PREVIEW_CONTENT, formData.conteudo);
   }, [formData.conteudo]);
 
   return (

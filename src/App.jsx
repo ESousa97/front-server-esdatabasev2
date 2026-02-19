@@ -3,14 +3,14 @@ import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { FeedbackProvider } from './components/ImageUploader/FeedbackContext';
-import AppRoutes from '../src/components/AppRoutes';
+import AppRoutes from './components/AppRoutes';
 
 function App() {
   return (
     <AuthProvider>
       <ThemeProvider>
         <FeedbackProvider>
-          <BrowserRouter>
+          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <AppRoutes />
           </BrowserRouter>
         </FeedbackProvider>

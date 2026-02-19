@@ -20,7 +20,14 @@ const Layout = ({ children, onLogout }) => {
       <Sidebar isOpen={isSidebarOpen} />
 
       {/* Overlay para escurecer o conteúdo quando a sidebar está aberta */}
-      {isSidebarOpen && <div className="overlay" onClick={toggleSidebar} />}
+      {isSidebarOpen && (
+        <button
+          type="button"
+          className="overlay"
+          onClick={toggleSidebar}
+          aria-label="Fechar menu lateral"
+        />
+      )}
 
       {/* Área principal de conteúdo, deslocada para baixo do Header */}
       <div className={`content-wrapper ${isSidebarOpen ? 'blur' : ''}`}>

@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import EditorActions from './EditorActions';
 import './ContentEditor.css';
+import { STORAGE_KEYS } from '../../constants/storageKeys';
+import { setStorageItem } from '../../utils/storage';
 
-function ContentEditor({ value, onChange }) {
+function ContentEditor({ value, onChange, textareaId }) {
   const [text, setText] = useState(value || '');
   const textareaRef = useRef(null);
 
@@ -12,7 +14,7 @@ function ContentEditor({ value, onChange }) {
 
   // Atualiza o localStorage a cada mudança
   useEffect(() => {
-    localStorage.setItem('livePreviewContent', text);
+    setStorageItem(STORAGE_KEYS.LIVE_PREVIEW_CONTENT, text);
   }, [text]);
 
   const handleTextChange = (e) => {
@@ -58,7 +60,7 @@ function ContentEditor({ value, onChange }) {
 
   // Abre a rota do preview em uma nova guia
   const handleOpenLivePreview = () => {
-    localStorage.setItem('livePreviewContent', text);
+    setStorageItem(STORAGE_KEYS.LIVE_PREVIEW_CONTENT, text);
     window.open('/live-preview', '_blank');
   };
 
@@ -67,6 +69,7 @@ function ContentEditor({ value, onChange }) {
       <h4 className="editor-title">Editor de Conteúdo</h4>
       <div className="editor-pane">
         <textarea
+          id={textareaId}
           ref={textareaRef}
           className="editor-textarea"
           rows={12}

@@ -13,9 +13,13 @@ import {
   ContentContainer,
   StyledCopyButton,
 } from './LivePreviewStyles';
+import { STORAGE_KEYS } from '../../constants/storageKeys';
+import { getStorageItem } from '../../utils/storage';
 
 function LivePreviewPage() {
-  const [content, setContent] = useState(localStorage.getItem('livePreviewContent') || '');
+  const [content, setContent] = useState(
+    () => getStorageItem(STORAGE_KEYS.LIVE_PREVIEW_CONTENT) || ''
+  );
   const [videoLoaded, setVideoLoaded] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const contentRef = useRef(null);
@@ -23,7 +27,7 @@ function LivePreviewPage() {
   // Atualiza o conteúdo se o localStorage mudar (ex.: de outra aba)
   useEffect(() => {
     const handleStorage = (event) => {
-      if (event.key === 'livePreviewContent') {
+      if (event.key === STORAGE_KEYS.LIVE_PREVIEW_CONTENT) {
         setContent(event.newValue);
       }
     };

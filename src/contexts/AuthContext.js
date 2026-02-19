@@ -1,15 +1,20 @@
 //src/contexts/AuthContext.js
 
 import React, { createContext, useState, useContext } from 'react';
+import { STORAGE_KEYS } from '../constants/storageKeys';
+import { removeStorageItem, getStorageItem } from '../utils/storage';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [isAuthenticated, setAuthenticated] = useState(!!localStorage.getItem('accessToken'));
+  const [isAuthenticated, setAuthenticated] = useState(
+    () => !!getStorageItem(STORAGE_KEYS.ACCESS_TOKEN)
+  );
 
   const login = () => setAuthenticated(true);
   const logout = () => {
-    localStorage.removeItem('accessToken');
+    removeStorageItem(STORAGE_KEYS.ACCESS_TOKEN);
+    removeStorageItem(STORAGE_KEYS.REFRESH_TOKEN);
     setAuthenticated(false);
   };
 

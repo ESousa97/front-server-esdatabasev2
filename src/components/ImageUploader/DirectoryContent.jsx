@@ -96,8 +96,9 @@ function DirectoryContent({
 
       {renamingItem && (
         <div className="rename-box">
-          <label className="image-uploader__label">Renomear para:</label>
+          <label className="image-uploader__label" htmlFor="rename-input">Renomear para:</label>
           <input
+            id="rename-input"
             className="image-uploader__input"
             type="text"
             value={renameInputValue}

@@ -33,8 +33,9 @@ function ProjectForm({ project, onSubmit, onCancel, onContentChange }) {
       {/* Linha de cima: Título, Descrição, Categoria, e Botões todos em Grid */}
       <div className="form-header">
         <div className="form-group">
-          <label className="form-label">Título</label>
+          <label className="form-label" htmlFor="project-title">Título</label>
           <input
+            id="project-title"
             className="form-input"
             type="text"
             placeholder="Título"
@@ -44,8 +45,9 @@ function ProjectForm({ project, onSubmit, onCancel, onContentChange }) {
         </div>
 
         <div className="form-group">
-          <label className="form-label">Descrição</label>
+          <label className="form-label" htmlFor="project-description">Descrição</label>
           <input
+            id="project-description"
             className="form-input"
             type="text"
             placeholder="Descrição"
@@ -55,8 +57,9 @@ function ProjectForm({ project, onSubmit, onCancel, onContentChange }) {
         </div>
 
         <div className="form-group">
-          <label className="form-label">Categoria</label>
+          <label className="form-label" htmlFor="project-category">Categoria</label>
           <input
+            id="project-category"
             className="form-input"
             type="text"
             placeholder="Categoria"
@@ -86,8 +89,9 @@ function ProjectForm({ project, onSubmit, onCancel, onContentChange }) {
 
       {/* Abaixo, o editor de conteúdo ocupando espaço total abaixo da linha de inputs e botões */}
       <div className="form-content">
-        <label className="form-label">Conteúdo</label>
+        <label className="form-label" htmlFor="project-content">Conteúdo</label>
         <ContentEditor
+          textareaId="project-content"
           value={formData.conteudo}
           onChange={(val) => {
             handleChange('conteudo', val);
