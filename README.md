@@ -9,8 +9,6 @@
 
 **Painel administrativo do ecossistema ES Data Base — SPA em React (Create React App) para gerenciamento de Cards, Projetos e ativos de imagem, com editor Markdown com live preview, upload de imagens com gerenciamento hierárquico de diretórios, sincronização automática Card↔Projeto, autenticação via token JWT, tema claro/escuro e comunicação com a [ES Database API](https://github.com/ESousa97/serverdatabase) via Axios.**
 
-[Demo](https://esdatabase-projmanage.vercel.app/login)
-
 </div>
 
 ---
